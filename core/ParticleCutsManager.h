@@ -75,7 +75,7 @@ namespace chanzer{
     BaseCut  _defaultCut;
     basecut_ptr _useableDefault{nullptr};//!
 
-    Int_t _passCut{0};//!
+    UInt_t _passCut{0};//!
     Short_t _forReal{0};
       
     ClassDefOverride(chanzer::ParticleCutsManager,1);

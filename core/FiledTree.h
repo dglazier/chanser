@@ -52,7 +52,7 @@ namespace chanzer{
 
     virtual ~FiledTree();
     
-    const ttree_ptr Tree() const {return _tree.get();}
+    ttree_ptr Tree() const {return _tree.get();}
     
     static filed_uptr Recreate(const TString tname,const TString fname);
     static filed_uptr Create(const TString tname,const TString fname);

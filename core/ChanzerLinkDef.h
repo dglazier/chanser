@@ -29,6 +29,7 @@
 #pragma link C++ class chanzer::ParticleOutEvent+;
 #pragma link C++ class chanzer::BaseCut+;
 #pragma link C++ class chanzer::DeltaTimeCut+;
+#pragma link C++ class chanzer::EventBuilderCut+;
 //#pragma link C++ class chanzer::+;
 #pragma link C++ class anaPi2+;
 #pragma link C++ class TreeDataPi2+;

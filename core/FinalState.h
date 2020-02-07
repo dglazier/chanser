@@ -105,22 +105,21 @@ namespace chanzer{
       _finalTreeFile.SetName(fname);
       _finalTree.reset();
       _finalTree=FiledTree::Recreate("finalstate",fname);
-      OutTree(_finalTree->Tree());
+      ConfigureOutTree(_finalTree->Tree());
     }
     void CreateFinalHipo(TString filename){
-      cout<<"CreateFinalHipo "<<filename<<endl;
-      if(filename==TString()) return;
+       if(filename==TString()) return;
       _finalHipoFile.SetName(filename);
       //Note in case of PROOF add worker ID to the end
       _finalHipo.reset(new hipo::ntuple_writer((filename+WorkerName()).Data()));
-      OutHipo(_finalHipo.get());
+      ConfigureOutHipo(_finalHipo.get());
     }
       
-    virtual void OutTree(TTree* tree);
-    virtual void OutHipo(hipo::ntuple_writer* writer);
+    virtual void ConfigureOutTree(TTree* tree);
+    virtual void ConfigureOutHipo(hipo::ntuple_writer* writer);
 
     ttree_ptr FinalTree()const noexcept{ return _finalTree.get()!=nullptr ? _finalTree->Tree() : nullptr;}
-    virtual const BaseOutEvent* GetOutEvent()const noexcept{return nullptr;}
+    virtual  BaseOutEvent* GetOutEvent() noexcept{return nullptr;}
        
     hipo::ntuple_writer* FinalHipo()const noexcept{return _finalHipo.get();}
 
@@ -144,8 +143,7 @@ namespace chanzer{
        
   protected :
 
-  FinalState():_topoMan{this},_ownsActions{1}{
-      std::cout<<"FS Construct no args"<<std::endl;};
+  FinalState():_topoMan{this},_ownsActions{1}{};
       
     void FSProcess();
  
@@ -162,8 +160,8 @@ namespace chanzer{
     vector<ParticleConfig* > HowManyParticles(Int_t pdg);
 
     void InitTruth();
-       
-     void CheckCombitorial();
+    
+    void CheckCombitorial();
 
 
     virtual void Kinematics(){};

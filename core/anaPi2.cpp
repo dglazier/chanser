@@ -36,19 +36,19 @@
       
     }
 
-    void anaPi2::OutTree(TTree* tree) {
-      //Variables held in the base HS::FinalState class
-      FinalState::OutTree(tree);
-      //make branches with TreeData object
-      TD.Branches(tree);
-    }
-    void anaPi2::OutHipo(hipo::ntuple_writer* writer){
-      //Variables held in the base HS::FinalState class
-      FinalState::OutHipo(writer);
-      //make bank from TreeData
-      TD.Hipo(writer);    
+    // void anaPi2::OutTree(TTree* tree) {
+    //   //Variables held in the base HS::FinalState class
+    //   FinalState::OutTree(tree);
+    //   //make branches with TreeData object
+    //   TD.Branches(tree);
+    // }
+    // void anaPi2::OutHipo(hipo::ntuple_writer* writer){
+    //   //Variables held in the base HS::FinalState class
+    //   FinalState::OutHipo(writer);
+    //   //make bank from TreeData
+    //   TD.Hipo(writer);    
        
-    }
+    // }
  
     void anaPi2::Kinematics(){
       

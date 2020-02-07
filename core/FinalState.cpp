@@ -43,22 +43,23 @@ namespace chanzer{
     }
 
   }
-  void  FinalState::OutTree(TTree* tree) {
+  void  FinalState::ConfigureOutTree(TTree* tree) {
     tree->Branch("Topo",&_currTopoID,"Topo/I");
     // tree->Branch("Correct",&fCorrect,"Correct/I");
     tree->Branch("NPerm",&_nPerm,"NPerm/I");
     //	tree->Branch("Final",&fFinal);
+     GetOutEvent()->Branches(tree);
   }; //save particles to final state output
   //////////////////////////////////////////////////////////////////
   /// Define general final state data and initialise
   /// To be called at end of derived class OutHipo
-  void  FinalState::OutHipo(hipo::ntuple_writer* writer){
+  void  FinalState::ConfigureOutHipo(hipo::ntuple_writer* writer){
       
     auto bname{"FSInfo"};
     writer->bank(bname,"Topo/I,NPerm/I");
     writer->linkItemFunc(bname,"Topo/I",&_currTopoID);
     writer->linkItemFunc(bname,"NPerm/I",&_nPerm);
-
+    GetOutEvent()->Hipo(writer);
     //to do last !!!
     // writer->open();
   }

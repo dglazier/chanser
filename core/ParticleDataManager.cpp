@@ -32,7 +32,7 @@ namespace chanzer{
 	  
       }
       //add branches from final state tree
-      if(_addFinal)fs->OutTree(pdata.GetTree());
+      if(_addFinal)fs->ConfigureOutTree(pdata.GetTree());
 
       _particleData.push_back(std::move(pdata));
 

@@ -33,7 +33,7 @@ namespace chanzer{
   TopologyManager(const FinalState* fs,const TString chPid,const TString incl): _fs(fs)
     {SetChargePID(chPid);SetInclusive(incl);};
      
-    virtual ~TopologyManager(){std::cout<<"DESTRUCT TPOMAN "<<std::endl;};//=default;
+    virtual ~TopologyManager()=default;
     TopologyManager(const TopologyManager& other) = default; //Copy Constructor
     TopologyManager(TopologyManager&& other) = default; //Move Constructor
       

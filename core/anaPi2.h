@@ -30,10 +30,10 @@ class anaPi2 : public CLAS12FinalState{
       
  
 
-      void OutTree(TTree* tree) final;
-      void OutHipo(hipo::ntuple_writer* writer) final;
+      /* void OutTree(TTree* tree) final; */
+      /* void OutHipo(hipo::ntuple_writer* writer) final; */
       
-      const BaseOutEvent* GetOutEvent() const noexcept final{return &TD;}
+       BaseOutEvent* GetOutEvent() noexcept final{return &TD;}
        
     protected :
       void Kinematics() final;

@@ -23,10 +23,8 @@ namespace chanzer{
   class BaseOutEvent  : public TNamed{
 
   public:
-    BaseOutEvent(TString name){_name=name;}
+  BaseOutEvent(TString name):TNamed(name,name){}
     BaseOutEvent()=default;
-    //BaseOutEvent(const BaseOutEvent&)=default;
-    // BaseOutEvent(BaseOutEvent&&)=default;
     virtual ~BaseOutEvent()=default;
 
     virtual void FillData(){};
@@ -37,8 +35,6 @@ namespace chanzer{
     void Hipo(hipo::ntuple_writer* writer,TList* dmList);
     virtual void Hipo(hipo::ntuple_writer* writer)=0;
    
-    TString GetName(){return _name;}
-    void SetName(TString name){_name=name;}
     void SetBranches(std::vector<TString > brs){_forBranch=brs;}
       
   private:

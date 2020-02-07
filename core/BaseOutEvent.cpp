@@ -24,7 +24,7 @@ void chanzer::BaseOutEvent::Branches(TTree* tree,TList* dmList){
     auto member=dynamic_cast<TDataMember*> (dmList->At(i));
     auto moffset = member->GetOffset()/sizeOfShort;
     auto mtype=TString(member->GetFullTypeName());
-    TString mname=_name+member->GetName();
+    TString mname=TString(GetName())+member->GetName();
     if(typelabel.find(mtype)==typelabel.end()){
       continue;
     }
@@ -73,13 +73,13 @@ void chanzer::BaseOutEvent::Hipo(hipo::ntuple_writer* writer,TList* dmList){
   schemaString.Chop();//remove last ,
   
   //create ntuple_writer bank with the full string
-  writer->bank(_name.Data(),schemaString.Data());
+  writer->bank(GetName(),schemaString.Data());
 
   uint item=0;
   //go back over items and link data members to writer
   for(auto& addr : _linksHipo){
     std::cout<<items[item]<<std::endl;
-    writer->linkItemFunc(_name.Data(),items[item].Data(),addr);
+    writer->linkItemFunc(GetName(),items[item].Data(),addr);
     item++;
   }
  }

@@ -55,7 +55,6 @@ namespace chanzer{
 
   ////////////////////////////////////////////////////////
     ///A simple derived cuts class based on REC::Particle::pid
-#pragma link C++ class chanzer::EventBuilderCut+;
   
   class EventBuilderCut : public BaseCut{
       
