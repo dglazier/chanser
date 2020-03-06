@@ -7,7 +7,7 @@
 
   ParticleCutsManager pcm{"EBCuts",1};
   // HS::FINAL::ParticleCutsManager pcm;
-  EventBuilderCut dtc(11);
+  EventBuilderCut dtc();
   pcm.AddParticleCut("e-",dtc);
   pcm.AddParticleCut("proton",dtc);
   pcm.AddParticleCut("pi+",dtc);

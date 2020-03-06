@@ -16,6 +16,7 @@
 #include <Math/Point3D.h>
 #include <Math/DisplacementVector3D.h>
 #include <Math/VectorUtil.h> //for boosts etc.
+#include "region_particle.h"
 
 //Allow THSParticle to be written to tree
 #pragma link C++ class std::vector<chanzer::BaseParticle >+;
@@ -71,7 +72,8 @@ namespace chanzer{
 
       
       
-     const TruthParticle* _Truth{nullptr};
+    clas12::region_particle* _C12Particle{nullptr};
+    const TruthParticle* _Truth{nullptr};
   
   public:
     BaseParticle()=default;  	        //Constructor
@@ -111,7 +113,7 @@ namespace chanzer{
     //Getting functions
     HSLorentzVector P4() const {return _P4;} //return a copy
     HSLorentzVector* P4p()  {return &_P4;}  //return pointer (i.e. you can directly change it)
-    const HSPosition& Vertex() const {return _Vertex;}
+    HSPosition Vertex() const {return _Vertex;}
     Double_t PDGMass()const {return _PDGMass;}
     Short_t PDG()const {return _PDGCode;}
     Short_t Charge()const {return _Charge;}
@@ -127,21 +129,23 @@ namespace chanzer{
     Short_t Detector()const {return _Detector;}
     Short_t Status(){return 0;}
     void Clear();
-    virtual void MinorClear();
-    virtual void CopyParticle(const BaseParticle* part,Bool_t andPDG);
-    virtual void CopyTransient(const BaseParticle* part);
-    virtual void Print(Option_t *option="") const;
+    void MinorClear();
+    void CopyParticle(const BaseParticle* part,Bool_t andPDG);
+    void CopyTransient(const BaseParticle* part);
+    void Print(Option_t *option="") const;
 
      
     TLorentzVector GetTLorentzVector() const {return (TLorentzVector(_P4.X(),_P4.Y(),_P4.Z(),_P4.T()));}
     TVector3 GetVertex3()const {return (TVector3(_Vertex.X(),_Vertex.Y(),_Vertex.Z()));}
 
- 
+   void SetCLAS12Particle(clas12::region_particle *p);
+    clas12::region_particle* CLAS12() const {return _C12Particle;}
+
     Double_t Beta() const {return _Path/_Time/2.99792e+08*1E9;}//time ns, path m
     Double_t HypBeta() const {Double_t pp=_P4.P();return pp/sqrt(pp*pp+_PDGMass*_PDGMass);}
     Double_t HypTime() const {return _Path/HypBeta()/2.99792e+08*1E9  ;} //in ns
     Double_t DeltaTime() const {return _Time-HypTime();};
-    Double_t DeltaTimeVer()const {return DeltaTime()+_Vertex.Z()/2.99792e+08*1E9;}
+    Double_t DeltaTimeVer()const {return DeltaTime()-_Vertex.Z()/2.99792e+08*1E9;}
 
     //Add 4-vectors, doca vertices, fix pdg(optional)
     void Add(const BaseParticle *hsp1, const BaseParticle *hsp2,Int_t pdg=0);
@@ -200,16 +204,20 @@ namespace chanzer{
     _Time=0;
     _Path=0;
     _Detector=0;
+    _C12Particle=nullptr;
     _Truth=nullptr;
   }
   inline void chanzer::BaseParticle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
-     SetP4(part->P4());
-    SetVertex(part->Vertex());
-    }
-  inline void chanzer::BaseParticle::CopyTransient(const BaseParticle* part){
+    _C12Particle=part->CLAS12();
     SetP4(part->P4());
     SetVertex(part->Vertex());
-  
+      
+    }
+  inline void chanzer::BaseParticle::CopyTransient(const BaseParticle* part){
+    _C12Particle=part->CLAS12();
+    SetP4(part->P4());
+    SetVertex(part->Vertex());
+
     _Time=part->Time();
     _Path=part->Path();
   }
@@ -221,5 +229,15 @@ namespace chanzer{
     }
    
   }
-
+  inline void chanzer::BaseParticle::SetCLAS12Particle(clas12::region_particle *p){
+    _C12Particle=p;
+    auto pbank=p->par();
+    SetPDGcode(pbank->getPid());
+    _Charge=pbank->getCharge();
+    SetXYZT(pbank->getPx(),pbank->getPy(),pbank->getPz(),pbank->getP());
+    SetVertex(pbank->getVx(),pbank->getVy(),pbank->getVz());
+    _Time=p->getTime();
+    _Path=p->getPath();
+  
+  }
 }

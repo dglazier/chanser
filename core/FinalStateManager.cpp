@@ -1,5 +1,6 @@
 #include "FinalStateManager.h"
 #include <TFile.h>
+#include <TBenchmark.h>
 #include <iostream>
 
 namespace chanzer{
@@ -8,11 +9,12 @@ namespace chanzer{
   ///Load a configured final state that has been
   ///saved in root file
   Bool_t  FinalStateManager::LoadFinalState(TString fsname,TString filename,TString worker){
-    std::cout<<"ehh FinalStateManager::LoadFinalState "<<fsname<<" "<<filename<<" ooo"<<std::endl;
+    std::cout<<"FinalStateManager::LoadFinalState "<<fsname<<" "<<filename<<std::endl;
     auto file=TFile::Open(filename);
     finalstate_uptr fs;
   
-    fs.reset(dynamic_cast<FinalState*>(file->Get(fsname)));  
+    fs.reset(dynamic_cast<FinalState*>(file->Get(fsname)));
+    if(worker!=TString()) worker.Prepend(".");
     fs->SetWorkerName(worker);//in case on PROOF
       
     //functions otherwise handled by constructor
@@ -50,6 +52,7 @@ namespace chanzer{
   void   FinalStateManager::ProcessAll(){
     Init();
     //read event
+    gBenchmark->Start("FinalStateManager::ProcessAll");
     Long64_t  counter=0;
     while(_data->InitEvent()){
       //analyse the event
@@ -58,10 +61,15 @@ namespace chanzer{
       //	if(counter>100) break;
     }
     cout<<" FinalStateManager::ProcessAll() "<<counter<< " events processed from "<<_data->NEventsRead()<<" in file"<<endl;
+    gBenchmark->Stop("FinalStateManager::ProcessAll");
+    gBenchmark->Print("FinalStateManager::ProcessAll");
+
     for(auto& fs:_finalStates){
       cout<<"  FinalState "<<fs->GetName()<<" events "<<fs->_nEvents;
       if(fs->_nEvents)cout<<" average perms "<<fs->_TotPerm/fs->_nEvents<<endl;
     }
+    //Save all outputs
+    EndAndWrite(); 
   }
   ///////////////////////////////////////////////////////////////
   void   FinalStateManager::Init(){

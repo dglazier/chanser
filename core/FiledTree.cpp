@@ -28,6 +28,7 @@ namespace chanzer{
     auto saveDir=gDirectory;
     filed_uptr f{new FiledTree()};
     f->CreateFile(fname,"recreate");
+    // f->File()->SetCompressionSettings(404); //e.g. LZ4
     f->CreateTree(tname);
     f->SetMode(Mode_t::recreate);
     f->SetTreeDirectory();

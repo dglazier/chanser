@@ -25,9 +25,10 @@ int main(int argc, char **argv) {
   }
   TString CHANZER=gSystem->Getenv("CHANZER");
 
-  gSystem->Exec(Form("cp %s/lib/libanahipo_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/libchanzer_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  app->ProcessLine(".x $CHANZER/macros/Load.C");
   
-  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANZER\"))+\"/build/anahipo/libanahipo.so\",kTRUE)"));
+  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANZER\"))+\"/lib/libchanzer.so\",kTRUE)"));
 
 
   gSystem->Exec(Form("cp %s/lib/libEG_rdict.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));

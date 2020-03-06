@@ -17,7 +17,7 @@
 	auto miss= _beam + _target - _Electron.P4()  -_Pip1.P4()-_Pip2.P4() -_Pim.P4();
     	TD.MissMass=miss.M();
 	TD.MissMass2=miss.M2();
-	
+	TD.MesonPhi = _Pip1.P4().Phi();
       };
 
   

@@ -1,4 +1,5 @@
 #include "HipoProcessor.h"
+#include "Archive.h"
 #include <TH2.h>
 #include <TSystem.h>
 #include <TProofServ.h>
@@ -78,10 +79,11 @@ namespace chanzer{
 
 #include <fstream>
     std::ifstream infile(fsfile.Data());
-    std::string as, bs;
-    while (infile >> as >> bs){
-      std::cout<<"HipoProcessor::LoadFinalStates : "<<as << " "<<bs<<std::endl;
-      _listOfFinalStates->Add(new TNamed(as,bs));
+    std::string fss, fis; //finalstate name and root filename
+    while (infile >> fss >> fis){
+      std::cout<<"HipoProcessor::LoadFinalStates : "<<fss << " "<<fis<<std::endl;
+      _listOfFinalStates->Add(new TNamed(fss,fis));
+      Archive::ExtractFinalState(fis,fss);
     }
   }
 }

@@ -57,8 +57,6 @@ namespace chanzer{
     Int_t GetNElectrons(){return _vecEls.size();}
       
     particles_ptrs* GetParticleVector(Int_t pdg) const{
-      std::cout<<"GetParticleVector( "<<pdg<<std::endl;
-      std::cout<<"GetParticleVector( "<<_mapPDGtoParticle.at(pdg)<<std::endl;
       return _mapPDGtoParticle.at(pdg);
     }
 

@@ -24,6 +24,7 @@ void chanzer::BaseOutEvent::Branches(TTree* tree,TList* dmList){
     auto member=dynamic_cast<TDataMember*> (dmList->At(i));
     auto moffset = member->GetOffset()/sizeOfShort;
     auto mtype=TString(member->GetFullTypeName());
+    //TString mname=member->GetName();
     TString mname=TString(GetName())+member->GetName();
     if(typelabel.find(mtype)==typelabel.end()){
       continue;
@@ -35,6 +36,7 @@ void chanzer::BaseOutEvent::Branches(TTree* tree,TList* dmList){
     tree->Branch(mname,(((Short_t*)&(*this))+moffset),mname+typelabel[mtype]);
     
   }
+  tree->SetAutoFlush(-2E6); //reduce memory usage
 }
 
 void chanzer::BaseOutEvent::Hipo(hipo::ntuple_writer* writer,TList* dmList){

@@ -31,7 +31,7 @@ namespace chanzer{
     auto listofparts=names.Tokenize(":");
     for(Int_t ip = 0; ip<listofparts->GetEntries();ip++){
       partnames.push_back(listofparts->At(ip)->GetName());
-      cout<<ip<<" TopologyManager::AddTopology "<<listofparts->At(ip)->GetName()<<endl;
+      // cout<<ip<<" TopologyManager::AddTopology "<<listofparts->At(ip)->GetName()<<endl;
 	
       auto part=_fs->GetParticle(listofparts->At(ip)->GetName());
       parts.push_back(part);

@@ -1,6 +1,5 @@
 #include "FinalState.h"
 #include "AutoIterUtils.h"
-#include "Archive.h"
 #include <TFile.h>
 #include <memory>
 
@@ -43,6 +42,22 @@ namespace chanzer{
     }
 
   }
+   void FinalState::CreateFinalTree(TString fname){
+      if(fname==TString()) return;
+      _finalTreeFile.SetName(fname);
+      _finalTree.reset();
+      _finalTree=FiledTree::Recreate("finalstate",fname+WorkerName());
+      cout<<"FinalState Creating Tree in file "<<fname+WorkerName()<<endl;
+      ConfigureOutTree(_finalTree->Tree());
+    }
+    void FinalState::CreateFinalHipo(TString filename){
+       if(filename==TString()) return;
+      _finalHipoFile.SetName(filename);
+      //Note in case of PROOF add worker ID to the end
+      _finalHipo.reset(new hipo::ntuple_writer((filename+WorkerName()).Data()));
+      cout<<"FinalState Creating Hipo in file "<<filename+WorkerName()<<endl;
+      ConfigureOutHipo(_finalHipo.get());
+    }
   void  FinalState::ConfigureOutTree(TTree* tree) {
     tree->Branch("Topo",&_currTopoID,"Topo/I");
     // tree->Branch("Correct",&fCorrect,"Correct/I");
@@ -65,14 +80,11 @@ namespace chanzer{
   }
   //////////////////////////////////////////////////////////////////
   void  FinalState::AddTopology(const TString names,const VoidFuncs funcE){
-    cout<<"FinalState::AddTopology func "<<names<<" "<<_linkToTopo.size()<<" "<<endl;
     _currTopo=_topoMan.AddTopology(names,funcE);
   }
     
   void  FinalState::SetTopologies(){
-    cout<<"FinalState::SetTopologies() "<<_usedTopos.size()<<endl;
     for(auto& name:_usedTopos){
-      cout<<" name "<<name <<" "<<endl;
       _currTopo=_topoMan.AddTopology(name,_linkToTopo[name]);
     }
     //AddTopology(name,_linkToTopo[name]);
@@ -265,8 +277,7 @@ namespace chanzer{
   ///Create particle iterator for a particticular species
   ///Given by the particle vector parts (e.g. fVecMinus)
   ParticleIter* FinalState::CreateParticleIter(vector<BaseParticle*> *parts,Int_t Nsel){
-    cout<<"ParticleIter* FinalState::CreateParticleIter "<<_currIter<<" "<<parts<<endl;
-    ParticleIter *diter=nullptr;
+     ParticleIter *diter=nullptr;
     if(!_currIter){//get base iterator from topology
       diter=&_currTopo->Iter();
       _currIter=diter;
@@ -278,7 +289,7 @@ namespace chanzer{
     }
     diter->SetParticles(parts);
     diter->SetNSel(Nsel);
-    cout<<"parts "<<parts->size()<<endl;
+
     diter->Print(1);
     return diter;
   }
@@ -302,12 +313,12 @@ namespace chanzer{
       ip+=N_pid; //move on to next particle type for next loop
 
 
-      cout<<"Auto Iter "<<pid<<" "<<N_pid<<endl;
+      //cout<<"Auto Iter "<<pid<<" "<<N_pid<<endl;
       //give the particles of this ID type to the iterator
       ParticleIter* diter0=CreateParticleIter(_eventParts->GetParticleVector(pid),N_pid);
       diter0->SetName(Form("PITER:%d",pid));
       diter0->SetPDG(pid);
-      cout<<"Auto Iter made iter"<< endl;
+      //cout<<"Auto Iter made iter"<< endl;
 
       //Look for which particle can belong to this particle ID
       //(==which pdg values have this charge)
@@ -433,7 +444,7 @@ namespace chanzer{
 	if(Nconfig_pid==0) break; //selected everything already
 	if(N_pid==0) break; //selected everything already
 	//Once all particle with parents have been selected, select the remainder
-	cout<<"true number "<<pid<<" "<<_currTopo->HowManyTrue(typePDG)<<" "<<typePDG<<" "<<N_pid<<" "<<Nconfig_pid<<endl;
+	//cout<<"true number "<<pid<<" "<<_currTopo->HowManyTrue(typePDG)<<" "<<typePDG<<" "<<N_pid<<" "<<Nconfig_pid<<endl;
 	vector<BaseParticle* > evtparts;
 	for(UInt_t isp=0;isp<subConfigs[it].size();isp++){
 	  if(evtparts.size()<_currTopo->HowManyTrue(typePDG)){
@@ -447,7 +458,7 @@ namespace chanzer{
 	}
 	// if(NtruePDG==0) continue;
 	if(evtparts.size()==0)continue;
-	cout<<"n selct "<<evtparts.size()<<" "<<N_pid<<" "<<Nconfig_pid<<endl;
+	//cout<<"n selct "<<evtparts.size()<<" "<<N_pid<<" "<<Nconfig_pid<<endl;
       
 	//Connect actual FinalState particles to iterator
 	//These particle will be updated for each combitorial

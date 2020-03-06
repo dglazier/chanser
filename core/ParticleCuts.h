@@ -20,7 +20,6 @@ namespace chanzer{
     virtual ~ParticleCuts()=default;
  
     void AddParticle( BaseCut* cut,BaseParticle* particle){
-      std::cout<<"AddParticle( "<<cut->ClassName()<<std::endl;
       _cuts.push_back(cut);
       _particles.push_back(particle);
       _nParticles++;

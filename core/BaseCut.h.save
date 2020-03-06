@@ -7,7 +7,6 @@
 #pragma once
 
 #include "BaseParticle.h"
-#include "CLAS12Particle.h"
 #include <TNamed.h>
 #include <TMath.h>
 #include <limits>
@@ -64,7 +63,7 @@ namespace chanzer{
       
       
     Bool_t ParticleCut(const BaseParticle* part) const noexcept override{
-      return (static_cast<const CLAS12Particle*>(part))->CLAS12()->getPid()==part->PDG() ?  kTRUE :  kFALSE;
+      return part->CLAS12()->getPid()==part->PDG() ?  kTRUE :  kFALSE;
     }
       
     // void SetPidCut(Int_t val){_pidCut=val;}

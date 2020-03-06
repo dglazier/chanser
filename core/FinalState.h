@@ -16,6 +16,7 @@
 #include "BaseOutEvent.h"
 #include "FiledTree.h"
 #include "ntuple_writer.h"
+#include "Archive.h"
 
 #include <TString.h>
 #include <memory>
@@ -35,6 +36,7 @@ namespace chanzer{
   FinalState(TString chPid,TString incl):_topoMan(this,chPid,incl),_ownsActions{0}{
       _optPid=chPid;
       _optIncl=incl;
+  
     }
       
     virtual ~FinalState(); //need to delete ActionManagers
@@ -100,20 +102,8 @@ namespace chanzer{
     const TopologyManager& TopoManager() const {return _topoMan;}
 
       
-    void CreateFinalTree(TString fname){
-      if(fname==TString()) return;
-      _finalTreeFile.SetName(fname);
-      _finalTree.reset();
-      _finalTree=FiledTree::Recreate("finalstate",fname);
-      ConfigureOutTree(_finalTree->Tree());
-    }
-    void CreateFinalHipo(TString filename){
-       if(filename==TString()) return;
-      _finalHipoFile.SetName(filename);
-      //Note in case of PROOF add worker ID to the end
-      _finalHipo.reset(new hipo::ntuple_writer((filename+WorkerName()).Data()));
-      ConfigureOutHipo(_finalHipo.get());
-    }
+    void CreateFinalTree(TString fname);
+    void CreateFinalHipo(TString filename);
       
     virtual void ConfigureOutTree(TTree* tree);
     virtual void ConfigureOutHipo(hipo::ntuple_writer* writer);
@@ -128,7 +118,8 @@ namespace chanzer{
       if(FinalHipo())treeData->Hipo(FinalHipo());
     }
     void SetWorkerName(TString name){_workerName=name;}
-
+    TString& WorkerName(){return _workerName;}
+ 
     void RegisterPostTopoAction(ActionManager& tam){
       _postTopoAction.push_back(&tam);
     }
@@ -162,8 +153,8 @@ namespace chanzer{
     void InitTruth();
     
     void CheckCombitorial();
-
-
+    const Topology *CurrentTopo()const noexcept {return _currTopo;}
+      
     virtual void Kinematics(){};
     virtual void UserProcess(){
       if(_finalTree.get())_finalTree->Fill();
@@ -172,7 +163,6 @@ namespace chanzer{
       
     const EventParticles* GetEventParticles(){return _eventParts;}
 
-    TString& WorkerName(){return _workerName;}
       
     Long64_t _counter=0;
 

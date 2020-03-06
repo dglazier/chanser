@@ -13,12 +13,15 @@
 
 
 
-class anaPi2 : public CLAS12FinalState{
+class anaPi2 : public chanzer::CLAS12FinalState{
 
-       
+ 
     public :
       anaPi2()=default;
-    anaPi2(TString ch,TString inc) : CLAS12FinalState(std::move(ch),std::move(inc)){SetName("Pi2");Define();}
+ anaPi2(TString ch,TString inc) : chanzer::CLAS12FinalState(std::move(ch),std::move(inc)){
+	SetName(chanzer::Archive::BareClassName(ClassName()));
+	Define();
+      }
       
       static std::unique_ptr<anaPi2> Make(TString ch,TString inc) {
 	return std::unique_ptr<anaPi2>{new anaPi2{ch,inc}};

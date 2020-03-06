@@ -21,9 +21,9 @@ namespace chanzer{
   public:
     ParticleCutsManager()=default;
     ///Must give an output directory for saving trees to
-  ParticleCutsManager(TString name,Short_t forReal=0):ActionManager(name),_forReal(forReal){ std::cout<<"Constructing PCM "<<GetName()<<std::endl;};
+  ParticleCutsManager(TString name,Short_t forReal=0):ActionManager(name),_forReal(forReal){};
     
-    virtual ~ParticleCutsManager(){std::cout<<"DECConstructing PCM"<<std::endl;};
+    virtual ~ParticleCutsManager()=default;
     ParticleCutsManager(const ParticleCutsManager& other) = default; //Copy Constructor
     ParticleCutsManager(ParticleCutsManager&& other) = default; //Move Constructor
       

@@ -5,7 +5,7 @@
 ///
 #pragma once
 
-#include "BaseParticle.h"
+#include "CLAS12Particle.h"
 #include "BaseOutEvent.h"
 #include <vector>
 
@@ -18,7 +18,7 @@ namespace chanzer{
     ParticleOutEvent()=default;
 
       
-    void SetParticle(BaseParticle* particle) {_part=particle;}; 
+    void SetParticle(BaseParticle* particle) {_part=static_cast<CLAS12Particle*>(particle);}; 
 
     void FillData() final;
 
@@ -45,8 +45,11 @@ namespace chanzer{
     Float_t Phi=0;
     Float_t Vz=0;
     Float_t Vt=0;
-    Float_t Time=0;
-    Float_t TimeVer=0;
+    Float_t ToF=0;
+    Float_t Path=0;
+    Float_t HypTime=0;
+    Float_t DeltaTime=0;
+    Float_t DeltaTimeVer=0;
     Float_t Edep=0;
     Float_t DeltaE=0;
     Float_t PreE=0;
@@ -59,7 +62,7 @@ namespace chanzer{
     Short_t Status=0;
 
 
-    BaseParticle*  _part{nullptr};
+    CLAS12Particle*  _part{nullptr};
       
     ClassDefOverride(ParticleOutEvent,1);
 
@@ -67,6 +70,7 @@ namespace chanzer{
 
   ///////////////////////////////////////////////////////////////
   inline void ParticleOutEvent::FillData(){
+    
     //move the c12p object to this particle for getting detector data
     auto c12p=_part->CLAS12();
     
@@ -78,10 +82,12 @@ namespace chanzer{
     Vz    =  _part->Vertex().Z();
     Vt    =  c12p->par()->getVt();
 
-    Time  =  _part->DeltaTime();
-    TimeVer  =  _part->DeltaTimeVer();
-
-    //All
+    ToF  =  _part->Time();
+    Path  =  _part->Path();
+    HypTime  =  _part->HypTime();
+    DeltaTime  =  _part->DeltaTime();
+    DeltaTimeVer  =  _part->DeltaTimeVer();
+     //All
     Region = c12p->getRegion();
     Edep = c12p->getDetEnergy();
     Sector = c12p->getSector();
@@ -115,6 +121,7 @@ namespace chanzer{
       TrChi2= c12p->trk(clas12::CVT)->getChi2N();
       break;
     }
+   
   }
   /////////////////////////////////////////////////
 }

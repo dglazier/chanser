@@ -18,8 +18,8 @@ namespace chanzer{
       
     for(auto const& topo : topos){
       auto topo_parts=topo.GetParticles();
-	
-      auto outfile=_outDir+Form("/ParticleVariables_%d.root",topo.ID());
+   
+      auto outfile=_outDir+Form("/ParticleVariables_%d.root%s",topo.ID(),fs->WorkerName().Data());
       auto pdata=ParticleData{GetName(),outfile,topo_parts.size()};
 	
       //Loop over all particles in this topology and assign output data
@@ -37,7 +37,7 @@ namespace chanzer{
       _particleData.push_back(std::move(pdata));
 
     }
-
+  
   }
   void ParticleDataManager::End(){
       

@@ -16,6 +16,8 @@ namespace chanzer{
   ///Initialise clas12reader from hipo filename
   Bool_t HipoData::Init(){
     if(_c12->mcparts()) _dataType=static_cast<Short_t> (DataType::Sim);
+    _eventInfo.SetCLAS12( _c12 );
+    _runInfo.SetCLAS12( _c12 );
   }
   /////////////////////////////////////////////////////////////////////
   //Check if there is another event
@@ -78,19 +80,19 @@ namespace chanzer{
     //make sure enough particles in the pool
     //having particle in the pool stops them
     //being contructed every event
-    while(_particlePool.size()<Nin)
-      _particlePool.push_back(std::move(BaseParticle()));
+    while(_particlePool2.size()<Nin)
+      _particlePool2.push_back(std::move(CLAS12Particle()));
 
     for(auto& c12p : c12particles){
       Nparts++;
-      BaseParticle* particle= &_particlePool.at(Nparts-1);
+      CLAS12Particle* particle= (&_particlePool2.at(Nparts-1));
       particle->Clear();//clear pervious data
 
       //attach this particle
       particle->SetCLAS12Particle(c12p);
 
       //include partice in event
-      _eventParticles.emplace_back(particle);
+      _eventParticles.emplace_back(static_cast<BaseParticle*>(particle));
     }
   }
   //////////////////////////////////////////////////////////////////
@@ -122,6 +124,9 @@ namespace chanzer{
       _eventTruth.emplace_back(particle);
     }
 
+  }
+  ///////////////////////////////////////////////////////////////
+  void HipoData::FillRunInfo(){
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillEventInfo(){

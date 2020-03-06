@@ -8,50 +8,63 @@
 #include <utility>
 
 #include "CLAS12FinalState.h"
+#include "CLAS12Particle.h"
 
 #include "TreeDatatemplateFS.h"
 
+#pragma link C++ namespace USERNAME;
 
+namespace USERNAME{
 
-class templateFS : public CLAS12FinalState{
+  class templateFS : public chanzer::CLAS12FinalState{
 
        
-    public :
-      templateFS()=default;
+  public :
+    templateFS()=default;
       
- templateFS(TString ch,TString inc) : CLAS12FinalState(std::move(ch),std::move(inc)){SetName("templateFS");Define();}
-      
-      static std::unique_ptr<templateFS> Make(TString ch,TString inc) {
-	return std::unique_ptr<templateFS>{new templateFS{ch,inc}};
-      }
-      
-      ~templateFS() final =default;
 
-      void Define() final;
+    //create an instance of the class
+    static std::unique_ptr<templateFS> Make(TString ch,TString inc) {
+      return std::unique_ptr<templateFS>{new templateFS{ch,inc}};
+    }
       
-      BaseOutEvent* GetOutEvent() noexcept final{return &TD;}
+    ~templateFS() final =default;
+
+    void Define() final;
       
- protected :
-      void Kinematics() final;
-      void UserProcess() final;
+    BaseOutEvent* GetOutEvent() noexcept final{return &TD;}
+      
+  protected :
+    void Kinematics() final;
+    void UserProcess() final;
       
       
    
-    private:
+  private:
+    //constructor private so only create unique_ptr
+    //using templateFS::Make(...)
+    //auto fs = USERNAME::templateFS::Make("NONE","ALL");
+  templateFS(TString ch,TString inc) : chanzer::CLAS12FinalState(std::move(ch),std::move(inc)){
+      //Give object class name - namespace
+      //Used for compiling and loading
+      SetName(chanzer::Archive::BareClassName(ClassName()));
+      Define();
+    }
 
-      //Final Particles Detected
-      BaseParticle _PARTICLE=BaseParticle("PDG");
+    //Final Particles Detected
+    BaseParticle _PARTICLE=BaseParticle("PDG");//!
     
-      //Initial state
-      HSLorentzVector _beam{0,0,10.6,10.6};
-      HSLorentzVector _target{0,0,0,0.938272};
+    //Initial state
+    HSLorentzVector _beam{0,0,10.6,10.6};//!
+    HSLorentzVector _target{0,0,0,0.938272};//!
 
 
-      //Tree Output Data
-      TreeDatatemplateFS TD;
+    //Tree Output Data
+    TreeDatatemplateFS TD;
 
    
     
-      ClassDefOverride(templateFS,1); //class templateFS
-    };
+    ClassDefOverride(templateFS,1); //class templateFS
+  }; //end templateFS
   
+}

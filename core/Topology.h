@@ -52,7 +52,7 @@ namespace chanzer{
     Int_t ID() const {return _ID;}
     
       
-    const vector<BaseParticle*> GetParticles() const {return _particles;}
+    const vector<BaseParticle*>& GetParticles() const {return _particles;}
     const BaseParticle* GetParticle(UInt_t ip) const {return _particles[ip];}
     void SetParticles(const vector<BaseParticle*> parts){_particles=parts;};
 

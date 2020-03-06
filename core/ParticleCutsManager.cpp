@@ -18,7 +18,7 @@ namespace chanzer{
  
     auto topos=fs->TopoManager().ObserveTopos();
       
-    std::cout<<" ParticleCutsManager::Configure topos "<<topos.size()<<std::endl;
+    // std::cout<<" ParticleCutsManager::Configure topos "<<topos.size()<<std::endl;
 
     if(_useableDefault==nullptr) _useableDefault=&_defaultCut;
       
@@ -29,7 +29,7 @@ namespace chanzer{
 	
       //Loop over all particles in this topology and assign a cut
       auto topo_parts=topo.GetParticles();
-      std::cout<<" ParticleCutsManager::Configure particles "<<topo_parts.size()<<std::endl;
+      //std::cout<<" ParticleCutsManager::Configure particles "<<topo_parts.size()<<std::endl;
       for(auto const& particle : topo_parts){
 	  
 	Int_t pdg = particle->PDG();
@@ -38,7 +38,7 @@ namespace chanzer{
 	if(_pdgToCut.find(pdg)==_pdgToCut.end())
 	  pcuts.AddParticle(_useableDefault,particle);
 	else{ //if not use default
-	  std::cout<<" "<<_pdgToCut[pdg]->ClassName()<<std::endl;
+	  //  std::cout<<" "<<_pdgToCut[pdg]->ClassName()<<std::endl;
 	  pcuts.AddParticle(_pdgToCut[pdg],particle);
 	}
 	  
@@ -48,7 +48,7 @@ namespace chanzer{
 
     }
     Branches(fs);
-    std::cout<<" ParticleCutsManager::Configure "<<_particleCuts.size()<<std::endl;
+    //std::cout<<" ParticleCutsManager::Configure "<<_particleCuts.size()<<std::endl;
   }
   ///////////////////////////////////////////////////////////////// 
   void ParticleCutsManager::Branches(const FinalState* fs){

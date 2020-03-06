@@ -17,7 +17,6 @@ namespace chanzer{
   ParticleIter::ParticleIter(size_t X, size_t Y,const vector<BaseParticle*> parts):
     _evParts(parts)
   {
-    cout<<"Event parts size "<<_evParts.size()<<endl;
     SelectXofY(X, Y);
   }
   ParticleIter::ParticleIter(size_t X, size_t Y)
@@ -155,8 +154,8 @@ namespace chanzer{
     if(_isConfigured) return;
     _isConfigured=kTRUE;
       
-    cout<<"Configure "<<_selIter<<" "<<_remIter<<" "<<_innerIter<<endl;
-    if(_allParticles)cout<<"          "<<_nSel<<" "<<_evParts.size()<<" "<<_allParticles->size()<<endl;
+    //cout<<"Configure "<<_selIter<<" "<<_remIter<<" "<<_innerIter<<endl;
+    // if(_allParticles)cout<<"          "<<_nSel<<" "<<_evParts.size()<<" "<<_allParticles->size()<<endl;
     if(_selIter){
       SetNextInnerIter(_selIter);
       if(_remIter){
@@ -164,7 +163,7 @@ namespace chanzer{
       }
     }
     else if(_remIter){
-      cout<<" ParticleIter::ConfigureIters() no _selIter......investigate"<<endl;
+      //cout<<" ParticleIter::ConfigureIters() no _selIter......investigate"<<endl;
       SetNextInnerIter(_remIter);
     }
 
@@ -197,7 +196,7 @@ namespace chanzer{
   ///example usage : piterator.SelectXofY(3,2, new THSPermutation());
 
   void ParticleIter::SelectXofY(Int_t X, Int_t Y){
-    cout<<"Event parts size "<<_evParts.size()<<endl;
+    //cout<<"Event parts size "<<_evParts.size()<<endl;
     //recursively create iterators
     if(_evParts.size()!=UInt_t(X*Y)) cout<<"Warning ParticleIter::SelectXofY not sufficeint Event Particles Set "<<_evParts.size()<<" when we need "<<X*Y<<endl;
     if(_evParts[0])_PDG=_evParts[0]->PDG();
@@ -214,10 +213,10 @@ namespace chanzer{
     vector<BaseParticle*>  remParts{_evParts.begin()+Y,_evParts.end()};
     _evParts.clear();
     _evParts=std::move(selParts);
-    cout<<"sel Event parts size "<<_evParts.size()<<endl;
+    //cout<<"sel Event parts size "<<_evParts.size()<<endl;
  
     if(X>1){
-      cout<<"Remain parts iter "<<endl;
+      //cout<<"Remain parts iter "<<endl;
       _remIter=new ParticleIter(X-1,Y,remParts); //ownership will be given to _innerIter
     }
   }

@@ -50,6 +50,7 @@ namespace chanzer{
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
 
     particle_objs _particlePool; //pool of particle objects can use for each event
+    std::vector<CLAS12Particle> _particlePool2; //pool of particle objects can use for each event
     truth_objs _truthPool; //pool of truth objects can use for each event
 
       

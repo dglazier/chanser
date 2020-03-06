@@ -15,15 +15,20 @@ namespace chanzer{
 
 
   public :
-    static void ArchiveIt(TString finalname, TFile* archiveTo);
+    static void ArchiveIt(const TString& finalname, TFile* archiveTo);
 
+    static void ExtractFinalState(const TString& afile,const TString& fsname);
+    
+    static TString BareClassName(const TString& className);
+    
   private:
+
     static TDirectory* MakeDir(TFile* high);
-		    
+    
     static std::vector<TString > ListSourceFiles(const TString& dirname,const TString& finalname);
       
     static void ArchiveSourceFile(const TString& afile);
-
-  };
+    
+   };
 
 }
