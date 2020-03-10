@@ -14,7 +14,7 @@
 #include <iostream>
 
 
-namespace chanzer{
+namespace chanser{
 
   class Topology;
   class FinalState;

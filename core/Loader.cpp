@@ -5,7 +5,7 @@
 #include <TEnv.h>
 #include <iostream>
 
-namespace chanzer{
+namespace chanser{
 
 
   Bool_t Loader::CompileClass(const TString& classAndFile){
@@ -19,30 +19,30 @@ namespace chanzer{
       fullfile = TString(gSystem->Getenv("PWD"))+"/"+filename;
 
     std::cout<<"Loader::CompileClass "<<classname<<" from "<<fullfile<<std::endl;
-    chanzer::global::gClassFile[classname] = fullfile;
+    chanser::global::gClassFile[classname] = fullfile;
     return Compile(filename);
     
   }
   Bool_t Loader::Compile(const TString& filename){
-    auto &cl= chanzer::global::gCompilesList;
+    auto &cl= chanser::global::gCompilesList;
 
     //if already compiled return true, so OK to continue
     if(std::find( cl.begin(), cl.end(), filename)!=cl.end())
       return kTRUE;
     
-    chanzer::global::gCompilesList.push_back(filename);
+    chanser::global::gCompilesList.push_back(filename);
 
     gROOT->ProcessLine(Form(".L %s+",filename.Data()));
     
     return kTRUE;
   }
   Bool_t Loader::CompileTo(const TString& filename,TString libname){
-    auto &cl= chanzer::global::gCompilesToList;
+    auto &cl= chanser::global::gCompilesToList;
 
     //if already compiled return true, so OK to continue
     if( std::find_if( cl.begin(), cl.end(),[&filename](const std::pair<TString, TString>& element){ return element.first == filename;} ) != cl.end()) return kTRUE; //aready compiled 
 	   
-    chanzer::global::gCompilesToList.push_back(std::make_pair(filename,libname));
+    chanser::global::gCompilesToList.push_back(std::make_pair(filename,libname));
 
     if(libname.BeginsWith("/")==kFALSE)
       libname = TString(gSystem->Getenv("PWD"))+"/"+libname;
@@ -80,9 +80,9 @@ namespace chanzer{
     return kTRUE;
   }
   TString Loader::GetClassFile(const TString& className){
-    return chanzer::global::gClassFile[className];
+    return chanser::global::gClassFile[className];
   }
   // std::vector<TString>& Loader::CompiledList()  {
-  //   return chanzer::global::gCompilesList;
+  //   return chanser::global::gCompilesList;
   // }
 }

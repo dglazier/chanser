@@ -1,6 +1,6 @@
 #include "HipoData.h"
 
-namespace chanzer{
+namespace chanser{
     
   ////////////////////////////////////////////////////////////////////////
   ///Initialise clas12reader from hipo filename

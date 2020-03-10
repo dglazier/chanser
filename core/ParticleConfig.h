@@ -9,7 +9,7 @@
 #include <vector>
 
 
-namespace chanzer{
+namespace chanser{
     
   class ParticleConfig{
 

@@ -11,7 +11,7 @@
 #include <Math/Vector4D.h>
 
 
-namespace chanzer{
+namespace chanser{
     
   using ROOT::Math::VectorUtil::boost;
   using ROOT::Math::VectorUtil::Angle;

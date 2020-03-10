@@ -13,7 +13,7 @@
 #include <limits>
 #include <bits/stdc++.h>
 
-namespace chanzer{
+namespace chanser{
     
     
   class BaseCut: public TNamed {
@@ -25,7 +25,7 @@ namespace chanzer{
       
     virtual Bool_t ParticleCut(const BaseParticle* part) const noexcept {return kTRUE;}
 
-    ClassDef(chanzer::BaseCut,1);
+    ClassDef(chanser::BaseCut,1);
  
   };
   using basecut_ptr = BaseCut*;
@@ -50,7 +50,7 @@ namespace chanzer{
   private:
     Double_t _timeCut=DBL_MAX;
       
-    ClassDefOverride(chanzer::DeltaTimeCut,1);
+    ClassDefOverride(chanser::DeltaTimeCut,1);
 
   };//class DeltaTimeCut
 
@@ -72,7 +72,7 @@ namespace chanzer{
   private:
     //Int_t _pidCut=INT_MAX;
       
-    ClassDefOverride(chanzer::EventBuilderCut,1);
+    ClassDefOverride(chanser::EventBuilderCut,1);
 
   };
   

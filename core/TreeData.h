@@ -21,7 +21,7 @@
 #include "ntuple_writer.h"
 
 
-namespace chanzer{
+namespace chanser{
 
   class TreeData  {
 
@@ -54,4 +54,4 @@ namespace chanzer{
   };//class TreeData
 
 }
-using chanzer::TreeData;
+using chanser::TreeData;

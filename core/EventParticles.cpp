@@ -1,7 +1,7 @@
 #include "EventParticles.h"
 #include "FinalState.h"
 
-namespace chanzer{
+namespace chanser{
 
   EventParticles::EventParticles(){
     _mapPDGtoParticle[2212]=&_vecProtons;

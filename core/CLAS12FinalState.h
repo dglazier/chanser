@@ -5,14 +5,14 @@
 #include "RunInfo.h"
 #include "Kinematics.h"
 
-using chanzer::BaseParticle;
-using chanzer::HSLorentzVector;
-using chanzer::BaseEventInfo;
-using chanzer::BaseOutEvent;
-using chanzer::BaseRunInfo;
-using chanzer::FinalState;
+using chanser::BaseParticle;
+using chanser::HSLorentzVector;
+using chanser::BaseEventInfo;
+using chanser::BaseOutEvent;
+using chanser::BaseRunInfo;
+using chanser::FinalState;
 
-namespace chanzer{
+namespace chanser{
     
   class CLAS12FinalState : public FinalState{
 
@@ -31,7 +31,7 @@ namespace chanzer{
     void SetStartTimePeak(Float_t st){_STimePeak=st;}
   protected :
 
-    chanzer::Kinematics _kinCalc;//!
+    chanser::Kinematics _kinCalc;//!
     
     Float_t StartTimeFromTimeAndVertex(Float_t ptime,Float_t vz=0);
     Float_t StartTimeFromParticleVt(const CLAS12Particle& part){return _startTime=part.CLAS12()->par()->getVt(); }
@@ -48,7 +48,7 @@ namespace chanzer{
     Float_t _bunchTime = 2.0080160*2;
     Float_t _STimePeak =   44.125;
     
-    ClassDefOverride(chanzer::CLAS12FinalState,1); 
+    ClassDefOverride(chanser::CLAS12FinalState,1); 
   };
 
   ////////////////////////////////////////

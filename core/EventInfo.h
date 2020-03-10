@@ -10,7 +10,7 @@
 #include "clas12reader.h"
 #include <Rtypes.h>
 
-namespace chanzer{
+namespace chanser{
 
     class EventInfo : public BaseEventInfo{
 

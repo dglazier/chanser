@@ -15,7 +15,7 @@
 #include <TString.h>
 #include <iostream>
 
-namespace chanzer{
+namespace chanser{
 
   using tfile_uptr=std::unique_ptr<TFile>;
   using ttree_uptr=std::unique_ptr<TTree>;
@@ -24,8 +24,8 @@ namespace chanzer{
   class FiledTree  {
     enum class Mode_t{null,recreate,create,read,update,copyempty,copyfull};
     
-    using filed_ptr=chanzer::FiledTree*;
-    using filed_uptr=std::unique_ptr<chanzer::FiledTree>;
+    using filed_ptr=chanser::FiledTree*;
+    using filed_uptr=std::unique_ptr<chanser::FiledTree>;
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -88,6 +88,6 @@ namespace chanzer{
     
   };
 
-  using filed_ptr=chanzer::FiledTree*;
-  using filed_uptr=std::unique_ptr<chanzer::FiledTree>;
+  using filed_ptr=chanser::FiledTree*;
+  using filed_uptr=std::unique_ptr<chanser::FiledTree>;
 }

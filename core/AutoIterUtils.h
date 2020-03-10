@@ -4,7 +4,7 @@
 #include "BaseParticle.h"
 #include "Selection.h"
 
-namespace chanzer{
+namespace chanser{
 
   //////////////////////////////////////////////////
   ///Interface to ParticleIter

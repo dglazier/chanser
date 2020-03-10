@@ -14,7 +14,7 @@
 #include "TopologyManager.h"
 
 
-namespace chanzer{
+namespace chanser{
 
   class ParticleIter;
 
@@ -98,7 +98,7 @@ namespace chanzer{
 
     const Short_t _noID=1E4;//!
     
-    ClassDef(chanzer::Topology,1); //class Topology
+    ClassDef(chanser::Topology,1); //class Topology
   }; //class Topology
     
   

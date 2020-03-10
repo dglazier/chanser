@@ -1,7 +1,7 @@
 #include <iostream>
 #include "BaseParticle.h"
 
-namespace chanzer{
+namespace chanser{
 
   using std::cout;
   using std::endl;

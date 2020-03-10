@@ -10,7 +10,7 @@
 #include "ParticleCuts.h"
 #include <TDatabasePDG.h>
 
-namespace chanzer{
+namespace chanser{
     
    
   
@@ -78,7 +78,7 @@ namespace chanzer{
     UInt_t _passCut{0};//!
     Short_t _forReal{0};
       
-    ClassDefOverride(chanzer::ParticleCutsManager,1);
+    ClassDefOverride(chanser::ParticleCutsManager,1);
   };// ParticleCutsManager
     
   using pcutsman_uptr = std::unique_ptr<ParticleCutsManager>;

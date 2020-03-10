@@ -11,7 +11,7 @@
 #include "FiledTree.h"
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
    
   class ParticleData {
@@ -51,7 +51,7 @@ namespace chanzer{
 
     UInt_t _nParticles{0};
       
-    ClassDef(chanzer::ParticleData,1);
+    ClassDef(chanser::ParticleData,1);
       
   };//class ParticleData
     

@@ -11,7 +11,7 @@
 #include "clas12reader.h"
 
 
-namespace chanzer{
+namespace chanser{
 
   class HipoData : public DataManager{
 

@@ -3,7 +3,7 @@
 #include <TFile.h>
 #include <memory>
 
-namespace chanzer{
+namespace chanser{
     
    
   /////////////////////////////////////////////////////////////////

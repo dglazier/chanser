@@ -22,7 +22,7 @@
 #include <memory>
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
   using topo_funcs = std::map<TString,  VoidFuncs >;
 
@@ -212,7 +212,7 @@ namespace chanzer{
     Short_t _itersConfigured=0;
     Short_t _ownsActions=1;//!
       
-    ClassDef(chanzer::FinalState,1); //class FinalState
+    ClassDef(chanser::FinalState,1); //class FinalState
   };
 
  

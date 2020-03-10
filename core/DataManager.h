@@ -12,7 +12,7 @@
 #include <memory>
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
   using particle_uptr = std::unique_ptr<BaseParticle>;
   using particle_objs = std::vector<BaseParticle>;

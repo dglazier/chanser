@@ -7,5 +7,5 @@
 
 #include "Selection.h"
 
-namespace chanzer{
+namespace chanser{
 }

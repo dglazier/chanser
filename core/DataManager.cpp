@@ -1,7 +1,7 @@
 #include "DataManager.h"
 
 
-namespace chanzer{
+namespace chanser{
 
     
 }

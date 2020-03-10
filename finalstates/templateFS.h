@@ -16,7 +16,7 @@
 
 namespace USERNAME{
 
-  class templateFS : public chanzer::CLAS12FinalState{
+  class templateFS : public chanser::CLAS12FinalState{
 
        
   public :
@@ -44,10 +44,10 @@ namespace USERNAME{
     //constructor private so only create unique_ptr
     //using templateFS::Make(...)
     //auto fs = USERNAME::templateFS::Make("NONE","ALL");
-  templateFS(TString ch,TString inc) : chanzer::CLAS12FinalState(std::move(ch),std::move(inc)){
+  templateFS(TString ch,TString inc) : chanser::CLAS12FinalState(std::move(ch),std::move(inc)){
       //Give object class name - namespace
       //Used for compiling and loading
-      SetName(chanzer::Archive::BareClassName(ClassName()));
+      SetName(chanser::Archive::BareClassName(ClassName()));
       Define();
     }
 

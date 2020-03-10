@@ -13,13 +13,13 @@
 
 
 
-class anaPi2 : public chanzer::CLAS12FinalState{
+class anaPi2 : public chanser::CLAS12FinalState{
 
  
     public :
       anaPi2()=default;
- anaPi2(TString ch,TString inc) : chanzer::CLAS12FinalState(std::move(ch),std::move(inc)){
-	SetName(chanzer::Archive::BareClassName(ClassName()));
+ anaPi2(TString ch,TString inc) : chanser::CLAS12FinalState(std::move(ch),std::move(inc)){
+	SetName(chanser::Archive::BareClassName(ClassName()));
 	Define();
       }
       

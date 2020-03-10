@@ -1,7 +1,7 @@
 #include "ParticleDataManager.h"
 #include "FinalState.h"
 
-namespace chanzer{
+namespace chanser{
     
   void ParticleDataManager::PrintAction(){
     std::cout<<" ParticleDataManager::Print() "<<_particleData.size()<<std::endl;

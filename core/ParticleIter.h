@@ -9,7 +9,7 @@
 #include "Selection.h"
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
   using std::vector;
   using std::cout;

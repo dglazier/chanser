@@ -4,7 +4,7 @@
 #include "BaseOutEvent.h"
 
 
-class TreeDatatemplateFS : public chanzer::BaseOutEvent{
+class TreeDatatemplateFS : public chanser::BaseOutEvent{
 
  public:
   TreeDatatemplateFS(){SetName("templateFS");}

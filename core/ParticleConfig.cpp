@@ -1,7 +1,7 @@
 #include "ParticleConfig.h"
 
 
-namespace chanzer{
+namespace chanser{
   //////////////////////////////////////////////////////////////////
   ///return all children with this pdg code
   std::vector<BaseParticle* >  ParticleConfig::Children(Int_t pdg){

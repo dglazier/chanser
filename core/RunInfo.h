@@ -9,7 +9,7 @@
 #include "clas12reader.h"
 #include <Rtypes.h>
 
-namespace chanzer{
+namespace chanser{
 
   class RunInfo : public BaseRunInfo{
 

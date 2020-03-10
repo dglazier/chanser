@@ -13,7 +13,7 @@
 #include <vector>
 #include<bits/stdc++.h>
 
-namespace chanzer{
+namespace chanser{
 
   class FinalState;
 
@@ -69,7 +69,7 @@ namespace chanzer{
    
     int _maxPart{INT_MAX};
 
-    ClassDef(chanzer::EventParticles,1); //class EventParticles
+    ClassDef(chanser::EventParticles,1); //class EventParticles
   };
 
   //Allow cuts to be based on data particles

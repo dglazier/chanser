@@ -9,7 +9,7 @@
 /// we do this rather than just creating an object branch
 /// as only this way works in RooFit!
 
-void chanzer::TreeData::Branches(TTree* tree,TList* dmList){
+void chanser::TreeData::Branches(TTree* tree,TList* dmList){
   if(tree==nullptr) return;
   
   std::map<TString,TString> typelabel;
@@ -37,7 +37,7 @@ void chanzer::TreeData::Branches(TTree* tree,TList* dmList){
   }
 }
 
-void chanzer::TreeData::Hipo(hipo::ntuple_writer* writer,TList* dmList){
+void chanser::TreeData::Hipo(hipo::ntuple_writer* writer,TList* dmList){
   if(writer==nullptr) return;
 
   std::map<TString,TString> typelabel;

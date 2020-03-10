@@ -6,7 +6,7 @@
 #pragma once
 
 
-namespace chanzer{
+namespace chanser{
     
   class BaseRunInfo{
       

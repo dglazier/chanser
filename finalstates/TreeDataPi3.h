@@ -5,7 +5,7 @@
 
 #pragma link C++ class TreeDataPi3;
 
-class TreeDataPi3 : public chanzer::BaseOutEvent{
+class TreeDataPi3 : public chanser::BaseOutEvent{
 
  public:
   TreeDataPi3(){SetName("Pi3");}

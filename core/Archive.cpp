@@ -11,7 +11,7 @@
 #include <iostream>
 #include <utility>
 
-namespace chanzer{
+namespace chanser{
   
 
   void Archive::ArchiveIt(const TString& finalname, TFile* archiveTo){
@@ -88,7 +88,7 @@ namespace chanzer{
 
   void Archive::ExtractFinalState(const TString& afile,const TString& fsname){
   
-    gSystem->MakeDirectory(Form("chanzer_FinalStates/"));
+    gSystem->MakeDirectory(Form("chanser_FinalStates/"));
     
     auto arxiv=std::unique_ptr<TFile>{TFile::Open(afile)};
     
@@ -102,7 +102,7 @@ namespace chanzer{
       classname.ReplaceAll("::","_");//for filename
     
     std::cout<<"ExtractFinalState "<<classname<<" "<<chfsname<<std::endl;
-    gSystem->MakeDirectory(Form("chanzer_FinalStates/%s/",classname.Data()));
+    gSystem->MakeDirectory(Form("chanser_FinalStates/%s/",classname.Data()));
  
     auto chclassname=classname.Data();
     auto cpp= dynamic_cast<TMacro*>(classDir->Get(Form("%s.cpp",chfsname)));
@@ -112,24 +112,24 @@ namespace chanzer{
       return;
     }
    
-    cpp->SaveSource(Form("chanzer_FinalStates/%s/%s.cpp",chclassname,chfsname));
+    cpp->SaveSource(Form("chanser_FinalStates/%s/%s.cpp",chclassname,chfsname));
     
     auto h= dynamic_cast<TMacro*>(classDir->Get(Form("%s.h",chfsname)));
-    h->SaveSource(Form("chanzer_FinalStates/%s/%s.h",chclassname,chfsname));
+    h->SaveSource(Form("chanser_FinalStates/%s/%s.h",chclassname,chfsname));
 
     auto data= dynamic_cast<TMacro*>(classDir->Get(Form("TreeData%s.h",chfsname)));
-    data->SaveSource(Form("chanzer_FinalStates/%s/TreeData%s.h",chclassname,chfsname));
+    data->SaveSource(Form("chanser_FinalStates/%s/TreeData%s.h",chclassname,chfsname));
 
 
-    Loader::CompileTo(Form("chanzer_FinalStates/%s/%s.cpp",chclassname,chfsname),Form("chanzer_FinalStates/%s",chclassname));
-    //gROOT->ProcessLine(Form(".x chanzer_FinalStates/%s.cpp++",chfsname));
-    // auto libName=Form("chanzer_FinalStates/%s",chclassname);
-    // gSystem->CompileMacro(Form("chanzer_FinalStates/%s/%s.cpp",chclassname,chfsname),"",libName);
+    Loader::CompileTo(Form("chanser_FinalStates/%s/%s.cpp",chclassname,chfsname),Form("chanser_FinalStates/%s",chclassname));
+    //gROOT->ProcessLine(Form(".x chanser_FinalStates/%s.cpp++",chfsname));
+    // auto libName=Form("chanser_FinalStates/%s",chclassname);
+    // gSystem->CompileMacro(Form("chanser_FinalStates/%s/%s.cpp",chclassname,chfsname),"",libName);
     // gSystem->Load(libName);
     
     // if(gProof){
-    //   // gProof->AddIncludePath(Form("%s/chanzer_FinalStates/",gSystem->Getenv("PWD")));
-    //   // gProof->Load(Form("chanzer_FinalStates/%s.cpp+",chfsname),kTRUE);
+    //   // gProof->AddIncludePath(Form("%s/chanser_FinalStates/",gSystem->Getenv("PWD")));
+    //   // gProof->Load(Form("chanser_FinalStates/%s.cpp+",chfsname),kTRUE);
       
     // }
   }

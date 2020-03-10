@@ -12,7 +12,7 @@
 
 #include "ParticleIter.h"
 
-namespace chanzer{
+namespace chanser{
   
   ParticleIter::ParticleIter(size_t X, size_t Y,const vector<BaseParticle*> parts):
     _evParts(parts)

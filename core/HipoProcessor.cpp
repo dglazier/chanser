@@ -4,7 +4,7 @@
 #include <TSystem.h>
 #include <TProofServ.h>
 
-namespace chanzer{
+namespace chanser{
   
  
   HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile) : HipoSelector(chain) {

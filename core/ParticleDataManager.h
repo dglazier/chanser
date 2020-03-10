@@ -11,7 +11,7 @@
 #include <TDatabasePDG.h>
 #include <TSystem.h>
 
-namespace chanzer{
+namespace chanser{
     
      
    
@@ -65,7 +65,7 @@ namespace chanzer{
 
     UShort_t _addFinal{0};
       
-    ClassDefOverride(chanzer::ParticleDataManager,1);
+    ClassDefOverride(chanser::ParticleDataManager,1);
   };// ParticleDataManager
     
   using pdataman_uptr = std::unique_ptr<ParticleDataManager>;

@@ -18,11 +18,11 @@
 #include <Math/VectorUtil.h> //for boosts etc.
 
 //Allow THSParticle to be written to tree
-#pragma link C++ class std::vector<chanzer::BaseParticle >+;
-#pragma link C++ class std::vector<chanzer::BaseParticle* >+;
+#pragma link C++ class std::vector<chanser::BaseParticle >+;
+#pragma link C++ class std::vector<chanser::BaseParticle* >+;
 
 
-namespace chanzer{
+namespace chanser{
   using  HSLorentzVector=ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<Double32_t> > ;
   using  HSPosition= ROOT::Math::PositionVector3D< ROOT::Math::Cartesian3D< Double32_t >, ROOT::Math::DefaultCoordinateSystemTag >;
     
@@ -50,7 +50,7 @@ namespace chanzer{
     HSPosition _Vertex;     //particle vertex position
     Short_t _PDGCode=0;           //PDG number
 
-    ClassDef(chanzer::TruthParticle,1); //class TruthParticle
+    ClassDef(chanser::TruthParticle,1); //class TruthParticle
       
   };
     
@@ -161,10 +161,10 @@ namespace chanzer{
     Double_t ResE() const {return _Truth!=nullptr?_P4.E()-_Truth->_P4.E():0;};
     Double_t ResAngle() const {return _Truth!=nullptr?ROOT::Math::VectorUtil::Angle(_P4,_Truth->_P4):0;};
 
-    ClassDef(chanzer::BaseParticle,1); //class BaseParticle
+    ClassDef(chanser::BaseParticle,1); //class BaseParticle
   };
 
-  inline void  chanzer::BaseParticle::SetPDGcode(Int_t code){
+  inline void  chanser::BaseParticle::SetPDGcode(Int_t code){
     _PDGCode=code;
     if(!_PDGCode) return;
     if(_PDGCode==UndefinedPDG||_PDGCode==-UndefinedPDG) return;
@@ -176,10 +176,10 @@ namespace chanzer{
  
   }
   
-  inline Short_t chanzer::BaseParticle::FindCharge()const{
+  inline Short_t chanser::BaseParticle::FindCharge()const{
     
-    if(_PDGCode==chanzer::UndefinedPDG) return 1;
-    else if(_PDGCode==chanzer::UndefinedPDG) return -1;
+    if(_PDGCode==chanser::UndefinedPDG) return 1;
+    else if(_PDGCode==chanser::UndefinedPDG) return -1;
 
     TParticlePDG *part=TDatabasePDG::Instance()->GetParticle(_PDGCode);
     if(part){
@@ -189,12 +189,12 @@ namespace chanzer{
     }
     else return 0;
   }
-  inline void chanzer::BaseParticle::Clear(){
+  inline void chanser::BaseParticle::Clear(){
     MinorClear();
     _PDGCode=0;
     _Charge=0;
   }
-  inline void chanzer::BaseParticle::MinorClear(){
+  inline void chanser::BaseParticle::MinorClear(){
     _P4.SetXYZT(0,0,0,0);
     _MeasMass=0;
     _Time=0;
@@ -202,18 +202,18 @@ namespace chanzer{
     _Detector=0;
     _Truth=nullptr;
   }
-  inline void chanzer::BaseParticle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
+  inline void chanser::BaseParticle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
      SetP4(part->P4());
     SetVertex(part->Vertex());
     }
-  inline void chanzer::BaseParticle::CopyTransient(const BaseParticle* part){
+  inline void chanser::BaseParticle::CopyTransient(const BaseParticle* part){
     SetP4(part->P4());
     SetVertex(part->Vertex());
   
     _Time=part->Time();
     _Path=part->Path();
   }
-  inline void chanzer::BaseParticle::Add(const BaseParticle* hsp1, const BaseParticle* hsp2,Int_t pdg){
+  inline void chanser::BaseParticle::Add(const BaseParticle* hsp1, const BaseParticle* hsp2,Int_t pdg){
     SetP4(hsp1->P4()+hsp2->P4());
     SetPDGcode(pdg);
     if(pdg){

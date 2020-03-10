@@ -9,7 +9,7 @@
 #include "BaseOutEvent.h"
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
    
   class ParticleOutEvent : public BaseOutEvent {
 

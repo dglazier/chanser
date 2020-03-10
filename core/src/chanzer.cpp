@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 
   TRint  *app = new TRint("App", &argc, argv);
 // Run the TApplication (not needed if you only want to store the histograms.)
-  app->SetPrompt("chanzer [%d] ");
+  app->SetPrompt("chanser [%d] ");
   app->ProcessLine(".x $CLAS12ROOT/RunRoot/LoadClas12Root.C");
   //Compile and Load any given final state
   

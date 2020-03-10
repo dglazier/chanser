@@ -18,7 +18,7 @@
 #include "ntuple_writer.h"
 
 
-namespace chanzer{
+namespace chanser{
 
   class BaseOutEvent  : public TNamed{
 
@@ -44,7 +44,7 @@ namespace chanzer{
     // std::unique_ptr<hipo::bank> _hipoBank;//!
     std::vector<void* > _linksHipo;//!
        
-    ClassDef(chanzer::BaseOutEvent,1);
+    ClassDef(chanser::BaseOutEvent,1);
 
   };//class BaseOutEvent
   using base_outevt_ptr = BaseOutEvent*;

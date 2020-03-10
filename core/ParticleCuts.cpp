@@ -1,6 +1,6 @@
 #include "ParticleCuts.h"
 
-namespace chanzer{
+namespace chanser{
   /////////////////////////////////////////////
   UInt_t ParticleCuts::PassCuts() const noexcept{
       

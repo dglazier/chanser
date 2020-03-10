@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   //auto selectorMacro=argv[2];
   TRint  *app = new TRint("App", &argc, argv);
 // Run the TApplication (not needed if you only want to store the histograms.)
-  app->SetPrompt("chanzer [%d] ");
+  app->SetPrompt("chanser [%d] ");
   app->ProcessLine(".x $CLAS12ROOT/RunRoot/LoadClas12Root.C");
   app->ProcessLine(Form(".x $CLAS12ROOT/RunRoot/LoadProofLib.C(%s)",Nworkers));
   //app->ProcessLine(Form("gProof->Load(\"%s\");",selectorMacro));
@@ -25,10 +25,10 @@ int main(int argc, char **argv) {
   }
   TString CHANZER=gSystem->Getenv("CHANZER");
 
-  gSystem->Exec(Form("cp %s/lib/libchanzer_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/libchanser_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
   app->ProcessLine(".x $CHANZER/macros/Load.C");
   
-  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANZER\"))+\"/lib/libchanzer.so\",kTRUE)"));
+  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANZER\"))+\"/lib/libchanser.so\",kTRUE)"));
 
 
   gSystem->Exec(Form("cp %s/lib/libEG_rdict.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));

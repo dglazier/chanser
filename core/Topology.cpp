@@ -3,7 +3,7 @@
 #include "TObjString.h"
 
 
-namespace chanzer{
+namespace chanser{
 
   using std::vector;
   /////////////////////////////////////////////////////////////////

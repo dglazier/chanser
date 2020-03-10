@@ -12,7 +12,7 @@
 #include <iostream>
 #include <TMath.h>
 
-namespace chanzer{
+namespace chanser{
 
   using std::vector;
   using std::cout;

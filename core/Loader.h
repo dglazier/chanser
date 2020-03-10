@@ -11,7 +11,7 @@
 #include <map>
 #include <memory>
 
-namespace chanzer{
+namespace chanser{
 
   namespace global{
     static std::vector<TString> gCompilesList;
@@ -35,6 +35,6 @@ namespace chanzer{
   private :
 
  
-    ClassDef(chanzer::Loader,1);
+    ClassDef(chanser::Loader,1);
   };
 }

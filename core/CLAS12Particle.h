@@ -8,7 +8,7 @@
 #include "BaseParticle.h"
 #include "region_particle.h"
 
-namespace chanzer{
+namespace chanser{
 
 
   class CLAS12Particle : public BaseParticle {
@@ -29,22 +29,22 @@ namespace chanzer{
     clas12::region_particle* _C12Particle{nullptr};
     
   };
-  inline void chanzer::CLAS12Particle::MinorClear(){
+  inline void chanser::CLAS12Particle::MinorClear(){
      _C12Particle=nullptr;
      BaseParticle::MinorClear();
   }
-  inline void chanzer::CLAS12Particle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
+  inline void chanser::CLAS12Particle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
     
     _C12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
      BaseParticle::CopyParticle(part,andPDG);
       
     }
-  inline void chanzer::CLAS12Particle::CopyTransient(const BaseParticle* part){
-    // std::cout<<"chanzer::CLAS12Particle::CopyParticle("<<std::endl;
+  inline void chanser::CLAS12Particle::CopyTransient(const BaseParticle* part){
+    // std::cout<<"chanser::CLAS12Particle::CopyParticle("<<std::endl;
     _C12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
     BaseParticle::CopyTransient(part);
   }
-    inline void chanzer::CLAS12Particle::SetCLAS12Particle(clas12::region_particle *p){
+    inline void chanser::CLAS12Particle::SetCLAS12Particle(clas12::region_particle *p){
     _C12Particle=p;
     auto pbank=p->par();
     SetPDGcode(pbank->getPid());

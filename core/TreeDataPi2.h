@@ -4,7 +4,7 @@
 #include "BaseOutEvent.h"
 
 
-class TreeDataPi2 : public chanzer::BaseOutEvent{
+class TreeDataPi2 : public chanser::BaseOutEvent{
 
  public:
   TreeDataPi2(){SetName("Pi2");}

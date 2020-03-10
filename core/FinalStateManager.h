@@ -10,7 +10,7 @@
 #include <TString.h>
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
   //  class Topology;
   //   class ParticleConfig;
@@ -58,7 +58,7 @@ namespace chanzer{
       
       
  
-    ClassDef(chanzer::FinalStateManager,1); //class EventParticles
+    ClassDef(chanser::FinalStateManager,1); //class EventParticles
       
   };
 }

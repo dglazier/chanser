@@ -10,7 +10,7 @@
 #include "BaseCut.h"
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
    
   class ParticleCuts {
@@ -35,7 +35,7 @@ namespace chanzer{
     std::vector<BaseParticle* > _particles;   
     UInt_t _nParticles{0};
     
-    ClassDef(chanzer::ParticleCuts,1);
+    ClassDef(chanser::ParticleCuts,1);
     
   };//class ParticleCuts
   using partcut_ptr = ParticleCuts*;

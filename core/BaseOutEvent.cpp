@@ -9,7 +9,7 @@
 /// we do this rather than just creating an object branch
 /// as only this way works in RooFit!
 
-void chanzer::BaseOutEvent::Branches(TTree* tree,TList* dmList){
+void chanser::BaseOutEvent::Branches(TTree* tree,TList* dmList){
   if(tree==nullptr) return;
   
   std::map<TString,TString> typelabel;
@@ -39,7 +39,7 @@ void chanzer::BaseOutEvent::Branches(TTree* tree,TList* dmList){
   tree->SetAutoFlush(-2E6); //reduce memory usage
 }
 
-void chanzer::BaseOutEvent::Hipo(hipo::ntuple_writer* writer,TList* dmList){
+void chanser::BaseOutEvent::Hipo(hipo::ntuple_writer* writer,TList* dmList){
   if(writer==nullptr) return;
 
   std::map<TString,TString> typelabel;

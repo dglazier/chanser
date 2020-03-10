@@ -1,7 +1,7 @@
 #include "FiledTree.h"
 #include <TDirectory.h>
 
-namespace chanzer{
+namespace chanser{
 
 
   FiledTree::~FiledTree(){

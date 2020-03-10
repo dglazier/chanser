@@ -1,4 +1,4 @@
-set(CHANZER chanzer)
+set(CHANZER chanser)
 set (CLAS12ROOT $ENV{CLAS12ROOT})
 set (HIPO $ENV{HIPO})
 set(DIRNAME core)

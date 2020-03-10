@@ -8,7 +8,7 @@
 #include <TString.h>
 #include <vector>
 
-namespace chanzer{
+namespace chanser{
 
 
   class Archive{

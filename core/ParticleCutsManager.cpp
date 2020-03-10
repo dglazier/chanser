@@ -1,7 +1,7 @@
 #include "ParticleCutsManager.h"
 #include "FinalState.h"
 
-namespace chanzer{
+namespace chanser{
     
   void ParticleCutsManager::PrintAction(){
     std::cout<<" ParticleCutsManager::Print() "<<std::endl;

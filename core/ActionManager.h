@@ -13,7 +13,7 @@
 #include <memory>
 #include <iostream>
 
-namespace chanzer{
+namespace chanser{
 
   class FinalState;
   
@@ -33,7 +33,7 @@ namespace chanzer{
     const char* GetName(){return _name.Data();}
 
     TString _name;
-    ClassDef(chanzer::ActionManager,1);
+    ClassDef(chanser::ActionManager,1);
   };// ActionManager
     
   using actionman_uptr = std::unique_ptr<ActionManager>;

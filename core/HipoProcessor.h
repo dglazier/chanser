@@ -10,7 +10,7 @@
 #include "HipoSelector.h"
 
 
-namespace chanzer{
+namespace chanser{
 
   class HipoProcessor : public clas12root::HipoSelector {
   public :
@@ -41,7 +41,7 @@ namespace chanzer{
 
     TList* _listOfFinalStates{nullptr};
       
-    ClassDefOverride(chanzer::HipoProcessor,0);
+    ClassDefOverride(chanser::HipoProcessor,0);
 
   };
 

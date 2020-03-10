@@ -3,7 +3,7 @@
 #include <TBenchmark.h>
 #include <iostream>
 
-namespace chanzer{
+namespace chanser{
 
   ////////////////////////////////////////////////////////////
   ///Load a configured final state that has been
