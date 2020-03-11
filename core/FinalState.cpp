@@ -85,9 +85,9 @@ namespace chanser{
     
   void  FinalState::SetTopologies(){
     for(auto& name:_usedTopos){
-      _currTopo=_topoMan.AddTopology(name,_linkToTopo[name]);
+      _currTopo=_topoMan.AddTopology(name,_doToTopo[name]);
     }
-    //AddTopology(name,_linkToTopo[name]);
+    //AddTopology(name,_doToTopo[name]);
  
   }
   void  FinalState::ConfigureIters(Topology *tt){

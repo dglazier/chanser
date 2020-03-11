@@ -87,7 +87,7 @@ namespace chanser{
  
     void AddTopology(const TString names){
       _usedTopos.push_back(names);
-      AddTopology(names,_linkToTopo[names]);
+      AddTopology(names,_doToTopo[names]);
     }
     void SetTopologies();
 
@@ -167,7 +167,7 @@ namespace chanser{
     Long64_t _counter=0;
 
     TopologyManager _topoMan;//!
-    topo_funcs _linkToTopo;//!
+    topo_funcs _doToTopo;//!
  
   private:
       

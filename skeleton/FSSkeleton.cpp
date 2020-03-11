@@ -120,7 +120,7 @@ namespace chanser{
     _place=0;
     FindNextLineLike("//Set Possible Topologies");
     for(Int_t io=0;io<_topos->GetEntries();io++){
-      ContinueLineAfter(Form("    _linkToTopo[\"%s\"]=[&](){",_topos->At(io)->GetName()));
+      ContinueLineAfter(Form("    _doToTopo[\"%s\"]=[&](){",_topos->At(io)->GetName()));
       ContinueLineAfter("      //TOPOLOGY Define your topology dedendent code in here");
       ContinueLineAfter("      ///////+++++++++++++++++++++++++++++++++++///////");
       ContinueLineAfter("      ");

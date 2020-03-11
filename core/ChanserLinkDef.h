@@ -4,10 +4,10 @@
 #pragma link off all classes;
 #pragma link off all functions;
 #pragma link C++ nestedclasses;
-#pragma link C++ nestedclass;
-#pragma link C++ nestedtypedef;
+//#pragma link C++ nestedclass;
+//#pragma link C++ nestedtypedef;
 
-#pragma link C++ namespace chanser;
+//#pragma link C++ namespace chanser;
 
 #pragma link C++ class chanser::BaseParticle+;
 #pragma link C++ class chanser::TruthParticle+;
@@ -36,8 +36,6 @@
 #pragma link C++ class chanser::DeltaTimeCut+;
 #pragma link C++ class chanser::EventBuilderCut+;
 //#pragma link C++ class chanser::+;
-#pragma link C++ class anaPi2+;
-#pragma link C++ class TreeDataPi2+;
 
 
 #endif

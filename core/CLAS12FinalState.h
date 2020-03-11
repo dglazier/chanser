@@ -13,7 +13,8 @@ using chanser::BaseRunInfo;
 using chanser::FinalState;
 
 namespace chanser{
-    
+
+  
   class CLAS12FinalState : public FinalState{
 
   public:
