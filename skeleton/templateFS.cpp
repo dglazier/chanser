@@ -10,17 +10,20 @@ namespace USERNAME{
     //to determine the correct permutation of the simulated event
       
     //AddParticle("Name",particle,true/false you want to write in final vector, genID for linking to generated truth value)
-    AddParticle("PARTICLE",&_PARTICLE,kTRUE,-1);
+    // AddParticle("PARTICLE",&_PARTICLE,kTRUE,-1);
 
-    _linkToTopo["TOPOLOGY"]=[&](){
-      //TOPOLOGY Define you topology dedendent code in here
+    //Set final state parents
+
+
+    //_linkToTopo["TOPOLOGY"]=[&](){
+      //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
 	
     
       ///////------------------------------------///////
-    };
+    // };
 
-  
+    //Set Possible Topologies
       
   }
 

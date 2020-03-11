@@ -32,7 +32,10 @@ namespace chanser{
       
     const char* GetName(){return _name.Data();}
 
+  private:
+    
     TString _name;
+
     ClassDef(chanser::ActionManager,1);
   };// ActionManager
     

@@ -1,13 +1,17 @@
+//////////////////////////////////////////////////////////////
+///
+///Class:		Skeleton
+///Description:
+///           Classes for producing skeleton final state code
 
-#ifndef HS_SKELETON_h
-#define HS_SKELETON_h
+#pragma once
 
 #include <TString.h>
 #include <TObjString.h>
 #include <TMacro.h>
 
 
-namespace HS{
+namespace chanser{
   
   class Skeleton   {
     
@@ -16,7 +20,7 @@ namespace HS{
     
     Skeleton()=default;
     virtual ~Skeleton()=default;
-
+    
     virtual void MakeCode()=0;
     
     void AddLineAfter(TString line0,TString line1,Int_t off=0);
@@ -29,12 +33,11 @@ namespace HS{
 
 
   protected:
-    TMacro fCurMacro;
-    Int_t fPlace=0;
-    TString fOption;
+    TMacro _curMacro;
+    Int_t _place=0;
+    TString _option;
     
 
   };
 }
 
-#endif 

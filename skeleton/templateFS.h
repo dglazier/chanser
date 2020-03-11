@@ -52,8 +52,11 @@ namespace USERNAME{
     }
 
     //Final Particles Detected
-    BaseParticle _PARTICLE=BaseParticle("PDG");//!
+    //BaseParticle _PARTICLE=BaseParticle("PDG");//!
     
+    //Final Parents
+
+
     //Initial state
     HSLorentzVector _beam{0,0,10.6,10.6};//!
     HSLorentzVector _target{0,0,0,0.938272};//!

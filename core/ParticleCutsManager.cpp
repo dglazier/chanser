@@ -54,7 +54,7 @@ namespace chanser{
   void ParticleCutsManager::Branches(const FinalState* fs){
     cout<<" ParticleCutsManager::Branches "<<fs->FinalTree()<<" "<<fs->FinalHipo()<<endl;
     if(fs->FinalTree()!=nullptr)
-      fs->FinalTree()->Branch(GetName(),&_passCut,_name+"/I");
+      fs->FinalTree()->Branch(GetName(),&_passCut,TString(GetName())+"/I");
     if(fs->FinalHipo()){
       fs->FinalHipo()->bank(GetName(),"Pass/I");
       fs->FinalHipo()->linkItemFunc(GetName(),"Pass/I",&_passCut);

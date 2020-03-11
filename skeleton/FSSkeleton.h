@@ -1,11 +1,15 @@
-#ifndef HS_FSSKELETON_h
-#define HS_FSSKELETON_h
+//////////////////////////////////////////////////////////////
+///
+///Class:		FSSkeleton
+///Description:
+///           Classes for producing skeleton final state code
+#pragma once
 
 #include "Skeleton.h"
 #include <TString.h>
 #include <TObjArray.h>
 
-namespace HS{
+namespace chanser{
   
   class FSSkeleton : public Skeleton  {
     
@@ -19,10 +23,10 @@ namespace HS{
     
     void MakeCode() override;
 
-    void SetFinalState(TString proj){fFinalName=proj;}
-    void SetFinalStateTopo(TString topos){fFinalTopo=topos;fFinalTopo.ReplaceAll(" ","");};
-    void SetFinalStateParts(TString finals){fFinalParts=finals;fFinalParts.ReplaceAll(" ","");};
-    void SetFinalStateParents(TString finals){fFinalParents=finals;fFinalParents.ReplaceAll(" ","");};
+    void SetFinalState(TString proj){_finalName=proj;}
+    void SetFinalStateTopo(TString topos){_finalTopo=topos;_finalTopo.ReplaceAll(" ","");};
+    void SetFinalStateParts(TString finals){_finalParts=finals;_finalParts.ReplaceAll(" ","");};
+    void SetFinalStateParents(TString finals){_finalParents=finals;_finalParents.ReplaceAll(" ","");};
 
 
   protected:
@@ -32,31 +36,25 @@ namespace HS{
     virtual void DefineExtras(){};
 
     //Code writing functions
-    virtual void DeclareInit();    
     virtual void DeclareDetected();    
     virtual void DeclareParents();    
     virtual void DefineDetected();    
     virtual void DefineParents();    
     virtual void DefineTopologies();    
-    virtual void DefineIterators();    
     virtual void CreateRunMacros();    
     virtual void CreateTreeData();    
     virtual void CreateTopoFuncs();    
-    virtual void CreateKinematics();    
-
-    //Loader for using classes in ROOT
-    virtual void CreateLoader();
-
-    TString fFinalName;
-    TString fFinalTopo;
-    TString fFinalParts;
-    TString fFinalParents;
-    TString fHSSKEL;
-    TObjArray* fTopos=nullptr;
-    TObjArray* fFinals=nullptr;
-    TObjArray* fParents=nullptr;
+  
+ 
+    TString _userName;
+    TString _finalName;
+    TString _finalTopo;
+    TString _finalParts;
+    TString _finalParents;
+    TString _strSkel;
+    TObjArray* _topos=nullptr;
+    TObjArray* _finals=nullptr;
+    TObjArray* _parents=nullptr;
 
  };
-}//namespace HS
-
-#endif 
+}
