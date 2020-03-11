@@ -120,7 +120,7 @@ namespace chanser{
     _place=0;
     FindNextLineLike("//Set Possible Topologies");
     for(Int_t io=0;io<_topos->GetEntries();io++){
-      ContinueLineAfter(Form("    _linkToTopo[\"%s\"]=[&](){,",_topos->At(io)->GetName()));
+      ContinueLineAfter(Form("    _linkToTopo[\"%s\"]=[&](){",_topos->At(io)->GetName()));
       ContinueLineAfter("      //TOPOLOGY Define your topology dedendent code in here");
       ContinueLineAfter("      ///////+++++++++++++++++++++++++++++++++++///////");
       ContinueLineAfter("      ");
@@ -140,7 +140,7 @@ namespace chanser{
     for(Int_t io=0;io<_finals->GetEntries();io++){
       TString sparticle=_finals->At(io)->GetName();
       TString pname=TString(sparticle(0,sparticle.First(":")));
-      ContinueLineAfter(Form("    AddParticle(\"%s\",&f%s,kTRUE,-1);",pname.Data(),pname.Data()));
+      ContinueLineAfter(Form("    AddParticle(\"%s\",&_%s,kTRUE,-1);",pname.Data(),pname.Data()));
     }
   }
   void FSSkeleton::DefineParents(){
@@ -148,10 +148,11 @@ namespace chanser{
     FindNextLineLike("//Set final state parents");
     for(Int_t io=0;io<_parents->GetEntries();io++){
       TString sparticle=_parents->At(io)->GetName();
-      ContinueLineAfter(Form("    AddParticle(&_%s,kTRUE,-1);",TString(sparticle(0,sparticle.First(":"))).Data()));
+      TString pname=TString(sparticle(0,sparticle.First(":"))).Data();
+      ContinueLineAfter(Form("    AddParticle(\"%s\",&_%s,kTRUE,-1);",pname.Data(),pname.Data()));
       TObjArray *childs=sparticle.Tokenize(";");
       for(Int_t ic=1;ic<childs->GetEntries();ic++)
-	ContinueLineAfter(Form("    ConfigParent(&_%s,&_%s);",TString(sparticle(0,sparticle.First(":"))).Data(),childs->At(ic)->GetName()));
+	ContinueLineAfter(Form("    ConfigParent(&_%s,&_%s);",pname.Data(),childs->At(ic)->GetName()));
     }
   }
 
