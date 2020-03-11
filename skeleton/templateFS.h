@@ -16,6 +16,8 @@
 
 namespace USERNAME{
 
+  using Particle=chanser::CLAS12Particle;
+
   class templateFS : public chanser::CLAS12FinalState{
 
        
@@ -52,7 +54,7 @@ namespace USERNAME{
     }
 
     //Final Particles Detected
-    //BaseParticle _PARTICLE=BaseParticle("PDG");//!
+    //chanser::CLAS12Particle _PARTICLE=BaseParticle("PDG");//!
     
     //Final Parents
 
