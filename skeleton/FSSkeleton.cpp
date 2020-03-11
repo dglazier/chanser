@@ -112,7 +112,7 @@ namespace chanser{
       FindNextLineLike("//Final Parents");
       for(Int_t io=0;io<_parents->GetEntries();io++){
 	TString sparticle=_parents->At(io)->GetName();
-	ContinueLineAfter(Form("  HS::THSParticle f%s=HS::THSParticle(\"%s\");",TString(sparticle(0,sparticle.First(":"))).Data(),TString(sparticle(sparticle.First(":")+1,sparticle.First(";")-sparticle.First(":")-1)).Data()));
+	ContinueLineAfter(Form("    BaseParticle _%s = BaseParticle{\"%s\"};",TString(sparticle(0,sparticle.First(":"))).Data(),TString(sparticle(sparticle.First(":")+1,sparticle.First(";")-sparticle.First(":")-1)).Data()));
       }
     }
   }
@@ -148,10 +148,10 @@ namespace chanser{
     FindNextLineLike("//Set final state parents");
     for(Int_t io=0;io<_parents->GetEntries();io++){
       TString sparticle=_parents->At(io)->GetName();
-      ContinueLineAfter(Form("    AddParticle(&f%s,kTRUE,-1);",TString(sparticle(0,sparticle.First(":"))).Data()));
+      ContinueLineAfter(Form("    AddParticle(&_%s,kTRUE,-1);",TString(sparticle(0,sparticle.First(":"))).Data()));
       TObjArray *childs=sparticle.Tokenize(";");
       for(Int_t ic=1;ic<childs->GetEntries();ic++)
-	ContinueLineAfter(Form("    ConfigParent(&f%s,&f%s);",TString(sparticle(0,sparticle.First(":"))).Data(),childs->At(ic)->GetName()));
+	ContinueLineAfter(Form("    ConfigParent(&_%s,&_%s);",TString(sparticle(0,sparticle.First(":"))).Data(),childs->At(ic)->GetName()));
     }
   }
 
