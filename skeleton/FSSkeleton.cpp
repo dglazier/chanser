@@ -183,7 +183,8 @@ namespace chanser{
     _curMacro=TMacro(TString("TreeData")+_finalName+".h");
     _place=0;
     ReplaceAllMacroText("templateFS",_finalName);
-    _curMacro.SaveSource(TString("TreeData")+_finalName+".h");
+    ReplaceAllMacroText("USERNAME",_userName);
+   _curMacro.SaveSource(TString("TreeData")+_finalName+".h");
   }
   
 
