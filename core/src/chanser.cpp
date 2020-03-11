@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
   //Compile and Load any given final state
   
 
-  TString CHANZER=gSystem->Getenv("CHANZER");
+  TString CHANZER=gSystem->Getenv("CHANSER");
 
    app->ProcessLine(".x $CHANZER/macros/Load.C");
    std::cout<<"Loading Final State class : "<<finalState<<std::endl;
