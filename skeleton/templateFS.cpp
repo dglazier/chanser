@@ -15,7 +15,7 @@ namespace USERNAME{
     //Set final state parents
 
 
-    //_linkToTopo["TOPOLOGY"]=[&](){
+    //_doToTopo["TOPOLOGY"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
 	
