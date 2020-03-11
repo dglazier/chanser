@@ -127,7 +127,7 @@ namespace chanser{
       ContinueLineAfter("      ");
       ContinueLineAfter("      ///////------------------------------------///////");
       
-      ContinueLineAfter("    }");
+      ContinueLineAfter("    };");
     }
   }
 

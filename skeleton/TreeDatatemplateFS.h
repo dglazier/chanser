@@ -3,6 +3,9 @@
 
 #include "BaseOutEvent.h"
 
+#pragma link C++ class USERNAME::TreeDatatemplateFS;
+
+namespace USERNAME{
 
 class TreeDatatemplateFS : public chanser::BaseOutEvent{
 
