@@ -49,7 +49,7 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   ///Process all events in the hipo file
-  void   FinalStateManager::ProcessAll(){
+  void   FinalStateManager::ProcessAll(Long64_t Nmax){
     Init();
     //read event
     gBenchmark->Start("FinalStateManager::ProcessAll");
@@ -58,7 +58,7 @@ namespace chanser{
       //analyse the event
       ProcessEvent();
       counter++;
-      //	if(counter>100) break;
+      if(counter>Nmax) break;
     }
     cout<<" FinalStateManager::ProcessAll() "<<counter<< " events processed from "<<_data->NEventsRead()<<" in file"<<endl;
     gBenchmark->Stop("FinalStateManager::ProcessAll");

@@ -19,9 +19,8 @@ namespace chanser{
     ParticleConfig(BaseParticle* part,Int_t genID){
       _particle=part;_geni=genID;
     }
-    ParticleConfig(TString name,BaseParticle* part,Int_t genID){
-      _name=name;_particle=part;_geni=genID;
-    }
+  ParticleConfig(TString name,BaseParticle* part,Int_t genID,Int_t pid): _name{name},_particle{part},_geni{genID},_pid{pid} {};
+    
     virtual ~ParticleConfig()=default;
     ParticleConfig(const ParticleConfig& other) = default; //Copy Constructor
     ParticleConfig(ParticleConfig&& other) = default; //Move Constructor
@@ -44,6 +43,7 @@ namespace chanser{
     }
     UInt_t GetNChild() const {return _children.size();};
     Int_t PDG() const {return _particle->PDG();}
+    Int_t PID() const {return _pid;}
     Int_t GenID() const {return _geni;}
     TString GetName() const {return _name;}
       
@@ -55,6 +55,7 @@ namespace chanser{
     std::vector<BaseParticle*> _children;
       
     Int_t _geni=-1; //index in generated events if has one
+    Int_t _pid=0; //index in generated events if has one
   };
 }
    

@@ -43,8 +43,14 @@ namespace chanser{
       if(vecParts->size()==_maxPart) {return kFALSE;}
       if(chpar->size()==_maxPart) {return kFALSE;}
     }
+     //  Print();
     return kTRUE;
     
   }
-  
+  void EventParticles::Print() const{
+    std::cout<<"EventParticles::Print() "<<std::endl;
+    std::map< Int_t , particles_ptrs* >::const_iterator itmap;
+    for (itmap = _mapPDGtoParticle.begin(); itmap != _mapPDGtoParticle.end(); itmap++)
+      std::cout<< itmap->first <<"has "<<itmap->second->size()<<" particles "<<std::endl;
+  }
 }

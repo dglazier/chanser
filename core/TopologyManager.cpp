@@ -24,6 +24,7 @@ namespace chanser{
 
     TString topoPDGs;
     vector<BaseParticle* > parts;
+    vector<ParticleConfig > pconfigs;
     vector<TString> partnames;
       
     //convert the string of particle names into a string of particle types
@@ -35,6 +36,8 @@ namespace chanser{
 	
       auto part=_fs->GetParticle(listofparts->At(ip)->GetName());
       parts.push_back(part);
+      auto partc=_fs->GetParticleConfig(listofparts->At(ip)->GetName());
+      pconfigs.push_back(partc);
       topoPDGs+=TDatabasePDG::Instance()->GetParticle(part->PDG())->GetName();
       if(ip!=listofparts->GetEntries())	topoPDGs+=":";
     }
@@ -43,6 +46,7 @@ namespace chanser{
     Topology topo(topoPDGs,funcE,this);
     topo.SetID(_nTopo++);
     topo.SetParticles(parts);
+    topo.SetParticleConfigs(pconfigs);
     topo.SetPartNames(partnames);
 
     _actualTopos.push_back(topo.Definition()); //just the particle IDs

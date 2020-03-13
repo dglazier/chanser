@@ -14,16 +14,16 @@
 
 namespace chanser{
   
-  ParticleIter::ParticleIter(size_t X, size_t Y,const vector<BaseParticle*> parts):
+  ParticleIter::ParticleIter(size_t X,const vector<BaseParticle*> parts):
     _evParts(parts)
   {
-    SelectXofY(X, Y);
-  }
-  ParticleIter::ParticleIter(size_t X, size_t Y)
+    SetNSel(X);
+    //SetNIdentical(X);
+ }
+  ParticleIter::ParticleIter(size_t X)
   {
-    //SelectXofY(X, Y);
-    SetNSel(Y);
-    SetNIdentical(X);
+    SetNSel(X);
+    //SetNIdentical(X);
   }
   //////////////////////////////////////////////////////////////////////////
   ///Get the next combination of the iterator
@@ -48,7 +48,7 @@ namespace chanser{
        if(_innerIter->NextCombitorial())
 	return kTRUE;
        }
-   
+    //do my own iterator
     if( DoCombitorial()){
    
       if(_innerIter)_innerIter->UpdateCombitorial();
@@ -79,17 +79,18 @@ namespace chanser{
     
   Bool_t ParticleIter::DoCombitorial(){
   
+    // cout<<"ParticleIter::DoCombitorial() nsel "<<_nSel<<" "<<_allParticles<<" "<<this<<endl;
+    //cout<<"ParticleIter::DoCombitorial() allparticles size "<<_allParticles->size()<<endl;
     if(_allParticles->size()<_nSel){
       return kFALSE;
     }
     Bool_t moreToCome=kTRUE;
     BaseParticle *psingle{nullptr};
 
-   
+    //return if have been given particles and already have selected
     if(_nSel==_allParticles->size()&&!_selected.empty())
       return kFALSE;
-      
-    switch (_type) {
+     switch (_type) {
       //case select 1 and no remainder
     case IterType::Single :
       {
@@ -195,66 +196,35 @@ namespace chanser{
   /// i.e.can add a permutation to the X selections
   ///example usage : piterator.SelectXofY(3,2, new THSPermutation());
 
-  void ParticleIter::SelectXofY(Int_t X, Int_t Y){
-    //cout<<"Event parts size "<<_evParts.size()<<endl;
-    //recursively create iterators
-    if(_evParts.size()!=UInt_t(X*Y)) cout<<"Warning ParticleIter::SelectXofY not sufficeint Event Particles Set "<<_evParts.size()<<" when we need "<<X*Y<<endl;
-    if(_evParts[0])_PDG=_evParts[0]->PDG();
-      
-    SetNSel(Y);
-    SetNIdentical(X);
-    SetName(TString(Form("Select: %d of %d of type %d ",_nIdentical,_nSel,_evParts[0]->PDG())) + TString(" after ")+GetName());
-
-    //Now sort the event particles
-    //Take the first _Y for those selected here
-    if(_evParts.size()<Y) cout<<"Warning ParticleIter::SelectXofY insufficient particles in Event Particles to cover "<<endl;
-    
-    vector<BaseParticle*>  selParts{_evParts.begin(),_evParts.begin()+Y};
-    vector<BaseParticle*>  remParts{_evParts.begin()+Y,_evParts.end()};
-    _evParts.clear();
-    _evParts=std::move(selParts);
-    //cout<<"sel Event parts size "<<_evParts.size()<<endl;
  
-    if(X>1){
-      //cout<<"Remain parts iter "<<endl;
-      _remIter=new ParticleIter(X-1,Y,remParts); //ownership will be given to _innerIter
-    }
-  }
   //////////////////////////////////////////////////////////////////////////
   ///If event particles have been given assign copy a HSParticle
   ///to them in the current combination order
   ///The particles have to have been assigned to the correct iterator
   void ParticleIter::SortEvent(){
 
-    _useCombi=1;
     _skipThis=0;
-    if(_useCombi){
-      if(_innerIter){
-	_innerIter->SortEvent();
+    if(_innerIter){
+      _innerIter->SortEvent();
+    }
+    if(_selIter) return ; //these particles will be set in _selIter
+
+    //loop over final state particles controlled by this iter
+    //Copy the event data for this combo of this particle
+    for(UInt_t isel=0;isel<_evParts.size();isel++){
+      if(isel<_selected.size()){
+	_evParts[isel]->CopyTransient(_selected[isel]);
+	_evParts[isel]->SetVectPDG();
       }
-      for(UInt_t isel=0;isel<_evParts.size();isel++){
-	if(isel<_selected.size()){
-	  _evParts[isel]->CopyTransient(_selected[isel]);
-	  _evParts[isel]->SetVectPDG();
-	}
-	else{
-	  _evParts[isel]->P4p()->SetXYZT(0,0,0,0);
-	  _skipThis=1; //iterator not properly reset, try another event and it should be OK
-	}
+      else{
+	_evParts[isel]->P4p()->SetXYZT(0,0,0,0);
+	_skipThis=1; //iterator not properly reset, try another event and it should be OK
       }
+    }
     
-    }
-  
-    else{ //No combitorial just take all particles as given
-      for(UInt_t iall=0;iall<_allParticles->size();iall++){
-	if(iall>=_allParticles->size())cout<<" ParticleIter::SortEvent() Warning too may particles in AllParticles "<<iall<<" "<<_evParts.size()<<endl;
-	if(iall>=_evParts.size())cout<<" ParticleIter::SortEvent() Warning too may particles in EvParticles "<<iall<<" "<<_evParts.size()<<endl;
-	_evParts[iall]->CopyTransient(_allParticles->at(iall));
-	_evParts[iall]->SetVectPDG();
-      }
-    }
+    
   }
- 
+  
 
   void ParticleIter::Print(Int_t verbose){
     if (verbose==1&&_evParts.size()==0) {if(_innerIter) _innerIter->Print(verbose); return;}

@@ -77,6 +77,8 @@ namespace chanser{
     void ShowTopologies(){_topoMan.Print();};
 
     BaseParticle* GetParticle(const TString name) const;
+    ParticleConfig GetParticleConfig(const TString name) const;
+    
     Bool_t CheckForValidTopos(const std::vector<short> eventPids){
       return _topoMan.CheckForValidTopos(eventPids);
     }
@@ -141,7 +143,8 @@ namespace chanser{
     void InitEvent(){_gotCorrectOne=0;  _nPerm=0;_currTopoID=-1;_rejectEvent=0;};
     void AddTopology(const TString names,const VoidFuncs funcE);
 
-  
+    ParticleIter*  InnerParticle(Int_t pid);
+    void InnerSelect(ParticleIter* recursiter,Int_t pid);
     void  ConfigureIters(Topology *tt);
       
     void AddParticle(TString name,BaseParticle* part,Bool_t AddToFinal,Int_t genID);

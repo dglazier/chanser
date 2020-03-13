@@ -61,7 +61,9 @@ namespace chanser{
     }
 
     void SetMaxParticles(int max){_maxPart=max;}
-      
+
+    void Print() const;
+    
   private:
     //map pdg value to particle type vector
     std::map< Int_t , particles_ptrs* > _mapPDGtoParticle{};//!

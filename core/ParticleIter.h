@@ -23,8 +23,8 @@ namespace chanser{
     
   public :
     ParticleIter()=default;
-    ParticleIter(size_t X, size_t Y,const vector<BaseParticle*> parts);
-    ParticleIter(size_t X, size_t Y);
+    ParticleIter(size_t X, const vector<BaseParticle*> parts);
+    ParticleIter(size_t X);
     virtual ~ ParticleIter()=default;
  
     ParticleIter(const ParticleIter& other) = default; //Copy Constructor
@@ -95,7 +95,6 @@ namespace chanser{
     }
   protected :
 
-    void SelectXofY(Int_t _X, Int_t _Y);
     Bool_t DoCombitorial();
     Bool_t NextCombitorial();
     Bool_t FirstCombitorial();

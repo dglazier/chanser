@@ -9,6 +9,7 @@
 #include <functional>
 
 #include "BaseParticle.h"
+#include "ParticleConfig.h"
 #include "ParticleIter.h"
 #include "FinalState.h"
 #include "TopologyManager.h"
@@ -52,9 +53,11 @@ namespace chanser{
     Int_t ID() const {return _ID;}
     
       
+    const vector<ParticleConfig>& GetParticleConfigs() const {return _pconfigs;}
     const vector<BaseParticle*>& GetParticles() const {return _particles;}
     const BaseParticle* GetParticle(UInt_t ip) const {return _particles[ip];}
     void SetParticles(const vector<BaseParticle*> parts){_particles=parts;};
+    void SetParticleConfigs(const vector<ParticleConfig> parts){_pconfigs=parts;};
 
       
     void SetPartNames(const vector<TString> names){_partNames=names;}
@@ -85,6 +88,7 @@ namespace chanser{
 
       
     vector<BaseParticle*> _particles; //!contains particles from FinalState class
+    vector<ParticleConfig> _pconfigs; //!contains particles from FinalState class
     vector<TString> _partNames; //!
     
       

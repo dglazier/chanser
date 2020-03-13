@@ -41,7 +41,7 @@ namespace chanser{
     void Init();
       
     void   ProcessEvent();
-    void   ProcessAll();
+    void   ProcessAll(Long64_t Nmax=9223372036854775807);
 
     void EndAndWrite();
       
