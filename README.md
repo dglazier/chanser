@@ -124,10 +124,78 @@ Here _Electron, _Proton etc are CLAS12Particles and so we have to call the P4() 
 
 Anything prefixed by  TD. has to be included in the TreeData and will be written to the output.
 
+#### 2) Define overall reaction kinematics and other general quantities
+
+This is done in the Kinematics function. This will only be called if previous cuts have been passed (for example from PostTopoAction ParticleCuts).
+
+Some Electron scattering variables are given by default,
+
+     //Use Kinematics to calculate electron variables
+     _kinCalc.SetElecsTarget(_beam,_Electron.P4(),_target);
+     TD.W=_kinCalc.W(); //photon bem energy
+     TD.Q2=_kinCalc.Q2();
+     TD.Pol=_kinCalc.GammaPol();
+     TD.Egamma=_kinCalc.GammaE();
+
+Again anything to be written to the output tree is prefixed with TD.
+
+Here the kinematic calculator is used, it can also be used for resonance decay kinematics and other appropriate functions can be added.
+
+     //calculate meson Lorentz Vector
+     auto meson = _K1.P4() + _K2.P4();
+     TD.MesonMass = meson.M(); 
+
+     //Caclulate X->2K0 decay angles
+     _kinCalc.SetMesonBaryon(meson,_Proton.P4());
+     _kinCalc.SetMesonDecay(_K1.P4() , _K2.P4());
+     _kinCalc.MesonDecayGJ();
+     TD.MesonCosThGJ=_kinCalc.CosTheta();
+     TD.MesonPhiGJ=_kinCalc.CosTheta();
+
+#### 3) Define which of these to write to the output file
+
+This is just done by adding data members to the TreeData class. Here it is called TreeDataPi4. Inclduing the extra variables I am using,
+
+     //data member for tree branches below here
+     Double_t MissMass=0;
+     Double_t MissMass2=0;
+     Double_t K1Mass=0;
+     Double_t K2Mass=0;
+
+     //example of e- kinematics
+     //you can remove these if not using
+     Double_t W=0;
+     Double_t Q2=0;
+     Double_t Pol=0;
+     Double_t Egamma=0;
+
+     //Meson stuff
+     Double_t MesonMass=0;
+     Double_t MesonCosThGJ=0;
+     Double_t MesonPhiGJ=0;
+
+
+
 You can now configure an object of this class adding combitorial algorithms, cuts, output. There is a template for starting this in the Create_Pi4.C script.
 
 
     chanser_root Pi4:Pi4.cpp Create_Pi4.C
+
+First you must choose the combitorial algorithm you would like for this conficuration and create an instance of your class using the Make function (this creates a unique_ptr which ROOT is respnsible for deleting at the end of the session,
+
+The first "ALL" => use EventBuilder PID for all particles, other options can be "NONE"
+
+The second "ALL" => particles to be inclusive for (i.e. any number of these particles allowed in the event)
+
+
+      auto FS = dglazier::Pi4::Make("ALL","ALL");
+
+Now choose however many of the topologies you have defined that you want to include in this configuration
+
+      FS->AddTopology("Electron:Proton:Pip1:Pip2:Pim1:Pim2");
+
+
+Now add different Actions.
 
 For example you can add different particle ID cuts for different particles :
 
@@ -147,6 +215,12 @@ Or output data related to each particle in the event to a root tree :
      ParticleDataManager pdm{"particle","/outdir/particleData",1};
      ParticleOutEvent pout; //instance of class that defines particle output
      pdm.SetParticleOut(&pout);
+     FS->RegisterPostTopoAction(pdm);
 
-Note you may create you own ParticleOutEvent class for this purpose.
+This will output a set of standard detector variables,  you may create you own ParticleOutEvent class for this purpose.
+
+At the end you should write to a root file so it can be processed. The clas12_proof processor then just needs this root file to run as it extracts and compiles the source code from the file before running.
+
+   FS->WriteToFile("ALLALL_configuration.root");
+
 
