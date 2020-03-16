@@ -26,11 +26,14 @@ B 12 C 35
 
 For example, my InnerParticle(A) may select 3 +ve from M +ve in the event; its InnerSelector(P) may then select 1 proton from these (1 from 3); its  InnerSelect(C) may then select the remaining 2 +ve to be pi+.
 
-Note in this case if there are 4 +ve particles, number 3 from 4 = 4, number 1 from 3 = 3. Total combinations = 3*4=12
+Note in this case if there are 4 +ve particles, number 3 from 4 = 4, number 1 from 3 = 3. Total combinations = 3*4=12 (=Combi(3,4)*Combi(1,3)*Combi(1,2))
+and
+
+	Long64_t Combi(Int_t X,Int_t Y){return TMath::Factorial(Y)/TMath::Factorial(Y-X)/TMath::Factorial(X);}
 
 If 1 of the FinaState class pi+ has a parent (e.g. an omega meson) then we need to try both combinations of pi+ as the child. Here we then need to select from the 2 pions:
  The  InnerSelect(D) of (C) may then select 1 pi+ to have a parent select the remaining one to be included but independent, InnerSelect(E).
-
+So in terms of combinations we need a further 1 from 2 =2. This gives a total of 12*2=24
 
 
 Once an inner iterator(Q) is complete it moves back to the preceding inner iterator(P) for the next event. After the next event it moves back to the inner (Q) and completes another cycle of Q.
