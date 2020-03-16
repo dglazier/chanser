@@ -108,17 +108,17 @@ To do this we must define the _doForTopo["topology"] function body for each topo
  
 In the _doForTopo functions the particles will be updated automatically and you may just use them directly. These particles contain things like 4-vector information as well as a direct link to the clas12root particle which then gives access to any of the DST information associated with that particle. For example I can calculate the missing mass for the event :
 
-   _doToTopo["Electron:Proton:Pip1:Pip2:Pim1:Pim2"]=[&](){
-   //TOPOLOGY Define your topology dedendent code in here
-   ///////+++++++++++++++++++++++++++++++++++///////
+       _doToTopo["Electron:Proton:Pip1:Pip2:Pim1:Pim2"]=[&](){
+       //TOPOLOGY Define your topology dedendent code in here
+       ///////+++++++++++++++++++++++++++++++++++///////
       	   auto miss= _beam + _target - _Electron.P4() - _Proton.P4()
       	   -_Pip1.P4()-_Pip2.P4() -_Pim1.P4() -_Pim2.P4();
 
 	   TD.MissMass=miss.M();
       	   TD.MissMass2=miss.M2();
       
-    ///////------------------------------------///////
-    };
+      ///////------------------------------------///////
+      };
 
 Here _Electron, _Proton etc are CLAS12Particles and so we have to call the P4() function to get their lorentz vectors. _beam, _target and miss are lorentz vectors (although not TLorentzVectors, they are ROOT::MATH genvector LorentzVectors).
 
@@ -144,9 +144,9 @@ For example you can add different particle ID cuts for different particles :
 
 Or output data related to each particle in the event to a root tree :
 
-   ParticleDataManager pdm{"particle","/outdir/particleData",1};
-   ParticleOutEvent pout; //instance of class that defines particle output
-   pdm.SetParticleOut(&pout);
+     ParticleDataManager pdm{"particle","/outdir/particleData",1};
+     ParticleOutEvent pout; //instance of class that defines particle output
+     pdm.SetParticleOut(&pout);
 
 Note you may create you own ParticleOutEvent class for this purpose.
 
