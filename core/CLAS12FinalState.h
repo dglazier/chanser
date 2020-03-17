@@ -54,15 +54,15 @@ namespace chanser{
 
   ////////////////////////////////////////
   ///Need to update this with RCDB info passed to runInfo
-inline Float_t CLAS12FinalState::StartTimeFromTimeAndVertex(Float_t ptime,Float_t vz){
-  //supply chosen (e-) particle vertex time
-  Float_t rftime=_eventInfo->_RFTime;
-  //Find the nearest rf beam bucket
-  _startTime=_STimePeak-_bunchTime*((Int_t)(std::round(((_STimePeak-(ptime-rftime))/_bunchTime))))+rftime;
+  inline Float_t CLAS12FinalState::StartTimeFromTimeAndVertex(Float_t ptime,Float_t vz){
+    //supply chosen (e-) particle vertex time
+    Float_t rftime=_eventInfo->_RFTime;
+    //Find the nearest rf beam bucket
+    _startTime=_STimePeak-_bunchTime*((Int_t)(std::round(((_STimePeak-(ptime-rftime))/_bunchTime))))+rftime;
 
     
-  _startTime-=vz/2.99792e+08*1E9; //Factor 100 ?
-  return _startTime;
-}
+    _startTime-=vz/2.99792e+08*1E9; //Factor 100 ?
+    return _startTime;
+  }
 
 }

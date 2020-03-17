@@ -182,6 +182,7 @@ namespace chanser{
      
     for(auto* topo : validTopos){
       _currTopo=topo;
+      _currTopoID=_currTopo->ID();
       //First combination
       auto singleCombination=(!_currTopo->FirstParticles()); //true if no other combination. Calls ParticleIter::FirstCombitorial0
       FSProcess();
