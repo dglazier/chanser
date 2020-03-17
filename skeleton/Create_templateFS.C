@@ -14,9 +14,17 @@
   //pcm.AddParticleCut("pi+",dtc);
   //DeltaTimeCut dtc(2); //Apply a Delta Time cut of 2ns
   //pcm.AddParticleCut("pi-",dtc);
-
+  // FS->RegisterPostTopoAction(pcm);
+ 
+  //ParticleDataManager pdm{"particle","/outdir/particleData",1};
+  //ParticleOutEvent pout;
+  //pdm.SetParticleOut(&pout);
+  //FS->RegisterPostTopoAction(pdm);
   
   FS->WriteToFile("/dir/fs/file_name_for_this_configuration.root");
 
 
+
+  //Delete the final state rather than let ROOT try
+  FS.reset();
 }

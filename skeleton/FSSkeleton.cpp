@@ -100,7 +100,7 @@ namespace chanser{
     for(Int_t io=0;io<_finals->GetEntries();io++){
       TString sparticle=_finals->At(io)->GetName();
       TString pname=TString(sparticle(0,sparticle.First(":")));
-      ContinueLineAfter(Form("    Particle   _%s = Particle{\"%s\"};",TString(sparticle(0,sparticle.First(":"))).Data(),TString(sparticle(sparticle.First(":")+1,sparticle.Sizeof())).Data()));
+      ContinueLineAfter(Form("    Particle   _%s = Particle{\"%s\"};//!",TString(sparticle(0,sparticle.First(":"))).Data(),TString(sparticle(sparticle.First(":")+1,sparticle.Sizeof())).Data()));
       }
     }
   
@@ -112,7 +112,7 @@ namespace chanser{
       FindNextLineLike("//Final Parents");
       for(Int_t io=0;io<_parents->GetEntries();io++){
 	TString sparticle=_parents->At(io)->GetName();
-	ContinueLineAfter(Form("    Particle _%s = Particle{\"%s\"};",TString(sparticle(0,sparticle.First(":"))).Data(),TString(sparticle(sparticle.First(":")+1,sparticle.First(";")-sparticle.First(":")-1)).Data()));
+	ContinueLineAfter(Form("    Particle _%s = Particle{\"%s\"};//!",TString(sparticle(0,sparticle.First(":"))).Data(),TString(sparticle(sparticle.First(":")+1,sparticle.First(";")-sparticle.First(":")-1)).Data()));
       }
     }
   }
