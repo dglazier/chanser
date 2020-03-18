@@ -28,6 +28,8 @@ namespace chanser{
 
   using std::vector;
 
+  enum class FSOutputType{NONE, ROOTTREE, HIPONTUPLE};
+  
   class FinalState : public TNamed{
 
     
@@ -51,11 +53,9 @@ namespace chanser{
       InitTopoMan();
       Define();
       SetTopologies();
-      CreateFinalTree(_finalTreeFile.GetName());
-      CreateFinalHipo(_finalHipoFile.GetName());
     }
       
-    virtual void Init();
+    virtual void Init(const TString& baseDir); //takes name of output dir
 
     virtual void Define(){};
       
@@ -103,9 +103,12 @@ namespace chanser{
 
     const TopologyManager& TopoManager() const {return _topoMan;}
 
-      
-    void CreateFinalTree(TString fname);
-    void CreateFinalHipo(TString filename);
+
+    void UseOutputRootTree(){_outputType=FSOutputType::ROOTTREE;}
+    void UseOutputHipoNtuple(){_outputType=FSOutputType::HIPONTUPLE;}
+    
+    void CreateFinalTree(const TString& fname);
+    void CreateFinalHipo(const TString& filename);
       
     virtual void ConfigureOutTree(TTree* tree);
     virtual void ConfigureOutHipo(hipo::ntuple_writer* writer);
@@ -120,8 +123,11 @@ namespace chanser{
       if(FinalHipo())treeData->Hipo(FinalHipo());
     }
     void SetWorkerName(TString name){_workerName=name;}
-    TString& WorkerName(){return _workerName;}
- 
+    const TString& WorkerName(){return _workerName;}
+    
+    void SetInputFileName(TString name){_inputConfigFile=name;_inputConfigFile.ReplaceAll(".root","");}
+    const TString& InputFileName(){return _inputConfigFile;}
+    
     void RegisterPostTopoAction(ActionManager& tam){
       _postTopoAction.push_back(&tam);
     }
@@ -133,7 +139,9 @@ namespace chanser{
     actionman_ptrs& getPostKinActions(){return _postKinAction;}
       
     void EndAndWrite();
-       
+    virtual TString GetUSER(){return "";};
+    const TString& GetOutputDir(){return _outputDir;}
+
   protected :
 
   FinalState():_topoMan{this},_ownsActions{1}{};
@@ -178,10 +186,10 @@ namespace chanser{
     const truth_ptrs* _truth{nullptr}; //!
    
     filed_uptr _finalTree;//!
-    TNamed _finalTreeFile;
+    TString _finalTreeFile;
     
     std::unique_ptr<hipo::ntuple_writer> _finalHipo;//!
-    TNamed _finalHipoFile;
+    TString _finalHipoFile;
 
 	
     Topology *_currTopo{nullptr};//!
@@ -204,7 +212,9 @@ namespace chanser{
     TString _optPid;
     TString _optIncl;
     TString _workerName; //for PROOF worker ID
- 
+    TString _inputConfigFile; //where this FS was loaded from
+    TString _outputDir;
+    
     Int_t _currTopoID=-1;
     Int_t _nPerm=0;
     Short_t _gotCorrectOne=0;
@@ -214,7 +224,8 @@ namespace chanser{
     Short_t _hasTruth=0;
     Short_t _itersConfigured=0;
     Short_t _ownsActions=1;//!
-      
+    FSOutputType  _outputType=FSOutputType::NONE;
+    
     ClassDef(chanser::FinalState,1); //class FinalState
   };
 

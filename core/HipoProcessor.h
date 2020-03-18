@@ -18,7 +18,7 @@ namespace chanser{
 
   HipoProcessor(): _listOfFinalStates(nullptr) {};
     // HipoProcessor(TString filename) ;
-    HipoProcessor(clas12root::HipoChain *chain,TString fsfile) ;
+    HipoProcessor(clas12root::HipoChain *chain,TString fsfile,TString base) ;
     virtual ~HipoProcessor();
     void    Begin(TTree *tree) final;
     void    SlaveBegin(TTree *tree) final;
@@ -31,7 +31,7 @@ namespace chanser{
     void AddFilter() override;
 
 
-    void LoadFinalStates(TString fsfile);
+    void GetFinalStates(TString fsfile);
       
     FinalStateManager& Manager(){return _fsm;}
 
@@ -40,7 +40,8 @@ namespace chanser{
     HipoData _hipo;
 
     TList* _listOfFinalStates{nullptr};
-      
+    TString _baseDir;
+    
     ClassDefOverride(chanser::HipoProcessor,0);
 
   };

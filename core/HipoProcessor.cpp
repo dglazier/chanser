@@ -7,12 +7,13 @@
 namespace chanser{
   
  
-  HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile) : HipoSelector(chain) {
-    chain->GetNRecords();
-    _listOfFinalStates=new TList();
-    _listOfFinalStates->SetName("LISTOFFINALSTATES");
-    _listOfFinalStates->SetOwner(kTRUE);
-    LoadFinalStates(fsfile);
+  HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) : HipoSelector(chain),_baseDir(base) {
+    chain->GetNRecords();//needed to count total records etc.
+
+    if(!fsfile.BeginsWith('/'))
+      fsfile = TString(gSystem->Getenv("PWD"))+"/"+fsfile;
+ 
+    GetFinalStates(fsfile); //read which final states to process from text file
   }
   HipoProcessor::~HipoProcessor() {
     if(_listOfFinalStates) delete _listOfFinalStates;_listOfFinalStates=nullptr;
@@ -22,7 +23,9 @@ namespace chanser{
 
     //Give list of final states to input so it can be initiated on slaves
     fInput->Add(_listOfFinalStates);//make chain of files avaialbel on slaves
-
+    //Give the base output directory
+    fInput->Add(new TNamed("FSBASEDIR",_baseDir.Data()));
+    
     HipoSelector::Begin(0); //Do not remove this line!
 
 
@@ -41,7 +44,11 @@ namespace chanser{
       _fsm.LoadFinalState(_listOfFinalStates->At(ifs)->GetName(),_listOfFinalStates->At(ifs)->GetTitle(),workerName);
     }
 
-	 
+    //Get the output directory
+    _baseDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")))->GetTitle();
+    _fsm.SetBaseOutDir(_baseDir);
+
+    _fsm.GetEventParticles().SetMaxParticles(6);
     _fsm.Init();
      
   }
@@ -55,6 +62,7 @@ namespace chanser{
     //Fill in what you would like to do with
     //the data for each event....
     _hipo.SetReader(_c12.get());
+    // cout<<"HipoProcessor::ProcessEvent"<<endl;
     if(_hipo.FetchPids()){
       _fsm.ProcessEvent();
     }
@@ -75,10 +83,15 @@ namespace chanser{
 
   }
 
-  void HipoProcessor::LoadFinalStates(TString fsfile){
+  void HipoProcessor::GetFinalStates(TString fsfile){
+    _listOfFinalStates=new TList();
+    _listOfFinalStates->SetName("LISTOFFINALSTATES");
+    _listOfFinalStates->SetOwner(kTRUE);
 
 #include <fstream>
     std::ifstream infile(fsfile.Data());
+    if(!infile.is_open()) {Fatal("HipoProcessor::GetFinalStates",Form("No final states list file found %s",fsfile.Data()));}
+    
     std::string fss, fis; //finalstate name and root filename
     while (infile >> fss >> fis){
       std::cout<<"HipoProcessor::LoadFinalStates : "<<fss << " "<<fis<<std::endl;

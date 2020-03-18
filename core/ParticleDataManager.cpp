@@ -13,7 +13,7 @@ namespace chanser{
  
     auto topos=fs->TopoManager().ObserveTopos(); //const, can't change them
       
-         
+    _outDir.Prepend(fs->GetOutputDir());     
     MakeOutDir();//directory for saving files
       
     for(auto const& topo : topos){
@@ -23,8 +23,6 @@ namespace chanser{
       auto pdata=ParticleData{GetName(),outfile,topo_parts.size()};
 	
       //Loop over all particles in this topology and assign output data
-      std::cout<<" ParticleDataManager::Configure particles "<<topo_parts.size()<<std::endl;
-	
       UInt_t ip=0;
       for(auto const& particle : topo_parts){
 	//Add particle to output data

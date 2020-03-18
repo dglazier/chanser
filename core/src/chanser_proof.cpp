@@ -23,12 +23,12 @@ int main(int argc, char **argv) {
   if(TString(gEnv->GetValue("ProofLite.Sandbox",""))!=TString()){
     sandbox=gEnv->GetValue("ProofLite.Sandbox","");
   }
-  TString CHANZER=gSystem->Getenv("CHANZER");
+  TString CHANZER=gSystem->Getenv("CHANSER");
 
   gSystem->Exec(Form("cp %s/lib/libchanser_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
-  app->ProcessLine(".x $CHANZER/macros/Load.C");
+  app->ProcessLine(".x $CHANSER/macros/Load.C");
   
-  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANZER\"))+\"/lib/libchanser.so\",kTRUE)"));
+  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANSER\"))+\"/lib/libchanser.so\",kTRUE)"));
 
 
   gSystem->Exec(Form("cp %s/lib/libEG_rdict.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));

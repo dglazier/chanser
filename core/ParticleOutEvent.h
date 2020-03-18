@@ -62,7 +62,7 @@ namespace chanser{
     Short_t Status=0;
 
 
-    CLAS12Particle*  _part{nullptr};
+    CLAS12Particle*  _part{nullptr};//!
       
     ClassDefOverride(ParticleOutEvent,1);
 

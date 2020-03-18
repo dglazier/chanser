@@ -1,6 +1,7 @@
 #include "FinalState.h"
 #include "AutoIterUtils.h"
 #include <TFile.h>
+#include <TSystem.h>
 #include <memory>
 
 namespace chanser{
@@ -42,20 +43,20 @@ namespace chanser{
     }
 
   }
-   void FinalState::CreateFinalTree(TString fname){
+   void FinalState::CreateFinalTree(const TString& fname){
       if(fname==TString()) return;
-      _finalTreeFile.SetName(fname);
+      _finalTreeFile=fname+"FinalState.root";
       _finalTree.reset();
-      _finalTree=FiledTree::Recreate("finalstate",fname+WorkerName());
-      cout<<"FinalState Creating Tree in file "<<fname+WorkerName()<<endl;
+      _finalTree=FiledTree::Recreate("finalstate",_finalTreeFile);
+      cout<<"FinalState Creating Tree in file "<<_finalTreeFile<<endl;
       ConfigureOutTree(_finalTree->Tree());
     }
-    void FinalState::CreateFinalHipo(TString filename){
+    void FinalState::CreateFinalHipo(const TString& filename){
        if(filename==TString()) return;
-      _finalHipoFile.SetName(filename);
+       _finalHipoFile=filename+"FinalState.hipo";
       //Note in case of PROOF add worker ID to the end
-      _finalHipo.reset(new hipo::ntuple_writer((filename+WorkerName()).Data()));
-      cout<<"FinalState Creating Hipo in file "<<filename+WorkerName()<<endl;
+      _finalHipo.reset(new hipo::ntuple_writer((_finalHipoFile).Data()));
+      cout<<"FinalState Creating Hipo in file "<<_finalHipoFile<<endl;
       ConfigureOutHipo(_finalHipo.get());
     }
   void  FinalState::ConfigureOutTree(TTree* tree) {
@@ -99,8 +100,22 @@ namespace chanser{
     // _currTopo->Iter().Print(9);
     _itersConfigured++;
   }
-  void FinalState::Init(){
-    cout<<"FinalState::Init() "<<endl;
+  void FinalState::Init(const TString& baseDir){
+    
+    auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
+    gSystem->Exec(Form("mkdir -p %s",outdir.Data()));
+
+    //add final state configuration name directory
+    _outputDir=outdir+GetName()+'_'+gSystem->BaseName(InputFileName())+"__"+WorkerName()+'/';
+    gSystem->Exec(Form("mkdir -p %s",_outputDir.Data()));
+    
+    if(_outputType==FSOutputType::ROOTTREE)CreateFinalTree(_outputDir);
+    if(_outputType==FSOutputType::HIPONTUPLE){
+      CreateFinalHipo(_outputDir);
+      _finalHipo->open();//hipo writer must be opened after all banks defined!
+    }
+    
+ 
     //if(!_itersConfigured)
     for(auto& topo: _topoMan.Topos())
       ConfigureIters(&topo);
@@ -114,8 +129,6 @@ namespace chanser{
       pt->Configure(this);	
     }
 
-    if(_finalHipo) _finalHipo->open();//hipo writer must be opened after all banks defined!
-      
     _currTopo=nullptr;
       
   }
@@ -179,7 +192,7 @@ namespace chanser{
     if(_hasTruth) InitTruth();
 
     auto validTopos =_topoMan.ValidTopos();
-     
+    //std::cout<<" FinalState::ProcessEvent() "<<validTopos.size()<<std::endl;
     for(auto* topo : validTopos){
       _currTopo=topo;
       _currTopoID=_currTopo->ID();

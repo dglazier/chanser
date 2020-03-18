@@ -64,6 +64,7 @@ namespace chanser{
   ///which may be kept in simulated data, but shouldn't be included
   ///in final state check
   Bool_t TopologyManager::CheckForValidTopos(const std::vector<short>& pids){
+    // std::cout<<"TopologyManager::CheckForValidTopos "<<_nTopo<<std::endl;
     _eventTopo.clear();
     _eventTopo.reserve(pids.size());
     //loop over event particle ids and reconfigure them

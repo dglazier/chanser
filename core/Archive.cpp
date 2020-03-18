@@ -17,7 +17,7 @@ namespace chanser{
   void Archive::ArchiveIt(const TString& finalname, TFile* archiveTo){
     auto fileDir=MakeDir(archiveTo);
 
-    std::cout<<"archiveTo "<<finalname<<" "<<gSystem->DirName(Loader::GetClassFile(finalname))<<" "<<Loader::GetClassFile(BareClassName(finalname))<<std::endl;
+    std::cout<<"archiveTo "<<gDirectory->GetName()<<" "<<finalname<<" "<<gSystem->DirName(Loader::GetClassFile(finalname))<<" "<<Loader::GetClassFile(BareClassName(finalname))<<std::endl;
 
     auto files = ListSourceFiles(gSystem->DirName(Loader::GetClassFile(BareClassName(finalname))),std::move(finalname));
 
@@ -80,7 +80,7 @@ namespace chanser{
   }
 
   void Archive::ArchiveSourceFile(const TString& afile){
-    std::cout<<"ArchiveSourceFile( "<<afile<<std::endl;
+    std::cout<<"ArchiveSourceFile "<<afile<<std::endl;
     TMacro m(afile);
     m.SetName(gSystem->BaseName(afile));
     m.Write();

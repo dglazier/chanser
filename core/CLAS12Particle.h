@@ -26,7 +26,7 @@ namespace chanser{
     void CopyTransient(const BaseParticle* part) override;
 
   private :
-    clas12::region_particle* _C12Particle{nullptr};
+    clas12::region_particle* _C12Particle{nullptr};//!
     
   };
   inline void chanser::CLAS12Particle::MinorClear(){

@@ -21,7 +21,7 @@ namespace chanser{
       
     ParticleDataManager()=default;
     ///Must give an output directory for saving trees to
-  ParticleDataManager(TString name,TString outdir="./particleData",UShort_t addFinal=0):ActionManager(name),_outDir(outdir),_addFinal(addFinal){ std::cout<<"Constructing PDM "<<GetName()<<std::endl;};
+  ParticleDataManager(TString name,UShort_t addFinal=0):ActionManager(name),_addFinal(addFinal){};
       
     virtual ~ParticleDataManager()=default;
     ParticleDataManager(const ParticleDataManager& other) = default; //Copy Constructor
@@ -35,8 +35,6 @@ namespace chanser{
     Bool_t Execute(UInt_t ti)  override{
       //fill data for topology number ti
       _particleData[ti].Fill();
-      //_passCut=_particleCuts[ti].PassCuts();
-      //return _forReal ? _passCut==_particleCuts[ti].NParticles() : kTRUE;
       return kTRUE;
     }
       
@@ -49,8 +47,7 @@ namespace chanser{
   protected:
       
     void MakeOutDir(){
-      if(!_outDir.BeginsWith("/"))
-	_outDir = TString(gSystem->Getenv("PWD"))+"/"+_outDir;
+   
       gSystem->Exec(Form("mkdir -p %s",_outDir.Data()));
     }
    
@@ -61,7 +58,7 @@ namespace chanser{
     //  std::map<Int_t,ParticleOutEvent*> _pdgToData;
     ParticleOutEvent* _outData{nullptr};
 
-    TString _outDir;
+    TString _outDir{"particleData"};
 
     UShort_t _addFinal{0};
       

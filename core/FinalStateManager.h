@@ -47,6 +47,11 @@ namespace chanser{
       
     finalstate_uptrs& GetFinalStates(){return _finalStates;};
     EventParticles& GetEventParticles(){return _eventParts;}
+
+    const TString& BaseOutDir(){return _baseOutDir;};
+    void SetBaseOutDir(const TString& name){_baseOutDir=name;}
+    void MakeBaseOutputDir();
+    
   private :
       
 
@@ -57,7 +62,8 @@ namespace chanser{
     finalstate_uptrs _finalStates;//!
       
       
- 
+    TString _baseOutDir;
+    
     ClassDef(chanser::FinalStateManager,1); //class EventParticles
       
   };

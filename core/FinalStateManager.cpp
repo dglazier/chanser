@@ -1,5 +1,6 @@
 #include "FinalStateManager.h"
 #include <TFile.h>
+#include <TSystem.h>
 #include <TBenchmark.h>
 #include <iostream>
 
@@ -10,13 +11,15 @@ namespace chanser{
   ///saved in root file
   Bool_t  FinalStateManager::LoadFinalState(TString fsname,TString filename,TString worker){
     std::cout<<"FinalStateManager::LoadFinalState "<<fsname<<" "<<filename<<std::endl;
+
     auto file=TFile::Open(filename);
     finalstate_uptr fs;
   
     fs.reset(dynamic_cast<FinalState*>(file->Get(fsname)));
     if(worker!=TString()) worker.Prepend(".");
     fs->SetWorkerName(worker);//in case on PROOF
-      
+    fs->SetInputFileName(filename); //for making unique output dir
+    
     //functions otherwise handled by constructor
     //The ROOT streamer is called after the constructor
     //so we have to wait to call some initialisations in PostRead
@@ -72,9 +75,18 @@ namespace chanser{
     EndAndWrite(); 
   }
   ///////////////////////////////////////////////////////////////
-  void   FinalStateManager::Init(){
+  void  FinalStateManager::Init(){
+    MakeBaseOutputDir();
+    
     for(const auto& fs:_finalStates)
-      fs->Init();
+      fs->Init(_baseOutDir);
+  }
+  void  FinalStateManager::MakeBaseOutputDir(){
+    if(!_baseOutDir.BeginsWith('/'))
+      _baseOutDir = TString(gSystem->Getenv("PWD"))+"/"+_baseOutDir;
+    gSystem->Exec(Form("mkdir -p %s",_baseOutDir.Data()));
+    if(!_baseOutDir.EndsWith("/"))
+      _baseOutDir.Append('/');
   }
   //////////////////////////////////////////////////////////////
   ///Process event over all final states
@@ -82,8 +94,9 @@ namespace chanser{
 
     auto eventTopo = _data->eventPids();
     Bool_t doneRead=kFALSE;
-     
+    //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     for(auto& fs:_finalStates){
+      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<std::endl;
       //See if this final state had any topologies
       //fulfilled by this event
       if(!fs->CheckForValidTopos(eventTopo))
@@ -92,6 +105,7 @@ namespace chanser{
       if(!doneRead){ //only read one per event
 	//got a valid event, read all data
 	_data->ReadEvent();
+	//std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
 	//organise the particle vectors for the event
 	if(!_eventParts.ReadEvent(_data->GetParticles()))
 	  break; //something wrong with event disegard it
