@@ -10,15 +10,17 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <iostream>
 
 namespace chanser{
 
-  namespace global{
-    static std::vector<TString> gCompilesList;
+  namespace loader{
+    static std::vector<TString> gCompilesList; //
     static std::vector<std::pair<TString,TString>> gCompilesToList;
     static std::map<TString,TString> gClassFile;
   }
-  
+
+   
   class Loader{
 
     
@@ -29,8 +31,13 @@ namespace chanser{
     static Bool_t Compile(const TString& filename);
     static Bool_t CompileTo(const TString& filename,TString libname);
     static TString GetClassFile(const TString& className);
-    
-    //  static std::vector<TString>& CompiledList();
+
+    static TString FullFileName(const TString& filename);
+  
+    static std::map<TString,TString>& ClassFileMap();
+    static std::vector<std::pair<TString,TString>>& CompilesToList();
+    static std::vector<TString>& CompilesList();
+
     
   private :
 

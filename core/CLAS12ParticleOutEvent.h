@@ -5,22 +5,19 @@
 ///
 #pragma once
 
-#include "BaseOutEvent.h"
+#include "CLAS12Particle.h"
+#include "ParticleOutEvent.h"
 
 namespace chanser{
-
-    
-  class ParticleOutEvent : public BaseOutEvent {
+   
+  class CLAS12ParticleOutEvent : public ParticleOutEvent {
 
   public :
       
-    ParticleOutEvent()=default;
-
-    virtual std::unique_ptr<ParticleOutEvent> clone() {return std::unique_ptr<ParticleOutEvent>(new ParticleOutEvent{});}
+    CLAS12ParticleOutEvent()=default;
       
-    //
-    virtual void SetParticle(BaseParticle* particle){};
-    
+      
+    void SetParticle(BaseParticle* particle) final {_part=static_cast<CLAS12Particle*>(particle);}; 
 
     //Function required to set tree branches
     //virtual void Branches(ttree_ptr tree) =0 ;
@@ -33,19 +30,23 @@ namespace chanser{
       BaseOutEvent::Hipo(writer,Class()->GetListOfDataMembers());
     }
       
-    /////////////////////////////////////////////////
+  protected :
+    
+    CLAS12Particle*  _part{nullptr};//!
+
+  private :
+         /////////////////////////////////////////////////
     /// data member for tree branches below here
     /// Experiment developers add your own data members
     /// if you want them in the tree
     /// then assign them in  ParticleData::FillData()
-  private :
+
+
+
       
-
-
-    ClassDefOverride(ParticleOutEvent,1);
+    ClassDefOverride(CLAS12ParticleOutEvent,1);
 
   };
-  using partoutev_uptr = std::unique_ptr<ParticleOutEvent>;
 
 
   /////////////////////////////////////////////////

@@ -14,37 +14,42 @@ namespace chanser{
     return CompileClass(cname,fname);
   }
   Bool_t Loader::CompileClass(const TString& classname,const TString&  filename){
-    auto fullfile=filename;
-    if(filename.BeginsWith("/")==kFALSE)
-      fullfile = TString(gSystem->Getenv("PWD"))+"/"+filename;
-
+    auto fullfile= FullFileName(filename);
     std::cout<<"Loader::CompileClass "<<classname<<" from "<<fullfile<<std::endl;
-    chanser::global::gClassFile[classname] = fullfile;
+    //Link from this class to its .cpp  file
+    ClassFileMap()[classname] = fullfile;
     return Compile(filename);
     
   }
+  TString Loader::FullFileName(const TString& filename){
+    auto fullfile=filename;
+    if(filename.BeginsWith("/")==kFALSE&&filename.BeginsWith("$")==kFALSE)
+      fullfile = TString(gSystem->Getenv("PWD"))+"/"+filename;
+    return std::move(fullfile);
+  }
   Bool_t Loader::Compile(const TString& filename){
-    auto &cl= chanser::global::gCompilesList;
-
+    auto &cl= CompilesList();
+    auto fullfile= FullFileName(filename);
+ 
     //if already compiled return true, so OK to continue
-    if(std::find( cl.begin(), cl.end(), filename)!=cl.end())
+    if(std::find( cl.begin(), cl.end(), fullfile)!=cl.end())
       return kTRUE;
     
-    chanser::global::gCompilesList.push_back(filename);
-
+    cl.push_back(fullfile);
+    std::cout<<" Loader::Compile "<<filename<<" "<<CompilesList().size()<<std::endl;
     gROOT->ProcessLine(Form(".L %s+",filename.Data()));
     
     return kTRUE;
   }
   Bool_t Loader::CompileTo(const TString& filename,TString libname){
-    auto &cl= chanser::global::gCompilesToList;
+    auto &cl= CompilesToList();
 
     //if already compiled return true, so OK to continue
     if( std::find_if( cl.begin(), cl.end(),[&filename](const std::pair<TString, TString>& element){ return element.first == filename;} ) != cl.end()) return kTRUE; //aready compiled 
 	   
-    chanser::global::gCompilesToList.push_back(std::make_pair(filename,libname));
+    cl.push_back(std::make_pair(filename,libname));
 
-    if(libname.BeginsWith("/")==kFALSE)
+    if(libname.BeginsWith("/")==kFALSE&&libname.BeginsWith("$")==kFALSE)
       libname = TString(gSystem->Getenv("PWD"))+"/"+libname;
     
     if(gSystem->CompileMacro(filename,"",libname)==0) return kFALSE;
@@ -79,9 +84,17 @@ namespace chanser{
 
     return kTRUE;
   }
+  /////////////////////////////////////////////////////
+  ///return the full path and filename for className
   TString Loader::GetClassFile(const TString& className){
-    return chanser::global::gClassFile[className];
+    return ClassFileMap()[className];
   }
+
+ 
+  std::vector<TString>&  Loader::CompilesList(){ std::cout<<"getting "<<loader::gCompilesList.size()<<std::endl;return loader::gCompilesList;}
+  std::map<TString,TString>& Loader::ClassFileMap(){return loader::gClassFile;}
+  std::vector<std::pair<TString,TString>>& Loader::CompilesToList(){return loader::gCompilesToList;}
+ 
   // std::vector<TString>& Loader::CompiledList()  {
   //   return chanser::global::gCompilesList;
   // }

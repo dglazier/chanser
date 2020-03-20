@@ -42,7 +42,7 @@ namespace chanser{
     void Configure(FinalState* fs) override;
 
        
-    void SetParticleOut(ParticleOutEvent* out){_outData=out;}
+    void SetParticleOut(ParticleOutEvent& out){_outData=&out;}
 
   protected:
       

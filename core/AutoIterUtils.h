@@ -19,7 +19,7 @@ namespace chanser{
   ///nGroups of nSelected from parts
   ParticleIter* AddSelectToSelected(ParticleIter* diter,Int_t nSelected,vector<BaseParticle*> *parts){
     if(nSelected>diter->GetNSel()) cout<<"WARNING AutoIterUtils::AddSelectToSelected : trying to select more particles than exist in original iterator "<<" of "<<nSelected<<" "<< diter->GetNSel()<<endl;
-    cout<<" AddSelectToSelected groups "<<" selected "<<nSelected<<" particles "<<parts->size()<<endl;
+    //cout<<" AddSelectToSelected groups "<<" selected "<<nSelected<<" particles "<<parts->size()<<endl;
     ParticleIter *new_iter=AddSelectX(nSelected,parts);
     //new_iter->SetName(new_iter->GetName()+" sel parent is "+diter->GetName());
     //if(parts->at(0)) new_iter->SetPDG(parts->at(0)->PDG());
@@ -31,7 +31,7 @@ namespace chanser{
   ///Interface to ParticleIter
   ///Add selected iterator to remaining particles
   ParticleIter* AddSelectToRemainder(ParticleIter* diter,Int_t nSelected){
-    cout<<" AddSelectToRemainder groups "<<" selected "<<nSelected<<endl;
+    //cout<<" AddSelectToRemainder groups "<<" selected "<<nSelected<<endl;
     ParticleIter *new_iter=new ParticleIter(nSelected);
     
     diter->SetRemIter(new_iter);

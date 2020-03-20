@@ -7,12 +7,15 @@
 //#pragma link C++ nestedclass;
 //#pragma link C++ nestedtypedef;
 
-//#pragma link C++ namespace chanser;
+#pragma link C++ namespace chanser;
+//#pragma link C++ namespace chanser::loader;
+//#pragma link C++ global  chanser::loader::gCompilesList;
+#pragma link C++ defined_in "Loader.h";
+#pragma link C++ defined_in "Archive.h";
 
 #pragma link C++ class chanser::BaseParticle+;
 #pragma link C++ class chanser::TruthParticle+;
 #pragma link C++ class chanser::FinalState+;
-#pragma link C++ class chanser::CLAS12FinalState+;
 #pragma link C++ class chanser::EventParticles+;
 #pragma link C++ class chanser::FinalStateManager+;
 #pragma link C++ class chanser::DataManager+;
@@ -35,6 +38,11 @@
 #pragma link C++ class chanser::BaseCut+;
 #pragma link C++ class chanser::DeltaTimeCut+;
 #pragma link C++ class chanser::EventBuilderCut+;
+
+#pragma link C++ class chanser::CLAS12FinalState+;
+#pragma link C++ class chanser::CLAS12ParticleOutEvent+;
+#pragma link C++ class chanser::CLAS12ParticleOutEvent0+;
+
 //#pragma link C++ class chanser::+;
 
 

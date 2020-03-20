@@ -51,7 +51,7 @@ namespace chanser{
       Int_t pdg=0;
       if(TDatabasePDG::Instance()->GetParticle(type))
 	pdg=TDatabasePDG::Instance()->GetParticle(type)->PdgCode();
-      _pdgToCut[type]=&cut; //copy cut
+      _pdgToCut[type]=&cut;
  
     }
 

@@ -26,7 +26,8 @@ namespace chanser{
   BaseOutEvent(TString name):TNamed(name,name){}
     BaseOutEvent()=default;
     virtual ~BaseOutEvent()=default;
-
+    //virtual  std::unique_ptr<BaseOutEvent> clone()=0;
+ 
     virtual void FillData(){};
     
     void Branches(TTree* tree,TList* dmList);
@@ -49,5 +50,6 @@ namespace chanser{
   };//class BaseOutEvent
   using base_outevt_ptr = BaseOutEvent*;
   using base_outevts =std::vector<base_outevt_ptr>;
- 
+  using base_outevt_uptr = std::unique_ptr<BaseOutEvent>;
+
 }

@@ -52,7 +52,7 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////// 
   void ParticleCutsManager::Branches(const FinalState* fs){
-    cout<<" ParticleCutsManager::Branches "<<fs->FinalTree()<<" "<<fs->FinalHipo()<<endl;
+    //  cout<<" ParticleCutsManager::Branches "<<fs->FinalTree()<<" "<<fs->FinalHipo()<<endl;
     if(fs->FinalTree()!=nullptr)
       fs->FinalTree()->Branch(GetName(),&_passCut,TString(GetName())+"/I");
     if(fs->FinalHipo()){

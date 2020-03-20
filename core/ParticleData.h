@@ -27,14 +27,16 @@ namespace chanser{
     ParticleData& operator=(const ParticleData& other)=default;
     ParticleData& operator=(ParticleData&& other)=default;
 
-    void AddParticle( ParticleOutEvent out,BaseParticle* particle,TString name){
-      _outputs[_nParticles]=std::move(out);
-      _outputs[_nParticles].SetName(name); 
+    void AddParticle( ParticleOutEvent* out,BaseParticle* particle,TString name){
+      _outputs[_nParticles]=(out->clone()); //make a copy as each particle needs its own
+      std::cout<<"AddParticle "<<out->ClassName()<<" "<<out->Class_Name()<<std::endl;
+      std::cout<<"AddParticle LOCAL  "<<_outputs[_nParticles]->ClassName()<<" "<<_outputs[_nParticles]->Class_Name()<<std::endl;
+      _outputs[_nParticles]->SetName(name); 
       //no get reference to output moved into vector so branches work
 
-      std::cout<<"ParticleData::AddParticle "<<_outputs[_nParticles].GetName()<<" "<<particle->PDG()<<std::endl;
-      _outputs[_nParticles].SetParticle(particle);
-      _outputs[_nParticles].Branches(_tree->Tree());
+      //std::cout<<"ParticleData::AddParticle "<<_outputs[_nParticles].GetName()<<" "<<particle->PDG()<<std::endl;
+      _outputs[_nParticles]->SetParticle(particle);
+      _outputs[_nParticles]->Branches(_tree->Tree());
       _nParticles++;
     }
 
@@ -45,9 +47,9 @@ namespace chanser{
       
   private:
       
-    std::vector<ParticleOutEvent >_outputs;
+    std::vector<partoutev_uptr >_outputs;//!
 
-    std::unique_ptr<FiledTree> _tree;
+    std::unique_ptr<FiledTree> _tree;//!
 
     UInt_t _nParticles{0};
       

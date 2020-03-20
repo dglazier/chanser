@@ -12,8 +12,8 @@ namespace chanser{
 
     if(!fsfile.BeginsWith('/'))
       fsfile = TString(gSystem->Getenv("PWD"))+"/"+fsfile;
- 
     GetFinalStates(fsfile); //read which final states to process from text file
+    Info(" HipoProcessor::HipoProcessor",Form(" from %s found %d entries",fsfile.Data(),_listOfFinalStates->GetEntries()));
   }
   HipoProcessor::~HipoProcessor() {
     if(_listOfFinalStates) delete _listOfFinalStates;_listOfFinalStates=nullptr;
@@ -38,6 +38,8 @@ namespace chanser{
     _fsm.LoadData(&_hipo);
     //now initiliase all final states
     _listOfFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES"))); //      _hipo.SetReader(_c12.get());
+
+    cout<<"HipoProcessor::SlaveBegin "<<_listOfFinalStates->GetEntries()<<endl;
     for(Int_t ifs=0;ifs<_listOfFinalStates->GetEntries();++ifs){
       TString workerName;
       if(gProofServ) workerName=gProofServ->GetOrdinal();
@@ -81,6 +83,9 @@ namespace chanser{
     // a query. It always runs on the client, it can be used to present
     // the results graphically or save the results to file.
 
+
+    //Tidy up
+    gROOT->ProcessLine(".! rm -r chanser_FinalStates/");
   }
 
   void HipoProcessor::GetFinalStates(TString fsfile){
@@ -90,14 +95,22 @@ namespace chanser{
 
 #include <fstream>
     std::ifstream infile(fsfile.Data());
-    if(!infile.is_open()) {Fatal("HipoProcessor::GetFinalStates",Form("No final states list file found %s",fsfile.Data()));}
     
+    if(!infile.is_open()) {
+      const char* messa=Form("No final states list file found %s",fsfile.Data());
+      Fatal("HipoProcessor::GetFinalStates",messa,"");
+    }
+    cout<<" HipoProcessor::GetFinalStates("<<endl;
     std::string fss, fis; //finalstate name and root filename
     while (infile >> fss >> fis){
+      if(fss[0]=='#') //comment out with #
+      	continue; 
       std::cout<<"HipoProcessor::LoadFinalStates : "<<fss << " "<<fis<<std::endl;
       _listOfFinalStates->Add(new TNamed(fss,fis));
-      Archive::ExtractFinalState(fis,fss);
+      Archive::ExtractFinalState(fis,fss); //finalstate name, filename (full path)
     }
+    //Do any compilation that is needed
+    Archive::doCompileThese();
   }
 }
   

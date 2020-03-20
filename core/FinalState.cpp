@@ -104,7 +104,8 @@ namespace chanser{
     
     auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
     gSystem->Exec(Form("mkdir -p %s",outdir.Data()));
-
+    Info("FinalState::Init",Form("Using %s ",InputFileName().Data()));
+    
     //add final state configuration name directory
     _outputDir=outdir+GetName()+'_'+gSystem->BaseName(InputFileName())+"__"+WorkerName()+'/';
     gSystem->Exec(Form("mkdir -p %s",_outputDir.Data()));
@@ -321,21 +322,10 @@ namespace chanser{
   void FinalState::AutoIter(){
 
     //pid => can be pdg code or charge, depending on what the user want to use for particle identification
-    cout<<"FinalState::AutoIter() "<<endl;
-    // auto  thisTopo = _currTopo->Definition(); //sorted detected pids (charge or pdg)
-    //auto Ndet = thisTopo.size(); //total number of detectred particles for this topology
-    
-    //for(UInt_t ip=0;ip<Ndet;){
-    // Short_t pid=thisTopo.at(ip); //get next detected particle species (charge or pdg)
-    //  Short_t N_pid=std::count(thisTopo.begin(), thisTopo.end(), pid);
-    // ip+=N_pid; //move to next particle species for next loop
-  
-     
     auto pids = whichParticleConfigPIDs(_currTopo->GetParticleConfigs()); //returns vector of pdgs
-    cout<<"FinalState::AutoIter() "<<pids.size()<<endl;
+    // cout<<"FinalState::AutoIter() "<<pids.size()<<endl;
     for(const auto& pid:pids){
-         cout<<"FinalState::AutoIter() lopp "<<pid<<endl;
- 
+       
       //   Create the particle iterator for species pid
       //   This just selects from the species vector for each
       //   combitorial event
@@ -352,18 +342,16 @@ namespace chanser{
   //////////////////////////////////////////////////////////////////
   ///Create the particle iterator for species pid
   ParticleIter*  FinalState::InnerParticle(Int_t pid){
-    cout<<"FinalState::Particle "<<pid<<endl;
-   //Get particles with this Pid
+     //Get particles with this Pid
     auto configs_pid=filterDetParticleConfigsByPid(_currTopo->GetParticleConfigs(),pid);
     //create a Particle Iterator for this species (InnerParticle)
     //need to give the vector of particles for this species
     //and the number to select from it
     ParticleIter* diter0=CreateParticleIter(_eventParts->GetParticleVector(pid),configs_pid.size());
-    cout<<"FinalState::Particle "<<endl;
+  
     //get the pointers to the particles of this species
     vector<BaseParticle* > species_parts;
     
-    cout<<"FinalState::Particle "<<configs_pid.size()<<endl;
     for(const auto& particle_conf:configs_pid){
       species_parts.push_back(particle_conf.Particle());
     }
@@ -374,17 +362,17 @@ namespace chanser{
     
   }
   void FinalState::InnerSelect(ParticleIter* recursiter,Int_t pid){
-     cout<<"FinalState::InnerSelect "<<pid<<endl;
+    
      //get particle configs for this pid
     auto configs_pid=filterDetParticleConfigsByPid(_currTopo->GetParticleConfigs(),pid);
-    cout<<"FinalState::InnerSelect "<<configs_pid.size()<<endl;
+    
     //how many final state particles with pid but different PDG
     auto pdgs = whichParticleConfigPDGs(configs_pid); //returns vector of pdgs
 
     //we need to select particles belonging to each pdg
     //get the pointers to the particles of this species
     auto Nleft=configs_pid.size();
-    cout<<"FinalState::InnerSelect number of pdgs "<<pdgs.size()<<endl;
+   
     auto loopIter=recursiter;
     for(const auto& pdg:pdgs){
       if(Nleft<=0) cout<<"None left but still PDGs"<<Nleft<<" "<<pdg<< " "<<pdgs.size()<<endl;
@@ -396,7 +384,7 @@ namespace chanser{
 	pdg_parts.push_back(particle_conf.Particle());
       }
       auto Npdg=pdg_parts.size(); //number to select
-      cout<<"FinalState::InnerSelect PDG "<<pdg<<" has "<<Npdg<<" particles "<<endl;
+      
       Nleft-=Npdg; //Number remaining
       //select particles with this pdg
       auto selIter=AddSelectToSelected(loopIter,Npdg,&pdg_parts);
@@ -410,10 +398,10 @@ namespace chanser{
       
       //get particles of this pdg which have parents
       auto parent_names = whichParticleConfigParents(configs_pdg); //returns vector of pdgs
-      cout<<"FinalState::InnerSelect Parents "<<parent_names.size()<<endl;
+     
       auto parLoopIter=selIter;
       for(auto& name:parent_names){
-	cout<<"FinalState::InnerSelect Parent  "<<name<<endl;
+
       	//get particles with this pdg and this parent (generally should be 1!)
       	auto configs_parent=filterDetParticleConfigsByParent(configs_pdg,name);
       	//get a vector of their base particle pointers
@@ -423,7 +411,7 @@ namespace chanser{
       	}
       	auto Nchild=child_parts.size();
       	auto Nleft_after_parent=Npdg-Nchild;
-  	cout<<"FinalState::InnerSelect Parent  "<<name<<" "<<Nchild<<" "<<Nleft_after_parent<<endl;
+  
     	//select particle for this parent pdg from the particles with this pdg
       	auto parIter=AddSelectToSelected(parLoopIter,Nchild,&child_parts);
       	if(Nleft_after_parent>0){
