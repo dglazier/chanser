@@ -13,7 +13,7 @@ namespace chanser{
     if(!fsfile.BeginsWith('/'))
       fsfile = TString(gSystem->Getenv("PWD"))+"/"+fsfile;
     GetFinalStates(fsfile); //read which final states to process from text file
-    Info(" HipoProcessor::HipoProcessor",Form(" from %s found %d entries",fsfile.Data(),_listOfFinalStates->GetEntries()));
+    Info(" HipoProcessor::HipoProcessor",Form(" from %s found %d entries",fsfile.Data(),_listOfFinalStates->GetEntries()),"");
   }
   HipoProcessor::~HipoProcessor() {
     if(_listOfFinalStates) delete _listOfFinalStates;_listOfFinalStates=nullptr;
@@ -51,6 +51,7 @@ namespace chanser{
     _fsm.SetBaseOutDir(_baseDir);
 
     _fsm.GetEventParticles().SetMaxParticles(6);
+    
     _fsm.Init();
      
   }

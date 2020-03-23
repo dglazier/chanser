@@ -64,7 +64,8 @@ namespace chanser{
     // tree->Branch("Correct",&fCorrect,"Correct/I");
     tree->Branch("NPerm",&_nPerm,"NPerm/I");
     //	tree->Branch("Final",&fFinal);
-     GetOutEvent()->Branches(tree);
+    GetOutEvent()->Branches(tree);
+    _listOfOutTrees.push_back(tree);
   }; //save particles to final state output
   //////////////////////////////////////////////////////////////////
   /// Define general final state data and initialise
@@ -104,7 +105,7 @@ namespace chanser{
     
     auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
     gSystem->Exec(Form("mkdir -p %s",outdir.Data()));
-    Info("FinalState::Init",Form("Using %s ",InputFileName().Data()));
+    Info("FinalState::Init",Form("Using %s ",InputFileName().Data()),"");
     
     //add final state configuration name directory
     _outputDir=outdir+GetName()+'_'+gSystem->BaseName(InputFileName())+"__"+WorkerName()+'/';

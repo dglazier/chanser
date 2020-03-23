@@ -29,12 +29,7 @@ namespace chanser{
 
     void AddParticle( ParticleOutEvent* out,BaseParticle* particle,TString name){
       _outputs[_nParticles]=(out->clone()); //make a copy as each particle needs its own
-      std::cout<<"AddParticle "<<out->ClassName()<<" "<<out->Class_Name()<<std::endl;
-      std::cout<<"AddParticle LOCAL  "<<_outputs[_nParticles]->ClassName()<<" "<<_outputs[_nParticles]->Class_Name()<<std::endl;
       _outputs[_nParticles]->SetName(name); 
-      //no get reference to output moved into vector so branches work
-
-      //std::cout<<"ParticleData::AddParticle "<<_outputs[_nParticles].GetName()<<" "<<particle->PDG()<<std::endl;
       _outputs[_nParticles]->SetParticle(particle);
       _outputs[_nParticles]->Branches(_tree->Tree());
       _nParticles++;

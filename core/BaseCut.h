@@ -11,10 +11,11 @@
 #include <TNamed.h>
 #include <TMath.h>
 #include <limits>
-#include <bits/stdc++.h>
 
 namespace chanser{
-    
+  
+  constexpr Float_t THIS_FLT_MAX = 3.40282e+38;
+
     
   class BaseCut: public TNamed {
       
@@ -38,7 +39,7 @@ namespace chanser{
   class DeltaTimeCut : public BaseCut{
       
   public:
-    DeltaTimeCut(Double_t cut=FLT_MAX){_timeCut=cut;}
+    DeltaTimeCut(Float_t cut=FLT_MAX){_timeCut=cut;}
       
       
     Bool_t ParticleCut(const BaseParticle* part) const noexcept override{
@@ -48,7 +49,7 @@ namespace chanser{
     void SetTimeCut(Double_t val){_timeCut=val;}
       
   private:
-    Double_t _timeCut=DBL_MAX;
+    Float_t _timeCut=THIS_FLT_MAX;
       
     ClassDefOverride(chanser::DeltaTimeCut,1);
 

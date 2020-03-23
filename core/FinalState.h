@@ -142,6 +142,8 @@ namespace chanser{
     virtual TString GetUSER(){return "";};
     const TString& GetOutputDir(){return _outputDir;}
 
+    const std::vector<TTree*>& GetOutTrees() const {return _listOfOutTrees;}
+    
   protected :
 
   FinalState():_topoMan{this},_ownsActions{1}{};
@@ -204,11 +206,15 @@ namespace chanser{
 
     std::vector< TString > _usedTopos;
 
+    std::vector<TTree*> _listOfOutTrees;//!
+
     //action managers
     actionman_ptrs _postTopoAction;
     actionman_ptrs _postKinAction;
 
-      
+
+ 
+    
     TString _optPid;
     TString _optIncl;
     TString _workerName; //for PROOF worker ID

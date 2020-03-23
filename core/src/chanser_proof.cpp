@@ -31,8 +31,14 @@ int main(int argc, char **argv) {
   app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANSER\"))+\"/lib/libchanser.so\",kTRUE)"));
 
 
-  gSystem->Exec(Form("cp %s/lib/libEG_rdict.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));
+  //Wild card for 6.20 =>EG.pcm previous libEG_rdict.pcm
+  //  gSystem->Exec(Form("cp %s/lib/libEG_rdict.pcm  %s/cache/libEG_rdict.pcm",gSystem->Getenv("ROOTSYS"),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/*EG*.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));
+
+  
   gProof->Load(Form("%s/lib/libEG.so",gSystem->Getenv("ROOTSYS")));
+  // gSystem->Exec(Form("cp %s/lib/libEG.so  %s/cache/libEG.so",gSystem->Getenv("ROOTSYS"),sandbox.Data()));
+  //gProof->Load(Form("%s/cache/libEG.so",sandbox.Data()));
   
   app->Run();
 

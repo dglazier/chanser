@@ -11,10 +11,12 @@
 
 #include <map>
 #include <vector>
-#include<bits/stdc++.h>
+#include <limits>
 
 namespace chanser{
 
+  constexpr Int_t THIS_INT_MAX = 2147483647;
+  
   class FinalState;
 
     
@@ -69,7 +71,7 @@ namespace chanser{
     std::map< Int_t , particles_ptrs* > _mapPDGtoParticle{};//!
     std::vector<std::vector<BaseParticle*> *> _chargetoParticle={&_vecMinus,&_vec0,&_vecPlus};//! 
    
-    int _maxPart{INT_MAX};
+    int _maxPart{THIS_INT_MAX};
 
     ClassDef(chanser::EventParticles,1); //class EventParticles
   };

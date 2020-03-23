@@ -1,25 +1,28 @@
 {
   auto FS = USERNAME::templateFS::Make("","");
   FS->AddTopology(TOPOLOGY);
-
+  // FS->AddTopology(OTHER_TOPOLOGY);
+  
   ////Save TreeDatatemplateFS
-  //FS->CreateFinalTree("/dir/file.root");
-  //FS->CreateFinalHipo("/dir/file.hipo");
+  //FS->UseOutputRootTree();
+  //FS->UseOutputHipoNtuple();
+
+  /////Make particle trees first in case want to add cut flags
+  //ParticleDataManager pdm{"particle",1};
+  //CLAS12ParticleOutEvent0 pout;
+  //pdm.SetParticleOut(pout);
+  //FS->RegisterPostTopoAction(pdm);
 
   ////
   //ParticleCutsManager pcm{"EBCuts",1};
-  //EventBuilderCut dtc; //just use even  builder PID
-  //pcm.AddParticleCut("e-",dtc);
-  //pcm.AddParticleCut("proton",dtc);
-  //pcm.AddParticleCut("pi+",dtc);
+  //EventBuilderCut ebc; //just use even  builder PID
+  //pcm.AddParticleCut("e-",ebc);
+  //pcm.AddParticleCut("proton",ebc);
+  //pcm.AddParticleCut("pi+",ebc);
   //DeltaTimeCut dtc(2); //Apply a Delta Time cut of 2ns
   //pcm.AddParticleCut("pi-",dtc);
   // FS->RegisterPostTopoAction(pcm);
  
-  //ParticleDataManager pdm{"particle","/outdir/particleData",1};
-  //ParticleOutEvent pout;
-  //pdm.SetParticleOut(&pout);
-  //FS->RegisterPostTopoAction(pdm);
   
   FS->WriteToFile("/dir/fs/file_name_for_this_configuration.root");
 

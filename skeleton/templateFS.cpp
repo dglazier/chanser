@@ -18,7 +18,10 @@ namespace USERNAME{
     //_doToTopo["TOPOLOGY"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
-	
+    ////auto miss= _beam + _target - _electron.P4() - _proton.P4()
+    ////  -_pip1.P4()-_pim1.P4();
+    ////TD.MissMass=miss.M();
+    ////TD.MissMass2=miss.M2();
     
       ///////------------------------------------///////
     // };
@@ -34,7 +37,8 @@ namespace USERNAME{
     //Assign to tree data TD.var=
 
     //Use Kinematics to calculate electron variables
-    _kinCalc.SetElecsTarget(_beam,_Electron.P4(),_target);
+    //Note this assumes you called your electron "electron" or "Electron"
+    _kinCalc.SetElecsTarget(_beam,_electron.P4(),_target);
     TD.W=_kinCalc.W(); //photon bem energy
     TD.Q2=_kinCalc.Q2();
     TD.Pol=_kinCalc.GammaPol();

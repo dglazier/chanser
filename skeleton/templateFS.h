@@ -5,14 +5,12 @@
 ///
 #pragma once
 
-#include <utility>
 
 #include "CLAS12FinalState.h"
 #include "CLAS12Particle.h"
 
 #include "TreeDatatemplateFS.h"
 
-#pragma link C++ namespace USERNAME;
 
 namespace USERNAME{
 
