@@ -10,7 +10,7 @@
 #include "Topology.h"
 #include "TopologyManager.h"
 #include "ActionManager.h"
-#include "ParticleCutsManager.h"
+#include "OutEventManager.h"
 #include "ParticleIter.h"
 #include "DataManager.h"
 #include "BaseOutEvent.h"
@@ -28,7 +28,7 @@ namespace chanser{
 
   using std::vector;
 
-  enum class FSOutputType{NONE, ROOTTREE, HIPONTUPLE};
+  //enum class FSOutputType{NONE, ROOTTREE, HIPONTUPLE};
   
   class FinalState : public TNamed{
 
@@ -80,13 +80,15 @@ namespace chanser{
     ParticleConfig GetParticleConfig(const TString name) const;
     
     Bool_t CheckForValidTopos(const std::vector<short> eventPids){
+      if(_isGenerated) return kTRUE;
       return _topoMan.CheckForValidTopos(eventPids);
     }
     Bool_t NeedTopos(){return _topoMan.ValidTopos().size()==0;}
       
     void SetHasTruth(){_hasTruth=kTRUE;}
     void SetHasntTruth(){_hasTruth=kFALSE;}
- 
+    void SetGenerated(){_isGenerated=kTRUE;SetHasTruth();}
+
     void AddTopology(const TString names){
       _usedTopos.push_back(names);
       AddTopology(names,_doToTopo[names]);
@@ -103,31 +105,24 @@ namespace chanser{
 
     const TopologyManager& TopoManager() const {return _topoMan;}
 
+    const OutEventManager& OutEvent() const {return _outEvent;};
 
-    void UseOutputRootTree(){_outputType=FSOutputType::ROOTTREE;}
-    void UseOutputHipoNtuple(){_outputType=FSOutputType::HIPONTUPLE;}
+    void UseOutputRootTree(){_outEvent.UseOutputRootTree();}
+    void UseOutputHipoNtuple(){_outEvent.UseOutputHipoNtuple();}
     
-    void CreateFinalTree(const TString& fname);
-    void CreateFinalHipo(const TString& filename);
-      
-    virtual void ConfigureOutTree(TTree* tree);
-    virtual void ConfigureOutHipo(hipo::ntuple_writer* writer);
-
-    ttree_ptr FinalTree()const noexcept{ return _finalTree.get()!=nullptr ? _finalTree->Tree() : nullptr;}
+   
+    ttree_ptr FinalTree()const noexcept{ return _outEvent.FinalTree();}
     virtual  BaseOutEvent* GetOutEvent() noexcept{return nullptr;}
        
-    hipo::ntuple_writer* FinalHipo()const noexcept{return _finalHipo.get();}
+    hipo::ntuple_writer* FinalHipo()const noexcept{return _outEvent.FinalHipo();}
 
-    void AddOutEvent(BaseOutEvent* treeData){
-      if(FinalTree())treeData->Branches(FinalTree());
-      if(FinalHipo())treeData->Hipo(FinalHipo());
-    }
     void SetWorkerName(TString name){_workerName=name;}
     const TString& WorkerName(){return _workerName;}
     
     void SetInputFileName(TString name){_inputConfigFile=name;_inputConfigFile.ReplaceAll(".root","");}
     const TString& InputFileName(){return _inputConfigFile;}
-    
+
+       
     void RegisterPostTopoAction(ActionManager& tam){
       _postTopoAction.push_back(&tam);
     }
@@ -164,16 +159,27 @@ namespace chanser{
     vector<ParticleConfig* > HowManyParticles(Int_t pdg);
 
     void InitTruth();
+    void UseTruth();
+    void NotTruth();
+    Bool_t HasTruth()const noexcept{return _hasTruth;};
+    void TruthKinematics();
+    
+    virtual base_outevt_uptr TreeDataFactory(){return base_outevt_uptr{}; }
+    
+    void PrepareOutEvent();
+    virtual void SetOutEvent(BaseOutEvent* out){};
     
     void CheckCombitorial();
     const Topology *CurrentTopo()const noexcept {return _currTopo;}
       
     virtual void Kinematics(){};
+    
     virtual void UserProcess(){
-      if(_finalTree.get())_finalTree->Fill();
-      if(_finalHipo.get())_finalHipo->fill();
-    };
-      
+      _outEvent.Fill();
+     };
+    
+    void FSTruthProcess();
+    
     const EventParticles* GetEventParticles(){return _eventParts;}
 
       
@@ -182,18 +188,15 @@ namespace chanser{
     TopologyManager _topoMan;//!
     topo_funcs _doToTopo;//!
  
+    OutEventManager _outEvent;
+
   private:
       
     EventParticles* _eventParts{nullptr};//!
     const truth_ptrs* _truth{nullptr}; //!
    
-    filed_uptr _finalTree;//!
-    TString _finalTreeFile;
-    
-    std::unique_ptr<hipo::ntuple_writer> _finalHipo;//!
-    TString _finalHipoFile;
-
-	
+ 
+   	
     Topology *_currTopo{nullptr};//!
     ParticleIter* _currIter{nullptr};//!
       
@@ -230,7 +233,7 @@ namespace chanser{
     Short_t _hasTruth=0;
     Short_t _itersConfigured=0;
     Short_t _ownsActions=1;//!
-    FSOutputType  _outputType=FSOutputType::NONE;
+    //   FSOutputType  _outputType=FSOutputType::NONE;
     
     ClassDef(chanser::FinalState,1); //class FinalState
   };

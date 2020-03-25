@@ -40,7 +40,7 @@ namespace chanser{
 
     _c12->clearEvent();
     _entry++;
-    //	std::cout<<"HipoData::InitEvent() next"<<std::endl;
+   
     if(_entry%100000==0) std::cout<<"HipoData::InitEvent() "<<_entry<<std::endl;
       
     if(!_c12->preCheckPids().empty()){ //got one
@@ -102,7 +102,8 @@ namespace chanser{
     auto mcpbank=_c12->mcparts();
       
     const Int_t  Ngen=mcpbank->getRows();
-    _eventTruth.clear();
+    
+   _eventTruth.clear();
     _eventTruth.reserve(Ngen);
 
     while(_truthPool.size()<Ngen)
@@ -117,9 +118,9 @@ namespace chanser{
       auto pz=mcpbank->getPz();
       auto pm=mcpbank->getMass();
       
-      particle->_P4.SetXYZT(px,py,pz,sqrt(px*px+py*py+pz*pz)+pm);
-      particle->_Vertex.SetXYZ(mcpbank->getVx() ,mcpbank->getVy() ,mcpbank->getVz());
-      particle->_PDGCode=mcpbank->getPid();
+      particle->_p4.SetXYZT(px,py,pz,sqrt(px*px+py*py+pz*pz)+pm);
+      particle->_vertex.SetXYZ(mcpbank->getVx() ,mcpbank->getVy() ,mcpbank->getVz());
+      particle->_pdgCode=mcpbank->getPid();
 	
       _eventTruth.emplace_back(particle);
     }

@@ -22,12 +22,20 @@ namespace USERNAME{
   public :
     templateFS()=default;
       
-
+   TString GetUSER() final {return _USER;};
+ 
     //create an instance of the class
     static std::unique_ptr<templateFS> Make(TString ch,TString inc) {
       return std::unique_ptr<templateFS>{new templateFS{ch,inc}};
     }
-      
+    //create an instance of the treedata, should be used to init unique_ptr
+    chanser::base_outevt_uptr TreeDataFactory() final {
+      return chanser::base_outevt_uptr{new TreeDatatemplateFS{}};
+    }
+    void SetOutEvent(BaseOutEvent* out) final{
+      TD=static_cast<TreeDatatemplateFS*>(out);
+    }
+  
     ~templateFS() final =default;
 
     void Define() final;
@@ -63,11 +71,12 @@ namespace USERNAME{
 
 
     //Tree Output Data
-    TreeDatatemplateFS TD;
+    TreeDatatemplateFS* TD{nullptr};//!;
 
    
     
-    ClassDefOverride(templateFS,1); //class templateFS
+    const TString _USER="USERNAME";
+    ClassDefOverride(USERNAME::templateFS,1); //class templateFS
   }; //end templateFS
   
 }

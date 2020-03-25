@@ -52,9 +52,6 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////// 
   void ParticleCutsManager::Branches(const FinalState* fs){
-    //  cout<<" ParticleCutsManager::Branches "<<fs->FinalTree()<<" "<<fs->FinalHipo()<<endl;
-    //if(fs->FinalTree()!=nullptr)
-    // fs->FinalTree()->Branch(GetName(),&_passCut,TString(GetName())+"/I");
     auto trees=fs->GetOutTrees();
     //add cuts to all output tree (particle, final, ...)
     for(auto tree:trees){

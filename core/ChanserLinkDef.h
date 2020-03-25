@@ -20,6 +20,7 @@
 #pragma link C++ class chanser::FinalStateManager+;
 #pragma link C++ class chanser::DataManager+;
 #pragma link C++ class chanser::HipoData+;
+#pragma link C++ class chanser::HipoTruth+;
 #pragma link C++ class chanser::Topology+;
 #pragma link C++ class chanser::TopologyManager+;
 #pragma link C++ class chanser::ParticleConfig+;
@@ -33,6 +34,7 @@
 #pragma link C++ class chanser::ParticleCuts+;
 #pragma link C++ class chanser::ParticleDataManager+;
 #pragma link C++ class chanser::ParticleData+;
+#pragma link C++ class chanser::OutEventManager+;
 #pragma link C++ class chanser::BaseOutEvent+;
 #pragma link C++ class chanser::ParticleOutEvent+;
 #pragma link C++ class chanser::BaseCut+;
@@ -42,6 +44,7 @@
 #pragma link C++ class chanser::CLAS12FinalState+;
 #pragma link C++ class chanser::CLAS12ParticleOutEvent+;
 #pragma link C++ class chanser::CLAS12ParticleOutEvent0+;
+#pragma link C++ class chanser::CLAS12SimPartOutEvent+;
 
 //#pragma link C++ class chanser::+;
 

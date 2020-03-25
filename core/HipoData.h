@@ -42,12 +42,14 @@ namespace chanser{
     const BaseRunInfo* GetRunInfo() const noexcept final{return &_runInfo;};
     const BaseEventInfo* GetEventInfo() const noexcept final{return &_eventInfo;};
       
-  
+
+  protected:
+    clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
+
   private :
 
     //clas12tools
     std::unique_ptr<clas12::clas12reader> _myC12; //if created here
-    clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
 
     particle_objs _particlePool; //pool of particle objects can use for each event
     std::vector<CLAS12Particle> _particlePool2; //pool of particle objects can use for each event

@@ -5,16 +5,16 @@
 ///
 #pragma once
 
-#include "CLAS12ParticleOutEvent.h"
+#include "CLAS12SimPartOutEvent.h"
 
 namespace chanser{
    
-  class CLAS12ParticleOutEvent0 : public CLAS12ParticleOutEvent {
+  class CLAS12SimPartOutEvent : public CLAS12ParticleOutEvent {
 
   public :
       
-    CLAS12ParticleOutEvent0()=default;
-    chanser::partoutev_uptr clone() final{return std::unique_ptr<CLAS12ParticleOutEvent0>(new CLAS12ParticleOutEvent0{});}
+    CLAS12SimPartOutEvent()=default;
+    chanser::partoutev_uptr clone() final{return std::unique_ptr<CLAS12SimPartOutEvent>(new CLAS12SimPartOutEvent{});}
 
       
     void FillData() final;
@@ -58,14 +58,18 @@ namespace chanser{
     Short_t Region=-1;
     Short_t Sector=-1;
     Short_t Status=0;
+    Float_t ResTheta=0;
+    Float_t ResPhi=0;
+    Float_t ResP=0;
+    Float_t ResAngle=0;
 
       
-    ClassDefOverride(chanser::CLAS12ParticleOutEvent0,1);
+    ClassDefOverride(chanser::CLAS12SimPartOutEvent,1);
 
   };
 
   ///////////////////////////////////////////////////////////////
-  inline void CLAS12ParticleOutEvent0::FillData(){
+  inline void CLAS12SimPartOutEvent::FillData(){
     
     //move the c12p object to this particle for getting detector data
     auto c12p=_part->CLAS12();
@@ -117,7 +121,12 @@ namespace chanser{
       TrChi2= c12p->trk(clas12::CVT)->getChi2N();
       break;
     }
-   
+
+    ResTheta=_part->ResTheta();
+    ResPhi=_part->ResPhi();
+    ResP=_part->ResP();
+    ResAngle=_part->ResAngle();
+
   }
   /////////////////////////////////////////////////
 }

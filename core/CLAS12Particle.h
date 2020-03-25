@@ -20,39 +20,39 @@ namespace chanser{
   CLAS12Particle(TString pdgname):BaseParticle(pdgname){}  	        //Constructor
     
     void SetCLAS12Particle(clas12::region_particle *p);
-    clas12::region_particle* CLAS12() const {return _C12Particle;}
+    clas12::region_particle* CLAS12() const {return _c12Particle;}
     void MinorClear() override;
     void CopyParticle(const BaseParticle* part,Bool_t andPDG) override;
     void CopyTransient(const BaseParticle* part) override;
 
   private :
-    clas12::region_particle* _C12Particle{nullptr};//!
+    clas12::region_particle* _c12Particle{nullptr};//!
     
   };
   inline void chanser::CLAS12Particle::MinorClear(){
-     _C12Particle=nullptr;
+     _c12Particle=nullptr;
      BaseParticle::MinorClear();
   }
   inline void chanser::CLAS12Particle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
     
-    _C12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
+    _c12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
      BaseParticle::CopyParticle(part,andPDG);
       
     }
   inline void chanser::CLAS12Particle::CopyTransient(const BaseParticle* part){
     // std::cout<<"chanser::CLAS12Particle::CopyParticle("<<std::endl;
-    _C12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
+    _c12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
     BaseParticle::CopyTransient(part);
   }
     inline void chanser::CLAS12Particle::SetCLAS12Particle(clas12::region_particle *p){
-    _C12Particle=p;
+    _c12Particle=p;
     auto pbank=p->par();
     SetPDGcode(pbank->getPid());
-    _Charge=pbank->getCharge();
+    _charge=pbank->getCharge();
     SetXYZT(pbank->getPx(),pbank->getPy(),pbank->getPz(),pbank->getP());
     SetVertex(pbank->getVx()/100,pbank->getVy()/100,pbank->getVz()/100);//change to m
-    _Time=p->getTime();
-    _Path=p->getPath()/100; //change to m
+    _time=p->getTime();
+    _path=p->getPath()/100; //change to m
   
   }
 }

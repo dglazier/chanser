@@ -46,9 +46,9 @@ namespace chanser{
     TruthParticle& operator=(TruthParticle&& other)=default;
 
       
-    HSLorentzVector _P4;  //4-vector 
-    HSPosition _Vertex;     //particle vertex position
-    Short_t _PDGCode=0;           //PDG number
+    HSLorentzVector _p4;  //4-vector 
+    HSPosition _vertex;     //particle vertex position
+    Short_t _pdgCode{0};           //PDG number
 
     ClassDef(chanser::TruthParticle,1); //class TruthParticle
       
@@ -57,21 +57,21 @@ namespace chanser{
   class BaseParticle {
  
   protected:
-    HSLorentzVector _P4;  //4-vector 
-    HSPosition _Vertex;     //particle vertex position
+    HSLorentzVector _p4;  //4-vector 
+    HSPosition _vertex;     //particle vertex position
  
-    Double32_t _PDGMass=0;
-    Double32_t _MeasMass=0; //Or other PID info
-    Double32_t _Time=0;
-    Double32_t _Path=0;
+    Double32_t _pdgMass{0};
+    Double32_t _measMass{0}; //Or other PID info
+    Double32_t _time{0};
+    Double32_t _path{0};
 
-    Short_t _PDGCode=0;           //PDG number
-    Short_t _Charge=0;
-    Short_t _Detector=0;//! some detector ID
+    Short_t _pdgCode{0};           //PDG number
+    Short_t _charge{0};
+    Short_t _detector{0};//! some detector ID
 
+    Bool_t _useTruth{0};//
       
-      
-     const TruthParticle* _Truth{nullptr};
+    const TruthParticle* _truth{nullptr};
   
   public:
     BaseParticle()=default;  	        //Constructor
@@ -83,48 +83,56 @@ namespace chanser{
       
     BaseParticle& operator=(const BaseParticle& other)=default;
     BaseParticle& operator=(BaseParticle&& other)=default;
-      
+
+    //use the truth P4
+    void UseTruth() {_useTruth=kTRUE;}
+    void NotTruth() {_useTruth=kFALSE;}
+    
     //Setting functions
     void SetPDGcode(Int_t code);
-    void SetP4(const HSLorentzVector &v){_P4=v;}
-    void FixP4(const HSLorentzVector &v){_P4=v;TakePDGMass();}
-    void SetVectPDG(const HSLorentzVector &v){_P4.SetXYZT(v.X(),v.Y(),v.Z(),sqrt(v.P2()+_PDGMass*_PDGMass));}
-    void SetVectPDG(){_P4.SetXYZT(_P4.X(),+_P4.Y(),_P4.Z(),sqrt(_P4.P2()+_PDGMass*_PDGMass));}
-    void SetP4(const HSLorentzVector *v){_P4=*v;}
-    void SetXYZT(Double_t X,Double_t Y,Double_t Z,Double_t T){_P4.SetXYZT(X,Y,Z,T);}
-    void SetXYZM(Double_t X,Double_t Y,Double_t Z,Double_t M){_P4.SetXYZT(X,Y,Z,sqrt(M*M+X*X+Y*Y+Z*Z));}
-    void SetP(Double_t nP){Double_t rp=nP/_P4.P();_P4.SetXYZT(_P4.X()*rp,_P4.Y()*rp,_P4.Z()*rp,sqrt(_P4.M()*_P4.M()+nP*nP));}
-    void SetVertex(const HSPosition &v){_Vertex=v;}
-    void SetVertex(Double_t X,Double_t Y,Double_t Z){_Vertex.SetXYZ(X,Y,Z);}
+    void SetP4(const HSLorentzVector &v){_p4=v;}
+    void FixP4(const HSLorentzVector &v){_p4=v;TakePDGMass();}
+    void SetVectPDG(const HSLorentzVector &v){_p4.SetXYZT(v.X(),v.Y(),v.Z(),sqrt(v.P2()+_pdgMass*_pdgMass));}
+    void SetVectPDG(){_p4.SetXYZT(_p4.X(),+_p4.Y(),_p4.Z(),sqrt(_p4.P2()+_pdgMass*_pdgMass));}
+    void SetP4(const HSLorentzVector *v){_p4=*v;}
+    void SetXYZT(Double_t X,Double_t Y,Double_t Z,Double_t T){_p4.SetXYZT(X,Y,Z,T);}
+    void SetXYZM(Double_t X,Double_t Y,Double_t Z,Double_t M){_p4.SetXYZT(X,Y,Z,sqrt(M*M+X*X+Y*Y+Z*Z));}
+    void SetP(Double_t nP){Double_t rp=nP/_p4.P();_p4.SetXYZT(_p4.X()*rp,_p4.Y()*rp,_p4.Z()*rp,sqrt(_p4.M()*_p4.M()+nP*nP));}
+    void SetVertex(const HSPosition &v){_vertex=v;}
+    void SetVertex(Double_t X,Double_t Y,Double_t Z){_vertex.SetXYZ(X,Y,Z);}
      
 
-    void TakePDGMass(){_MeasMass=_P4.M();SetVectPDG(_P4);}; //Preserves momentum
-    void TakePDGMassFromE(){Double_t rho0=_P4.P();Double_t rho=sqrt(_P4.E()*_P4.E()-_PDGMass*_PDGMass);rho/=rho0;_P4.SetXYZT(_P4.X()*rho,_P4.Y()*rho,_P4.Z()*rho,_P4.E());}; //preserves energy
+    void TakePDGMass(){_measMass=_p4.M();SetVectPDG(_p4);}; //Preserves momentum
+    void TakePDGMassFromE(){Double_t rho0=_p4.P();Double_t rho=sqrt(_p4.E()*_p4.E()-_pdgMass*_pdgMass);rho/=rho0;_p4.SetXYZT(_p4.X()*rho,_p4.Y()*rho,_p4.Z()*rho,_p4.E());}; //preserves energy
    
-    void SetTruth(const TruthParticle* part){ _Truth=part;}
+    void SetTruth(const TruthParticle* part){ _truth=part;}
  
       
-    void SetDetector(Short_t det){_Detector=det;}
-    void SetTime(Double_t ti){_Time=ti;};
-    void SetMeasMass(Double_t ti){_MeasMass=ti;};
+    void SetDetector(Short_t det){_detector=det;}
+    void SetTime(Double_t ti){_time=ti;};
+    void SetMeasMass(Double_t ti){_measMass=ti;};
       
     //Getting functions
-    HSLorentzVector P4() const {return _P4;} //return a copy
-    HSLorentzVector* P4p()  {return &_P4;}  //return pointer (i.e. you can directly change it)
-    const HSPosition& Vertex() const {return _Vertex;}
-    Double_t PDGMass()const {return _PDGMass;}
-    Short_t PDG()const {return _PDGCode;}
-    Short_t Charge()const {return _Charge;}
+    HSLorentzVector P4() const {
+      return _useTruth ? _truth->_p4 : _p4;
+    } 
+    
+    //    HSLorentzVector P4() const {return _p4;} //return a copy
+    HSLorentzVector* P4p()  {return &_p4;}  //return pointer (i.e. you can directly change it)
+    const HSPosition& Vertex() const {return _vertex;}
+    Double_t PDGMass()const {return _pdgMass;}
+    Short_t PDG()const {return _pdgCode;}
+    Short_t Charge()const {return _charge;}
     Short_t FindCharge()const;
       
-    void SetPath(Double_t path){_Path=path;}
-    Double_t Path()const {return _Path;}
+    void SetPath(Double_t path){_path=path;}
+    Double_t Path()const {return _path;}
 
     //Functions required by FinalState
-    void ShiftTime(Float_t shift){_Time+=shift;}
-    Double_t Time()const { return _Time;}
-    Double_t MeasMass()const { return _MeasMass;}
-    Short_t Detector()const {return _Detector;}
+    void ShiftTime(Float_t shift){_time+=shift;}
+    Double_t Time()const { return _time;}
+    Double_t MeasMass()const { return _measMass;}
+    Short_t Detector()const {return _detector;}
     Short_t Status(){return 0;}
     void Clear();
     virtual void MinorClear();
@@ -133,15 +141,15 @@ namespace chanser{
     virtual void Print(Option_t *option="") const;
 
      
-    TLorentzVector GetTLorentzVector() const {return (TLorentzVector(_P4.X(),_P4.Y(),_P4.Z(),_P4.T()));}
-    TVector3 GetVertex3()const {return (TVector3(_Vertex.X(),_Vertex.Y(),_Vertex.Z()));}
+    TLorentzVector GetTLorentzVector() const {return (TLorentzVector(_p4.X(),_p4.Y(),_p4.Z(),_p4.T()));}
+    TVector3 GetVertex3()const {return (TVector3(_vertex.X(),_vertex.Y(),_vertex.Z()));}
 
  
-    Double_t Beta() const {return _Path/_Time/2.99792e+08*1E9;}//time ns, path m
-    Double_t HypBeta() const {Double_t pp=_P4.P();return pp/sqrt(pp*pp+_PDGMass*_PDGMass);}
-    Double_t HypTime() const {return _Path/HypBeta()/2.99792e+08*1E9  ;} //in ns
-    Double_t DeltaTime() const {return _Time-HypTime();};
-    Double_t DeltaTimeVer()const {return DeltaTime()+_Vertex.Z()/2.99792e+08*1E9;}
+    Double_t Beta() const {return _path/_time/2.99792e+08*1E9;}//time ns, path m
+    Double_t HypBeta() const {Double_t pp=_p4.P();return pp/sqrt(pp*pp+_pdgMass*_pdgMass);}
+    Double_t HypTime() const {return _path/HypBeta()/2.99792e+08*1E9  ;} //in ns
+    Double_t DeltaTime() const {return _time-HypTime();};
+    Double_t DeltaTimeVer()const {return DeltaTime()+_vertex.Z()/2.99792e+08*1E9;}
 
     //Add 4-vectors, doca vertices, fix pdg(optional)
     void Add(const BaseParticle *hsp1, const BaseParticle *hsp2,Int_t pdg=0);
@@ -151,37 +159,37 @@ namespace chanser{
     //order in vector based on particle momentum
     //nb comparitive operator cannot work on pointers so vectors need
     //to be filled with object not pointers for this to work
-    friend bool operator< ( const BaseParticle& lhs, const BaseParticle& rhs ){return lhs._P4.P() < rhs._P4.P(); };
+    friend bool operator< ( const BaseParticle& lhs, const BaseParticle& rhs ){return lhs._p4.P() < rhs._p4.P(); };
 
-    Double_t p3Distance(HSMomentum vec){return (_P4.Vect()-vec).Mag2();}
+    Double_t p3Distance(HSMomentum vec){return (_p4.Vect()-vec).Mag2();}
 
-    Double_t ResTheta() const {return _Truth!=nullptr?_P4.Theta()-_Truth->_P4.Theta():0;};
-    Double_t ResPhi() const {return _Truth!=nullptr?_P4.Phi()-_Truth->_P4.Phi():0;};
-    Double_t ResP() const {return _Truth!=nullptr?_P4.P()-_Truth->_P4.P():0;};
-    Double_t ResE() const {return _Truth!=nullptr?_P4.E()-_Truth->_P4.E():0;};
-    Double_t ResAngle() const {return _Truth!=nullptr?ROOT::Math::VectorUtil::Angle(_P4,_Truth->_P4):0;};
+    Double_t ResTheta() const {return _truth!=nullptr?_p4.Theta()-_truth->_p4.Theta():0;};
+    Double_t ResPhi() const {return _truth!=nullptr?_p4.Phi()-_truth->_p4.Phi():0;};
+    Double_t ResP() const {return _truth!=nullptr?_p4.P()-_truth->_p4.P():0;};
+    Double_t ResE() const {return _truth!=nullptr?_p4.E()-_truth->_p4.E():0;};
+    Double_t ResAngle() const {return _truth!=nullptr?ROOT::Math::VectorUtil::Angle(_p4,_truth->_p4):0;};
 
     ClassDef(chanser::BaseParticle,1); //class BaseParticle
   };
 
   inline void  chanser::BaseParticle::SetPDGcode(Int_t code){
-    _PDGCode=code;
-    if(!_PDGCode) return;
-    if(_PDGCode==UndefinedPDG||_PDGCode==-UndefinedPDG) return;
+    _pdgCode=code;
+    if(!_pdgCode) return;
+    if(_pdgCode==UndefinedPDG||_pdgCode==-UndefinedPDG) return;
     
-    auto partpdg=TDatabasePDG::Instance()->GetParticle(_PDGCode);
+    auto partpdg=TDatabasePDG::Instance()->GetParticle(_pdgCode);
     if(partpdg){
-      _PDGMass = partpdg->Mass();}
-    else _PDGMass=0;
+      _pdgMass = partpdg->Mass();}
+    else _pdgMass=0;
  
   }
   
   inline Short_t chanser::BaseParticle::FindCharge()const{
     
-    if(_PDGCode==chanser::UndefinedPDG) return 1;
-    else if(_PDGCode==chanser::UndefinedPDG) return -1;
+    if(_pdgCode==chanser::UndefinedPDG) return 1;
+    else if(_pdgCode==chanser::UndefinedPDG) return -1;
 
-    TParticlePDG *part=TDatabasePDG::Instance()->GetParticle(_PDGCode);
+    TParticlePDG *part=TDatabasePDG::Instance()->GetParticle(_pdgCode);
     if(part){
       Int_t charge=part->Charge();
       if(charge!=0)charge=(Int_t) charge/TMath::Abs(charge); //just get sign not mag.
@@ -191,27 +199,30 @@ namespace chanser{
   }
   inline void chanser::BaseParticle::Clear(){
     MinorClear();
-    _PDGCode=0;
-    _Charge=0;
+    _pdgCode=0;
+    _charge=0;
   }
   inline void chanser::BaseParticle::MinorClear(){
-    _P4.SetXYZT(0,0,0,0);
-    _MeasMass=0;
-    _Time=0;
-    _Path=0;
-    _Detector=0;
-    _Truth=nullptr;
+    _p4.SetXYZT(0,0,0,0);
+    _measMass=0;
+    _time=0;
+    _path=0;
+    _detector=0;
+    _truth=nullptr;
+    NotTruth();
   }
   inline void chanser::BaseParticle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
      SetP4(part->P4());
-    SetVertex(part->Vertex());
+     SetVertex(part->Vertex());
+     NotTruth();
     }
   inline void chanser::BaseParticle::CopyTransient(const BaseParticle* part){
     SetP4(part->P4());
     SetVertex(part->Vertex());
   
-    _Time=part->Time();
-    _Path=part->Path();
+    _time=part->Time();
+    _path=part->Path();
+    NotTruth();
   }
   inline void chanser::BaseParticle::Add(const BaseParticle* hsp1, const BaseParticle* hsp2,Int_t pdg){
     SetP4(hsp1->P4()+hsp2->P4());

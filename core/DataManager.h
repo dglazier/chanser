@@ -46,7 +46,8 @@ namespace chanser{
       
     Long64_t NEventsRead()const {return _entry;}
       
-    Bool_t IsSim() const noexcept{return _dataType==static_cast<Short_t>(DataType::Sim);}
+    Bool_t IsSim() const noexcept{return (_dataType==static_cast<Short_t>(DataType::Sim))||(_dataType==static_cast<Short_t>(DataType::Lund));}
+    Bool_t IsLund() const noexcept{return _dataType==static_cast<Short_t>(DataType::Lund);}
 
   protected :
         

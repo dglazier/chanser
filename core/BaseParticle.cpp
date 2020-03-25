@@ -19,7 +19,7 @@ namespace chanser{
     SetPDGcode(TDatabasePDG::Instance()->GetParticle(pdgname)->PdgCode());
   }
   void BaseParticle::Print(Option_t *) const{
-    cout<<"Printing BaseParticle of type "<<TDatabasePDG::Instance()->GetParticle(_PDGCode)->GetName()<<endl;
+    cout<<"Printing BaseParticle of type "<<TDatabasePDG::Instance()->GetParticle(_pdgCode)->GetName()<<endl;
   }
 }
 
