@@ -56,7 +56,7 @@ namespace chanser{
    
   }
   void  FinalState::ConfigureIters(Topology *tt){
-     cout<<"FinalState::ConfigureIters() "<<endl;
+   
    _currTopo=tt;
     _currIter=nullptr;
     AutoIter();

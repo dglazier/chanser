@@ -37,10 +37,10 @@ namespace chanser{
       return _forReal ? _passCut==_particleCuts[ti].NParticles() : kTRUE;
     }
       
-    //void End() override {};
+  
     void Configure(FinalState* fs) override;
       
-    //  void Register( ParticleCuts& pcuts ){_particleCuts.push_back(pcuts);};
+   
     void AddParticleCut(TString type,BaseCut& cut){
       if(TDatabasePDG::Instance()->GetParticle(type)){
 	cut.SetName(type);
