@@ -39,10 +39,10 @@ namespace USERNAME{
     //Use Kinematics to calculate electron variables
     //Note this assumes you called your electron "electron" or "Electron"
     _kinCalc.SetElecsTarget(_beam,_electron.P4(),_target);
-    TD.W=_kinCalc.W(); //photon bem energy
-    TD.Q2=_kinCalc.Q2();
-    TD.Pol=_kinCalc.GammaPol();
-    TD.Egamma=_kinCalc.GammaE();
+    TD->W=_kinCalc.W(); //photon bem energy
+    TD->Q2=_kinCalc.Q2();
+    TD->Pol=_kinCalc.GammaPol();
+    TD->Egamma=_kinCalc.GammaE();
     
   }
     
