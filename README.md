@@ -247,6 +247,14 @@ For example you can add different particle ID cuts for different particles :
 
 Note you can include as many different ParticleCutsManagers in you analysis as you want. For example you could hae one with all particles having DeltaTime cuts of 1ns and another with 2ns.
 
+      ParticleCutsManager pcm{"EBCuts",1};
+      DeltaTimeCut dtc(2); //Apply a Delta Time cut of 2ns
+      pcm.AddParticleCut("e-",dtc);
+      pcm.AddParticleCut("proton",dtc);
+      pcm.AddParticleCut("pi+",dtc);
+      pcm.AddParticleCut("pi-",dtc);
+      FS->RegisterPostTopoAction(pcm);
+ 
 Note the argument 1 provided in pcm{"EBCuts",1}, means that this cut will actually be applied to the data, if this is not included or a 0 is used instead then the cut is just included as a flag in the ouput tree.
 
 
@@ -292,6 +300,10 @@ And run
 
       fsm.ProcessAll();
 
+To execute use chanser_root,
+
+      chanser_root Pi4:Pi4.cpp Run_Pi4.C
+
 ### Running the analyse with PROOF
 
 To take advantage of parallel processing and chains of many files you can use chanser_proof.
@@ -317,3 +329,9 @@ Then process all the files
       gProof->Process(&processor,chain.GetNRecords());
 
 Note if you like you can replace chain.GetNRecords() with any number of records you wish to analyse as long as <chain.GetNRecords(). Typically for clas12 DSTs a record may consist of around 100 actual events
+
+Now you can run this with chaser_proof,
+
+      chanser_proof 4 Processor.C
+
+Good Luck.
