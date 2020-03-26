@@ -155,11 +155,16 @@ namespace chanser{
     FindNextLineLike("//Set final state parents");
     for(Int_t io=0;io<_parents->GetEntries();io++){
       TString sparticle=_parents->At(io)->GetName();
+      TString Pname=TString(sparticle(0,sparticle.First(":"))).Data();
       TString pname=TString(sparticle(0,sparticle.First(":"))).Data();
-      ContinueLineAfter(Form("    AddParticle(\"%s\",&_%s,kTRUE,-1);",pname.Data(),pname.Data()));
+      pname.ToLower();
+      ContinueLineAfter(Form("    AddParticle(\"%s\",&_%s,kTRUE,-1);",Pname.Data(),pname.Data()));
       TObjArray *childs=sparticle.Tokenize(";");
-      for(Int_t ic=1;ic<childs->GetEntries();ic++)
-	ContinueLineAfter(Form("    ConfigParent(&_%s,&_%s);",pname.Data(),childs->At(ic)->GetName()));
+      for(Int_t ic=1;ic<childs->GetEntries();ic++){
+	TString child(childs->At(ic)->GetName());
+	child.ToLower();
+	ContinueLineAfter(Form("    ConfigParent(&_%s,&_%s);",pname.Data(),child.Data()));
+      }
     }
   }
 

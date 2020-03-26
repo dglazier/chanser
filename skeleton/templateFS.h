@@ -40,7 +40,7 @@ namespace USERNAME{
 
     void Define() final;
       
-    BaseOutEvent* GetOutEvent() noexcept final{return &TD;}
+    BaseOutEvent* GetOutEvent() noexcept final{return TD;}
       
   protected :
     void Kinematics() final;
