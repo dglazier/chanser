@@ -78,8 +78,22 @@ namespace chanser{
     //this can include truth data if simulation
     PrepareOutEvent();
     _outEvent.Init(_outputDir);
-    if(_outEvent.FinalTree())_listOfOutTrees.push_back(_outEvent.FinalTree());
+    if(_outEvent.FinalTree()){
+      //add branches with FinalState datamembers
+      auto tree=_outEvent.FinalTree();
+      tree->Branch("Topo",&_currTopoID,"Topo/I");
+      tree->Branch("NPerm",&_nPerm,"NPerm/I");
+      _listOfOutTrees.push_back(_outEvent.FinalTree());
+    }
+    if(_outEvent.FinalHipo()){
+      //add banks with FinalState datamembers
+      auto tree=_outEvent.FinalHipo();
+      tree->linkItemFunc("FSInfo","Topo/I",&_currTopoID);
+      tree->linkItemFunc("FSInfo","NPerm/I",&_nPerm);
+      tree->open();//hipo writer must be opened after all banks defined!
  
+    }
+
     for(auto& topo: _topoMan.Topos())
       ConfigureIters(&topo);
 

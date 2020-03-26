@@ -28,14 +28,8 @@ namespace chanser {
       _finalHipo.reset(new hipo::ntuple_writer((finalHipoFile).Data()));
     
       ConfigureOutHipo(_finalHipo.get());
-      _finalHipo->open();//hipo writer must be opened after all banks defined!
     }
   void  OutEventManager::ConfigureOutTree(TTree* tree)  const{
-    //tree->Branch("Topo",&_currTopoID,"Topo/I");
-    // tree->Branch("Correct",&fCorrect,"Correct/I");
-    //tree->Branch("NPerm",&_nPerm,"NPerm/I");
-    //	tree->Branch("Final",&fFinal);
-
     if(_realTD.get()!=nullptr)_realTD->Branches(tree);
     
     if(_truTD.get()!=nullptr){
