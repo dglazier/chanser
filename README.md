@@ -121,8 +121,8 @@ In the _doForTopo functions the particles will be updated automatically and you 
        _doToTopo["Electron:Proton:Pip1:Pip2:Pim1:Pim2"]=[&](){
        //TOPOLOGY Define your topology dedendent code in here
        ///////+++++++++++++++++++++++++++++++++++///////
-          auto miss= _beam + _target - _Electron.P4() - _Proton.P4()
-	             -_Pip1.P4()-_Pip2.P4() -_Pim1.P4() -_Pim2.P4();
+          auto miss= _beam + _target - _electron.P4() - _proton.P4()
+	             -_pip1.P4()-_pip2.P4() -_pim1.P4() -_pim2.P4();
 
           TD->MissMass=miss.M();
 	  TD->MissMass2=miss.M2();
@@ -142,8 +142,16 @@ For example use start time from Electron candidate
       for(auto& p:CurrentTopo()->GetParticles())
 	p->ShiftTime(-startime);
 
-Note, if you want to use the EB start time use  StartTimeFromEB() instead
- 
+Note, if you want to use the EB start time use  StartTimeFromEB() instead.
+
+If you had any missing or parent particle you may choose to assign their 4-vectors here or in the Kinematics function. You can use the SetP4 or FixP4, the latter fixes the particle mass to the PDG value and recalculates the energy. In general this will be different for differnt topologies
+
+      _pim2.FixP4(miss);
+
+and/or
+
+      _k1.FixP4(_pip1.P4()+_pim1.P4());
+      _k2.FixP4(_pip2.P4()+_pim2.P4());
 
 #### 2) Define overall reaction kinematics and other general quantities
 
@@ -152,7 +160,7 @@ This is done in the Kinematics function. This will only be called if previous cu
 Some Electron scattering variables are given by default,
 
      //Use Kinematics to calculate electron variables
-     _kinCalc.SetElecsTarget(_beam,_Electron.P4(),_target);
+     _kinCalc.SetElecsTarget(_beam,_electron.P4(),_target);
      TD->W=_kinCalc.W(); //photon bem energy
      TD->Q2=_kinCalc.Q2();
      TD->Pol=_kinCalc.GammaPol();
@@ -163,12 +171,12 @@ Again anything to be written to the output tree is prefixed with TD->
 Here the kinematic calculator is used, it can also be used for resonance decay kinematics and other appropriate functions can be added.
 
      //calculate meson Lorentz Vector
-     auto meson = _K1.P4() + _K2.P4();
+     auto meson = _k1.P4() + _k2.P4();
      TD->MesonMass = meson.M(); 
 
      //Caclulate X->2K0 decay angles
-     _kinCalc.SetMesonBaryon(meson,_Proton.P4());
-     _kinCalc.SetMesonDecay(_K1.P4() , _K2.P4());
+     _kinCalc.SetMesonBaryon(meson,_proton.P4());
+     _kinCalc.SetMesonDecay(_k1.P4() , _k2.P4());
      _kinCalc.MesonDecayGJ();
      TD->MesonCosThGJ=_kinCalc.CosTheta();
      TD->MesonPhiGJ=_kinCalc.CosTheta();
