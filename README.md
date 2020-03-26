@@ -79,7 +79,7 @@ Create a script to produce skeleton code for this reaction, e.g. create a file c
        s.MakeCode();
        }
 
-Now run this script in ROOT, having loaded the skeleton library
+Now run this script in chanser_skeleton
 
     	 chanser_skeleton Skeleton.C
 
@@ -121,11 +121,11 @@ In the _doForTopo functions the particles will be updated automatically and you 
        _doToTopo["Electron:Proton:Pip1:Pip2:Pim1:Pim2"]=[&](){
        //TOPOLOGY Define your topology dedendent code in here
        ///////+++++++++++++++++++++++++++++++++++///////
-      	   auto miss= _beam + _target - _Electron.P4() - _Proton.P4()
-      	   -_Pip1.P4()-_Pip2.P4() -_Pim1.P4() -_Pim2.P4();
+          auto miss= _beam + _target - _Electron.P4() - _Proton.P4()
+	             -_Pip1.P4()-_Pip2.P4() -_Pim1.P4() -_Pim2.P4();
 
-	   TD->MissMass=miss.M();
-      	   TD->MissMass2=miss.M2();
+          TD->MissMass=miss.M();
+	  TD->MissMass2=miss.M2();
       
       ///////------------------------------------///////
       };
@@ -133,6 +133,17 @@ In the _doForTopo functions the particles will be updated automatically and you 
 Here _electron, _proton etc are CLAS12Particles and so we have to call the P4() function to get their lorentz vectors. _beam, _target and miss are lorentz vectors (although not TLorentzVectors, they are ROOT::MATH genvector LorentzVectors).
 
 Anything prefixed by  TD-> has to be included in the TreeData and will be written to the output.
+
+At the moment there is no automation of the start time for the event, so users must decide what to do themselves and apply in the doToTopo function.
+For example use start time from Electron candidate
+
+      auto startime=StartTimeFromTimeAndVertex(_electron.DeltaTime());
+      //auto startime=StartTimeFromEB();
+      for(auto& p:CurrentTopo()->GetParticles())
+	p->ShiftTime(-startime);
+
+Note, if you want to use the EB start time use  StartTimeFromEB() instead
+ 
 
 #### 2) Define overall reaction kinematics and other general quantities
 
@@ -226,6 +237,11 @@ For example you can add different particle ID cuts for different particles :
     //register it with this final state instance
     FS->RegisterPostTopoAction(pcm);
 
+Note you can include as many different ParticleCutsManagers in you analysis as you want. For example you could hae one with all particles having DeltaTime cuts of 1ns and another with 2ns.
+
+Note the argument 1 provided in pcm{"EBCuts",1}, means that this cut will actually be applied to the data, if this is not included or a 0 is used instead then the cut is just included as a flag in the ouput tree.
+
+
 ### Particle data
 
 Or output data related to each particle in the event to a root tree :
@@ -239,7 +255,7 @@ This will output a set of standard detector variables,  you may create you own P
 
 At the end you should write to a root file so it can be processed. The clas12_proof processor then just needs this root file to run as it extracts and compiles the source code from the file before running.
 
-   FS->WriteToFile("ALLALL_configuration.root");
+      FS->WriteToFile("ALLALL_configuration.root");
 
 
 ### Running the analyse
