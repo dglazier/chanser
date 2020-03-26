@@ -72,7 +72,7 @@ namespace chanser{
       gSystem->Exec(Form("cp %s/%s*pcm %s/cache/.",gSystem->DirName(libname),gSystem->BaseName(libname),sandbox.Data()));
       
       auto so_ext = gSystem->GetSoExt();
-      if(libname.Contains(so_ext)==kFALSE){
+      if(libname.Contains(TString(".")+so_ext)==kFALSE){
 	libname +=".";
 	libname +=so_ext;
       }
