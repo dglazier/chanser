@@ -15,7 +15,7 @@ namespace chanser{
   ////////////////////////////////////////////////////////////////////////
   ///Initialise clas12reader from hipo filename
   Bool_t HipoData::Init(){
-    if(_c12->mcparts()) _dataType=static_cast<Short_t> (DataType::Sim);
+    if(_c12->mcparts()) _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
   }
@@ -58,7 +58,7 @@ namespace chanser{
     _c12->sort();
       
     FillParticles(); //create BaseParticles
-    if(_dataType==static_cast<Short_t> (DataType::Sim))FillTruth();
+    if(_dataType==static_cast<Short_t> (chanser::DataType::Sim))FillTruth();
     FillEventInfo();
       
     return kTRUE;

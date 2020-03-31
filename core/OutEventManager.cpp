@@ -43,7 +43,7 @@ namespace chanser {
   /// To be called at end of derived class OutHipo
   void  OutEventManager::ConfigureOutHipo(hipo::ntuple_writer* writer) const{
       
-    auto bname{"FSInfo"};
+    std::string bname{"FSInfo"};
     writer->bank(bname,"Topo/I,NPerm/I");
     //writer->linkItemFunc(bname,"Topo/I",&_currTopoID);
     //writer->linkItemFunc(bname,"NPerm/I",&_nPerm);

@@ -7,7 +7,7 @@ namespace chanser{
   ////////////////////////////////////////////////////////////////////////
   ///Initialise clas12reader from hipo filename
   Bool_t HipoTruth::Init(){
-    if(_c12->mcparts()) _dataType=static_cast<Short_t> (DataType::Lund);
+    if(_c12->mcparts()) _dataType=static_cast<Short_t> (chanser::DataType::Lund);
     else Fatal("HipoTruth::Init()","No MC::Lund banks in hipo file");
    }
   /////////////////////////////////////////////////////////////////////
