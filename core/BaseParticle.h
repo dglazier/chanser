@@ -106,6 +106,7 @@ namespace chanser{
     void TakePDGMassFromE(){Double_t rho0=_p4.P();Double_t rho=sqrt(_p4.E()*_p4.E()-_pdgMass*_pdgMass);rho/=rho0;_p4.SetXYZT(_p4.X()*rho,_p4.Y()*rho,_p4.Z()*rho,_p4.E());}; //preserves energy
    
     void SetTruth(const TruthParticle* part){ _truth=part;}
+    const TruthParticle* Truth(const TruthParticle* part)const noexcept{ return _truth;}
  
       
     void SetDetector(Short_t det){_detector=det;}

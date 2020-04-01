@@ -12,6 +12,9 @@ namespace chanser{
     
     if(_ownsActions){ //if loaded from file we will own action pointers
       //this happens anytime the default constructro is used 
+      for(auto pt : _preTopoAction) {delete pt; pt=nullptr;}
+      _preTopoAction.clear();
+	
       for(auto pt : _postTopoAction) {delete pt; pt=nullptr;}
       _postTopoAction.clear();
 	
@@ -97,7 +100,11 @@ namespace chanser{
     for(auto& topo: _topoMan.Topos())
       ConfigureIters(&topo);
 
-    for(auto pt : _postTopoAction) {
+    for(auto pt : _preTopoAction) {
+      //Let action manager link to this final state
+      pt->Configure(this);	
+    }
+   for(auto pt : _postTopoAction) {
       //Let action manager link to this final state
       pt->Configure(this);	
     }
@@ -201,6 +208,7 @@ namespace chanser{
   }
   //////////////////////////////////////////////////////
   void FinalState::FSTruthProcess(){
+    _rejectEvent=kFALSE;//in principle will save this combi
     UseTruth();
     Kinematics();
     if(_rejectEvent) return;
@@ -209,19 +217,29 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////
   void FinalState::FSProcess(){
-  
+    
+    _rejectEvent=kFALSE;//in principle will save this combi
     //CheckCombitorial();
+    
     _nPerm++;
 
     auto tid=_currTopo->ID();
       
+   //Check for any user loaded post topo actions
+    //e.g, making cuts on particles
+    for(const auto& act : _preTopoAction)
+      if(act->Execute(tid)==kFALSE) {
+	_rejectEvent=kTRUE;
+	return;
+      }
+
     _currTopo->Exec();
       
     //Check for any user loaded post topo actions
     //e.g, making cuts on particles
     for(const auto& act : _postTopoAction)
       if(act->Execute(tid)==kFALSE) {
-	_rejectEvent=kFALSE;
+	_rejectEvent=kTRUE;
 	return;
       }
       
@@ -229,6 +247,7 @@ namespace chanser{
      
        
     Kinematics();
+    if(_rejectEvent) return;
     
     if(_hasTruth)TruthKinematics();
     
@@ -236,7 +255,7 @@ namespace chanser{
     //e.g, making cuts on particles
     for(const auto& act : _postKinAction)
       if(act->Execute(tid)==kFALSE) {
-	_rejectEvent=kFALSE;
+	_rejectEvent=kTRUE;
 	return;
       }
     if(_rejectEvent) return;
@@ -446,6 +465,10 @@ namespace chanser{
     // _finalHipo.reset();
     _outEvent.Finish();
     
+    //end any action managers, e.g save trees
+    for(auto pt : _preTopoAction) {
+      pt->End();	
+    }
     //end any action managers, e.g save trees
     for(auto pt : _postTopoAction) {
       pt->End();	

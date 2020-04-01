@@ -123,6 +123,9 @@ namespace chanser{
     const TString& InputFileName(){return _inputConfigFile;}
 
        
+    void RegisterPreTopoAction(ActionManager& tam){
+      _preTopoAction.push_back(&tam);
+    }
     void RegisterPostTopoAction(ActionManager& tam){
       _postTopoAction.push_back(&tam);
     }
@@ -130,7 +133,8 @@ namespace chanser{
       _postKinAction.push_back(&tam);
     }
     
-    actionman_ptrs& getPostTopoActions(){return _postTopoAction;}
+    actionman_ptrs& getPreTopoActions() {return _postTopoAction;}
+    actionman_ptrs& getPostTopoActions() {return _postTopoAction;}
     actionman_ptrs& getPostKinActions(){return _postKinAction;}
       
     void EndAndWrite();
@@ -212,6 +216,7 @@ namespace chanser{
     std::vector<TTree*> _listOfOutTrees;//!
 
     //action managers
+    actionman_ptrs _preTopoAction;
     actionman_ptrs _postTopoAction;
     actionman_ptrs _postKinAction;
 

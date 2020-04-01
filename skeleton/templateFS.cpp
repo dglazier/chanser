@@ -20,8 +20,8 @@ namespace USERNAME{
       ///////+++++++++++++++++++++++++++++++++++///////
     ////auto miss= _beam + _target - _electron.P4() - _proton.P4()
     ////  -_pip1.P4()-_pim1.P4();
-    ////TD.MissMass=miss.M();
-    ////TD.MissMass2=miss.M2();
+    ////TD->MissMass=miss.M();
+    ////TD->MissMass2=miss.M2();
     
       ///////------------------------------------///////
     // };

@@ -23,10 +23,7 @@
   pcm.AddParticleCut("pi-",dtc);
   FS->RegisterPostTopoAction(pcm);
  
-  
   FS->WriteToFile("NONEALL_configuration1.root");
-
-
 
   //Delete the final state rather than let ROOT try
   FS.reset();

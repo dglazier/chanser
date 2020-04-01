@@ -54,7 +54,9 @@ Create a script to produce skeleton code for this reaction, e.g. create a file c
        s.SetFinalState("Pi4");
 
        //Define the possible detected particles in the final state
-
+       //Name1:species1,Name2:species2,...
+       //where species is given in $ROOTSYS/etc/pdg_table.txt
+       //e.g Electron:e-,Proton:proton,...
        s.SetFinalStateParts("Electron:e-,Proton:proton,Pip1:pi+,Pip2:pi+,Pim1:pi-,Pim2:pi-");
 
        //Define possible topologies for this final state
@@ -79,6 +81,8 @@ Create a script to produce skeleton code for this reaction, e.g. create a file c
        s.MakeCode();
        }
 
+The species names used for particle should be those given in $ROOTSYS/etc/pdg_table.txt.
+
 Now run this script in chanser_skeleton
 
     	 chanser_skeleton Skeleton.C
@@ -94,6 +98,8 @@ You can check it compiles and loads OK
 
 Where Pi4 is the name of your final state class.
 
+Please note that all classes are given an additional C++ namespace equal to the username of the person who created the skeleton class. This is to prevent conflcicts when multiusers load finalstates at the same time which may have the dame classname. The namespace means that the full class name will be like dglazier::Pi4, this is required when creating objects of your class in ROOT scripts.
+
 ### Using your class
 
 There are 3 main ways to develop this class
@@ -104,7 +110,7 @@ There are 3 main ways to develop this class
 
 3) Define which of these to write to the output file
 
-#### 1) Defining topology depednent behaviour
+#### 1) Defining topology dependent behaviour
 
 To do this we must define the _doForTopo["topology"] function body for each topology we defined. Here "topology" means specific detected particles so will be repalaced with something like "Electron:Proton:Pip1:Pip2:Pim1:Pim2" in the Pi4 example. Each of the particles you defined in your final state will have a data memeber in the final state class associated with it. e.g in Pi4 there are the following declartions in the Pi4 class in P4.h :
 
@@ -115,6 +121,8 @@ To do this we must define the _doForTopo["topology"] function body for each topo
     Particle   _pip2 = Particle{"pi+"};
     Particle   _pim1 = Particle{"pi-"};
     Particle   _pim2 = Particle{"pi-"};
+
+    #in Pi4.h
  
 In the _doForTopo functions the particles will be updated automatically and you may just use them directly. These particles contain things like 4-vector information as well as a direct link to the clas12root particle which then gives access to any of the DST information associated with that particle. For example I can calculate the missing mass for the event :
 
@@ -130,6 +138,8 @@ In the _doForTopo functions the particles will be updated automatically and you 
       ///////------------------------------------///////
       };
 
+      #in Pi4.cpp
+
 Here _electron, _proton etc are CLAS12Particles and so we have to call the P4() function to get their lorentz vectors. _beam, _target and miss are lorentz vectors (although not TLorentzVectors, they are ROOT::MATH genvector LorentzVectors).
 
 Anything prefixed by  TD-> has to be included in the TreeData and will be written to the output.
@@ -142,6 +152,8 @@ For example use start time from Electron candidate
       for(auto& p:CurrentTopo()->GetParticles())
 	p->ShiftTime(-startime);
 
+      #in Pi4.cpp
+
 Note, if you want to use the EB start time use  StartTimeFromEB() instead.
 
 If you had any missing or parent particle you may choose to assign their 4-vectors here or in the Kinematics function. You can use the SetP4 or FixP4, the latter fixes the particle mass to the PDG value and recalculates the energy. In general this will be different for differnt topologies
@@ -152,6 +164,11 @@ and/or
 
       _k1.FixP4(_pip1.P4()+_pim1.P4());
       _k2.FixP4(_pip2.P4()+_pim2.P4());
+      
+      #in Pi4.cpp
+
+
+If it anytime you decide that you do not want to keep this event combination you can set _rejectEvent=kTRUE;
 
 #### 2) Define overall reaction kinematics and other general quantities
 
@@ -165,6 +182,10 @@ Some Electron scattering variables are given by default,
      TD->Q2=_kinCalc.Q2();
      TD->Pol=_kinCalc.GammaPol();
      TD->Egamma=_kinCalc.GammaE();
+
+     # in Pi4.cpp
+
+
 
 Again anything to be written to the output tree is prefixed with TD->
 
@@ -180,6 +201,15 @@ Here the kinematic calculator is used, it can also be used for resonance decay k
      _kinCalc.MesonDecayGJ();
      TD->MesonCosThGJ=_kinCalc.CosTheta();
      TD->MesonPhiGJ=_kinCalc.CosTheta();
+
+     # in Pi4.cpp
+     
+Again If it anytime you decide that you do not want to keep this event combination you can set _rejectEvent=kTRUE;
+
+      if(TD->MesonMass>5) _rejectEvent=kTRUE; //will not save
+      
+     # in Pi4.cpp
+
 
 #### 3) Define which of these to write to the output file
 
@@ -203,6 +233,9 @@ This is just done by adding data members to the TreeData class. Here it is calle
      Double_t MesonCosThGJ=0;
      Double_t MesonPhiGJ=0;
 
+
+     # in TreeDataPi4.h
+
 ### Configuring an analysis
 
 You can now configure an object of this class adding combitorial algorithms, cuts, outputs. There is a template for starting this in the Create_Pi4.C script.
@@ -219,16 +252,24 @@ The second "ALL" => particles to be inclusive for (i.e. any number of these part
 
       auto FS = dglazier::Pi4::Make("ALL","ALL");
 
+      #in Create_Pi4.C
+
 Now choose however many of the topologies you have defined that you want to include in this configuration
 
       FS->AddTopology("Electron:Proton:Pip1:Pip2:Pim1:Pim2");
+
+      #in Create_Pi4.C
 
 Choose format for output tree, if none given no output tree written
 
       FS->UseOutputRootTree();
       ///FS->UseOutputHipoNtuple();
 
+      #in Create_Pi4.C
+
 Now add different Actions.
+
+Note the output tree file is given the name /basedir/username/config_file/FinalState.root , where config_file is the string given to FS->WriteToFile below, username is $USER, and basedir is given in the Run_XXX.C script later as the basedirectory to put all analysis outputs.
 
 ### Particle cuts
 
@@ -245,6 +286,8 @@ For example you can add different particle ID cuts for different particles :
     //register it with this final state instance
     FS->RegisterPostTopoAction(pcm);
 
+      #in Create_Pi4.C
+
 Note you can include as many different ParticleCutsManagers in you analysis as you want. For example you could hae one with all particles having DeltaTime cuts of 1ns and another with 2ns.
 
       ParticleCutsManager pcm{"EBCuts",1};
@@ -254,6 +297,8 @@ Note you can include as many different ParticleCutsManagers in you analysis as y
       pcm.AddParticleCut("pi+",dtc);
       pcm.AddParticleCut("pi-",dtc);
       FS->RegisterPostTopoAction(pcm);
+
+      #in Create_Pi4.C
  
 Note the argument 1 provided in pcm{"EBCuts",1}, means that this cut will actually be applied to the data, if this is not included or a 0 is used instead then the cut is just included as a flag in the ouput tree.
 
@@ -267,16 +312,22 @@ Or output data related to each particle in the event to a root tree :
      pdm.SetParticleOut(&pout);
      FS->RegisterPostTopoAction(pdm);
 
+
+     #in Create_Pi4.C
+
 This will output a set of standard detector variables,  you may create you own ParticleOutEvent class for this purpose.
 
 At the end you should write to a root file so it can be processed. The clas12_proof processor then just needs this root file to run as it extracts and compiles the source code from the file before running.
 
       FS->WriteToFile("ALLALL_configuration.root");
 
+      #in Create_Pi4.C
 
 ### Running the analyse
 
 To run the FinalState analysis you must add your object and data to the FinalStateManager. There is a template for this copied as part of your skeleton code Run_*.C
+
+**Any time you want to change an analysis configuration or your final state class you must run chanser_root Create_MyFS.C, before running Run_MyFS.C.**
 
 To set the data file
 
@@ -284,10 +335,14 @@ To set the data file
       HipoData hdata;
       hdata.SetFile("/input/dir/file.hipo");
 
+      #in Run_Pi4.C
+
 To create FinalStateManager and give an output directory
 
       FinalStateManager fsm;
       fsm.SetBaseOutDir("/output/directory");
+
+      #in Run_Pi4.C
 
 Note all outputs will be written to sub-directories within /output/directory.
 
@@ -296,9 +351,13 @@ To Load your final state analysis objects
       fsm.LoadFinalState("Pi4", "ALLALL_configuration1.root");
       fsm.LoadFinalState("Pi4", "NONEALL_configuration1.root");
 
+      #in Run_Pi4.C
+
 And run
 
       fsm.ProcessAll();
+
+      #in Run_Pi4.C
 
 To execute use chanser_root,
 
@@ -312,6 +371,8 @@ In place of the previous method o running tha analysis just create a tect file w
       Pi2 /full/path/ALLALL_configuration1.root
       Pi4 /full/path/NONEALL_configuration1.root
 
+      #in finalstate.txt
+
 
 Note you can add as many analyses as you like, and they may be of different classes and from different users.
 
@@ -319,6 +380,9 @@ Create a script to allocate the data files, e.g. Processor.C
 
        clas12root::HipoChain chain;
        chain.Add("/full/path/files_*.hipo");
+       
+      #in Processor.C
+
 
 Create processor with list of final state analysis and output directory, remembering your ourtput files may be large.
 
@@ -327,6 +391,8 @@ Create processor with list of final state analysis and output directory, remembe
 Then process all the files
 
       gProof->Process(&processor,chain.GetNRecords());
+       
+      #in Processor.C
 
 Note if you like you can replace chain.GetNRecords() with any number of records you wish to analyse as long as <chain.GetNRecords(). Typically for clas12 DSTs a record may consist of around 100 actual events
 

@@ -1,6 +1,7 @@
 
 #include "FSSkeleton.h"
 #include <TSystem.h>
+#include <TError.h>
 #include <iostream>
 
 namespace chanser{
@@ -28,6 +29,16 @@ namespace chanser{
     _strSkel=CHANSER+"/skeleton";
     _userName=gSystem->Getenv("USER");
 
+    //check if code already exists
+    TString checkFile=Form("%s.cpp",_finalName.Data());
+    if(gSystem->FindFile("./",checkFile)){
+      TString sOverwrite;
+      Info("FSSkeleton::MakeCode()","FinalState Code already exists to exit type y, to overwrite type anything else");
+      std::cin>>sOverwrite;;
+      if(sOverwrite==TString("y")) exit(0);
+    }
+
+    
     //Copy template class header file
     gSystem->Exec(Form("cp %s/templateFS.h %s.h",_strSkel.Data(),_finalName.Data()));
 
