@@ -50,7 +50,7 @@ namespace chanser{
     _baseDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")))->GetTitle();
     _fsm.SetBaseOutDir(_baseDir);
 
-    _fsm.GetEventParticles().SetMaxParticles(6);
+    _fsm.GetEventParticles().SetMaxParticles(10);
     
     _fsm.Init();
      

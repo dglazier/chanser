@@ -15,11 +15,16 @@ void Load(){
 
   TString CHANSER=gSystem->Getenv("CHANSER");
   TString core=CHANSER+"/core";
+  TString actions=CHANSER+"/actions";
    
   if(!TString(gInterpreter->GetIncludePath()).Contains(core)){
     gInterpreter->AddIncludePath(core);
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(core).Data()));
     gSystem->Load("$CHANSER/lib/libchanser.so");
+    
+    gInterpreter->AddIncludePath(actions);
+    gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(actions).Data()));
+    gSystem->Load("$CHANSER/lib/libchanseractions.so");
   }
   
 }

@@ -43,7 +43,7 @@ namespace chanser{
    
     void AddParticleCut(TString type,BaseCut& cut){
       if(TDatabasePDG::Instance()->GetParticle(type)){
-	cut.SetName(type);
+	//cut.SetName(type);
 	AddParticleCut(TDatabasePDG::Instance()->GetParticle(type)->PdgCode(),cut);
       }
     }
@@ -61,7 +61,7 @@ namespace chanser{
       
     void PrintAction() override;
 
-    void Branches(const FinalState* fs);
+    void Branches(FinalState* fs);
 
   protected :
       

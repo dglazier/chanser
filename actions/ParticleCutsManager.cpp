@@ -4,13 +4,16 @@
 namespace chanser{
     
   void ParticleCutsManager::PrintAction(){
-    std::cout<<" ParticleCutsManager::Print() "<<std::endl;
-    for( const auto& cut : _pdgToCut )
-      std::cout<<" particle "<<cut.first<<" cut "<<cut.second->GetName()<<std::endl;
+    std::cout<<" ParticleCutsManager::Print() "<<GetName()<<std::endl;
+    for( const auto& cut : _pdgToCut ){
+      std::cout<<" for particle "<<cut.first<<" will use cut : "<<std::endl;
+      cut.second->Print();
+    }
 
       
-    std::cout<<" default  cut "<< _useableDefault->GetName() <<std::endl;
-	
+    if(_useableDefault!=nullptr)std::cout<<" default  cut "<< _useableDefault->GetName() <<std::endl;
+    else std::cout<<" default  cut "<< _defaultCut.GetName() <<std::endl;
+    std::cout<<std::endl;
   }
 
   ///////////////////////////////////////////////////////////////
@@ -29,7 +32,6 @@ namespace chanser{
 	
       //Loop over all particles in this topology and assign a cut
       auto topo_parts=topo.GetParticles();
-      //std::cout<<" ParticleCutsManager::Configure particles "<<topo_parts.size()<<std::endl;
       for(auto const& particle : topo_parts){
 	  
 	Int_t pdg = particle->PDG();
@@ -38,7 +40,6 @@ namespace chanser{
 	if(_pdgToCut.find(pdg)==_pdgToCut.end())
 	  pcuts.AddParticle(_useableDefault,particle);
 	else{ //if not use default
-	  //  std::cout<<" "<<_pdgToCut[pdg]->ClassName()<<std::endl;
 	  pcuts.AddParticle(_pdgToCut[pdg],particle);
 	}
 	  
@@ -48,10 +49,9 @@ namespace chanser{
 
     }
     Branches(fs);
-    //std::cout<<" ParticleCutsManager::Configure "<<_particleCuts.size()<<std::endl;
-  }
+   }
   ///////////////////////////////////////////////////////////////// 
-  void ParticleCutsManager::Branches(const FinalState* fs){
+  void ParticleCutsManager::Branches( FinalState* fs){
     auto trees=fs->GetOutTrees();
     //add cuts to all output tree (particle, final, ...)
     for(auto tree:trees){

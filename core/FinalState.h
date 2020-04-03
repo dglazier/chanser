@@ -49,6 +49,8 @@ namespace chanser{
     FinalState& operator=(const FinalState& other)=default;
     FinalState& operator=(FinalState&& other)=default;
 
+    void Print(Option_t* option = "")const override;
+    
     void PostRead(){
       InitTopoMan();
       Define();
@@ -73,8 +75,8 @@ namespace chanser{
     void ProcessEvent();
       
     void WriteToFile(TString filename);
-    void ShowParticles();
-    void ShowTopologies(){_topoMan.Print();};
+    void ShowParticles()const;
+    void ShowTopologies()const{_topoMan.Print();};
 
     BaseParticle* GetParticle(const TString name) const;
     ParticleConfig GetParticleConfig(const TString name) const;
@@ -120,7 +122,7 @@ namespace chanser{
     const TString& WorkerName(){return _workerName;}
     
     void SetInputFileName(TString name){_inputConfigFile=name;_inputConfigFile.ReplaceAll(".root","");}
-    const TString& InputFileName(){return _inputConfigFile;}
+    const TString& InputFileName() const{return _inputConfigFile;}
 
        
     void RegisterPreTopoAction(ActionManager& tam){
@@ -141,7 +143,7 @@ namespace chanser{
     virtual TString GetUSER(){return "";};
     const TString& GetOutputDir(){return _outputDir;}
 
-    const std::vector<TTree*>& GetOutTrees() const {return _listOfOutTrees;}
+    std::vector<TTree*>& GetOutTrees() {return _listOfOutTrees;}
     
   protected :
 
@@ -180,7 +182,7 @@ namespace chanser{
     
     virtual void UserProcess(){
       _outEvent.Fill();
-     };
+    };
     
     void FSTruthProcess();
     
@@ -240,7 +242,7 @@ namespace chanser{
     Short_t _ownsActions=1;//!
     //   FSOutputType  _outputType=FSOutputType::NONE;
     
-    ClassDef(chanser::FinalState,1); //class FinalState
+    ClassDefOverride(chanser::FinalState,1); //class FinalState
   };
 
  

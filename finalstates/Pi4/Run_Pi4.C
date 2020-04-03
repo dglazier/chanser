@@ -19,7 +19,7 @@
   fsm.GetEventParticles().SetMaxParticles(6);
 
   ////Run through all events
-  fsm.ProcessAll();
+  fsm.ProcessAll(1E5);
   ////Run through N events
   //fsm.ProcessAll(N);
 

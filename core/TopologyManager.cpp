@@ -242,7 +242,7 @@ namespace chanser{
   
   }
   /////////////////////////////////////////////////////////////////////////
-  void TopologyManager::Print(){
+  void TopologyManager::Print() const {
     if(_isInclusive){
       cout<<"You can have any number of the following particles : "<<endl;
       if(_incParts.size()){

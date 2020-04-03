@@ -5,7 +5,7 @@ namespace chanser{
     
   void ParticleDataManager::PrintAction(){
     std::cout<<" ParticleDataManager::Print() "<<_particleData.size()<<std::endl;
-    	
+    std::cout<<"     Using ParticleOut Data class "<<_outData->ClassName()<<std::endl<<std::endl;
   }
 
   ///////////////////////////////////////////////////////////////
@@ -30,8 +30,10 @@ namespace chanser{
 	  
       }
       //add branches from final state tree
-      if(_addFinal)fs->OutEvent().ConfigureOutTree(pdata.GetTree());
-
+      if(_addFinal){
+	fs->OutEvent().ConfigureOutTree(pdata.GetTree());
+	fs->GetOutTrees().push_back(pdata.GetTree());
+      }
       _particleData.push_back(std::move(pdata));
 
     }

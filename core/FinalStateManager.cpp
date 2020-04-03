@@ -94,8 +94,10 @@ namespace chanser{
 	fs->SetGenerated();
     }
     
-    for(const auto& fs:_finalStates)
+    for(const auto& fs:_finalStates){
       fs->Init(_baseOutDir);
+      fs->Print();
+    }
     
   }
   //////////////////////////////////////////////////////////////

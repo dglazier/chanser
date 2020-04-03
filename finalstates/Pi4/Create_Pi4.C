@@ -8,14 +8,18 @@
   FS->UseOutputRootTree();
   //FS->UseOutputHipoNtuple();
 
+  ///StartTime
+  StartTimeAction st("EBStartTime",new C12StartTimeFromParticle("Electron"));
+  FS->RegisterPreTopoAction(st);
+  
   /////Make particle trees first in case want to add cut flags
   ParticleDataManager pdm{"particle",1};
   CLAS12ParticleOutEvent0 pout;
   pdm.SetParticleOut(pout);
-  FS->RegisterPostTopoAction(pdm);
+  FS->RegisterPostKinAction(pdm);
 
   ////
-  ParticleCutsManager pcm{"EBCuts",1};
+  ParticleCutsManager pcm{"DeltaTimeCuts",1};
   DeltaTimeCut dtc(2); //Apply a Delta Time cut of 2ns
   pcm.AddParticleCut("e-",dtc);
   pcm.AddParticleCut("proton",dtc);

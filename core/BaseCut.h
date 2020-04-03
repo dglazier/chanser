@@ -47,7 +47,12 @@ namespace chanser{
     }
       
     void SetTimeCut(Double_t val){_timeCut=val;}
-      
+
+    
+    void Print(Option_t* option = "")const final{
+      std::cout<<"\t\t"<<ClassName()<<" with width "<<_timeCut<<std::endl;
+    }
+
   private:
     Float_t _timeCut=THIS_FLT_MAX;
       
@@ -69,7 +74,10 @@ namespace chanser{
     }
       
     // void SetPidCut(Int_t val){_pidCut=val;}
-      
+    void Print(Option_t* option = "")const final{
+      std::cout<<"\t\t"<<ClassName()<<" just if the DST event builder PID is correct for this particle "<<std::endl;
+    }
+
   private:
     //Int_t _pidCut=INT_MAX;
       
