@@ -7,7 +7,9 @@
 namespace chanser{
   
  
-  HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) : HipoSelector(chain),_baseDir(base) {
+  HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) :
+    HipoSelector(chain),_baseDir(base) {
+
     chain->GetNRecords();//needed to count total records etc.
 
     if(!fsfile.BeginsWith('/'))
@@ -37,7 +39,7 @@ namespace chanser{
 
     _fsm.LoadData(&_hipo);
     //now initiliase all final states
-    _listOfFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES"))); //      _hipo.SetReader(_c12.get());
+    _listOfFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
 
     cout<<"HipoProcessor::SlaveBegin "<<_listOfFinalStates->GetEntries()<<endl;
     for(Int_t ifs=0;ifs<_listOfFinalStates->GetEntries();++ifs){
@@ -57,14 +59,18 @@ namespace chanser{
   }
   
   void HipoProcessor::AddFilter(){
-    //   _c12->addExactPid(11,1);    //exactly 1 electron
+    //This function is called whenever there is a new file
+    _hipo.SetReader(_c12.get()); //use it to set the reader ptr
+     
+    //_hipo->addExactPid(11,1);    //exactly 1 electron
+    
   }
 
   Bool_t HipoProcessor::ProcessEvent(){
     //Equivalent to TSelector Process
     //Fill in what you would like to do with
     //the data for each event....
-    _hipo.SetReader(_c12.get());
+   
     // cout<<"HipoProcessor::ProcessEvent"<<endl;
     if(_hipo.FetchPids()){
       _fsm.ProcessEvent();

@@ -1,1 +1,1 @@
-Pi4 /work/dump/chanser2/finalstates/Pi4/NONEALL_configuration1.root
+Pi4 /work/Dropbox/HaSpect/dev/chanser/finalstates/Pi4/NONEALL_configuration1.root

@@ -2,7 +2,8 @@
   ////Set hipo file to be analysed
   HipoData hdata;
   hdata.SetFile("/work/jlab/clas12data/pass1_test/skim8_005051.hipo");
-
+  // hdata.Reader()->useFTBased();
+    
   ////create FinalStateManager
   ////we can load as many saved final states as we like
   FinalStateManager fsm;
