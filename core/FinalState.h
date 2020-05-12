@@ -144,6 +144,8 @@ namespace chanser{
     const TString& GetOutputDir(){return _outputDir;}
 
     std::vector<TTree*>& GetOutTrees() {return _listOfOutTrees;}
+    std::vector<std::unique_ptr<TList> > UniqueMergeLists() {return std::move(_mergeLists);}
+    TString FinalDirectory(){return _finalDirectory;}
     
   protected :
 
@@ -217,6 +219,8 @@ namespace chanser{
 
     std::vector<TTree*> _listOfOutTrees;//!
 
+    std::vector<std::unique_ptr<TList> > _mergeLists;//!
+    
     //action managers
     actionman_ptrs _preTopoAction;
     actionman_ptrs _postTopoAction;
@@ -230,6 +234,7 @@ namespace chanser{
     TString _workerName; //for PROOF worker ID
     TString _inputConfigFile; //where this FS was loaded from
     TString _outputDir;
+    TString _finalDirectory;
     
     Int_t _currTopoID=-1;
     Int_t _nPerm=0;

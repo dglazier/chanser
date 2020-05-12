@@ -35,6 +35,8 @@ namespace chanser{
       
     FinalStateManager& Manager(){return _fsm;}
 
+    void    MergeFinalOutput();
+
   private:
     FinalStateManager _fsm;
     HipoData _hipo;

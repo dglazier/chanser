@@ -8,6 +8,7 @@
 #include "BaseOutEvent.h"
 #include "FiledTree.h"
 #include "ntuple_writer.h"
+#include <TList.h>
 
 namespace chanser{
   
@@ -41,7 +42,9 @@ namespace chanser{
 
     void UseOutputRootTree(){_outputType=FSOutputType::ROOTTREE;}
     void UseOutputHipoNtuple(){_outputType=FSOutputType::HIPONTUPLE;}
- 
+
+    std::unique_ptr<TList> UniqueFinalTreeList() {return std::move(_listOfFinalTrees);}
+    
   private:
 
    //Tree Output Data
@@ -56,7 +59,9 @@ namespace chanser{
     // TString _finalHipoFile;
     
     FSOutputType  _outputType=FSOutputType::NONE;
- 
+
+    std::unique_ptr<TList> _listOfFinalTrees{nullptr};
+    
     ClassDef(chanser::OutEventManager,1);
 
   };

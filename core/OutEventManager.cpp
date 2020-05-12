@@ -1,10 +1,18 @@
 #include "OutEventManager.h"
 
 namespace chanser {
-
+  
   void OutEventManager::Init(TString outDir){
     std::cout<<" OutEventManager::Init "<<outDir<<" "<<(_outputType==FSOutputType::ROOTTREE)<<std::endl;
+
+   
+    
     if(_outputType==FSOutputType::ROOTTREE){
+      //create output list for merging
+      _listOfFinalTrees.reset(new TList{});
+      _listOfFinalTrees->SetName("FINALOUTTREE");
+     
+      
       CreateFinalTree(outDir);
     }
     if(_outputType==FSOutputType::HIPONTUPLE){
@@ -17,8 +25,10 @@ namespace chanser {
       std::cout<<"CreateFinalTree "<<fname<<std::endl;
       auto finalTreeFile=fname+"FinalState.root";
       _finalTree.reset();
-      _finalTree=FiledTree::Recreate("finalstate",finalTreeFile);
-     
+      _finalTree=FiledTree::Recreate(_listOfFinalTrees->GetName(),finalTreeFile);
+
+      _listOfFinalTrees->Add(new TObjString(finalTreeFile));
+      
       ConfigureOutTree(_finalTree->Tree());
     }
     void OutEventManager::CreateFinalHipo(const TString& filename){

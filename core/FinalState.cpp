@@ -66,6 +66,7 @@ namespace chanser{
     _currTopo->Iter().ConfigureIters();
     _itersConfigured++;
   }
+ 
   void FinalState::Init(const TString& baseDir){
     
     auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
@@ -73,7 +74,10 @@ namespace chanser{
     Info("FinalState::Init",Form("Using %s ",InputFileName().Data()),"");
     
     //add final state configuration name directory
-    _outputDir=outdir+GetName()+'_'+gSystem->BaseName(InputFileName())+"__"+WorkerName()+'/';
+    _finalDirectory= outdir+GetName()+'_'+gSystem->BaseName(InputFileName());
+    _outputDir=_finalDirectory+"__"+WorkerName()+'/';
+    
+    gSystem->Exec(Form("mkdir -p %s",_finalDirectory.Data()));
     gSystem->Exec(Form("mkdir -p %s",_outputDir.Data()));
     
     //Now contruct output event
@@ -463,7 +467,8 @@ namespace chanser{
     // if(_finalHipo.get())_finalHipo->close();
     // _finalHipo.reset();
     _outEvent.Finish();
-    
+    _mergeLists.push_back(_outEvent.UniqueFinalTreeList());
+      
     //end any action managers, e.g save trees
     for(auto pt : _preTopoAction) {
       pt->End();	

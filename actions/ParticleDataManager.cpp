@@ -26,14 +26,14 @@ namespace chanser{
       UInt_t ip=0;
       for(auto const& particle : topo_parts){
 	//Add particle to output data
-	pdata.AddParticle(_outData,particle,topo.GetPartName(ip++));
+	pdata.AddParticle(_outData.get(),particle,topo.GetPartName(ip++));
 	  
       }
       //add branches from final state tree
       if(_addFinal){
 	fs->OutEvent().ConfigureOutTree(pdata.GetTree());
-	fs->GetOutTrees().push_back(pdata.GetTree());
       }
+      fs->GetOutTrees().push_back(pdata.GetTree());
       _particleData.push_back(std::move(pdata));
 
     }

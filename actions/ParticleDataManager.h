@@ -14,7 +14,8 @@
 namespace chanser{
     
      
-   
+  using poutev_uptr=std::unique_ptr<ParticleOutEvent>;
+  
   class ParticleDataManager : public ActionManager {
 
   public :
@@ -42,7 +43,9 @@ namespace chanser{
     void Configure(FinalState* fs) override;
 
        
-    void SetParticleOut(ParticleOutEvent& out){_outData=&out;}
+    //void SetParticleOut(ParticleOutEvent& out){_outData=&out;}
+    //   void SetParticleOut(ParticleOutEvent& out){_outData.reset(out);}
+    void SetParticleOut(ParticleOutEvent* out){_outData.reset(out);}
 
   protected:
       
@@ -55,9 +58,10 @@ namespace chanser{
 
       
     std::vector< ParticleData > _particleData; //!
-    //  std::map<Int_t,ParticleOutEvent*> _pdgToData;
-    ParticleOutEvent* _outData{nullptr};
-
+    //std::map<Int_t,ParticleOutEvent> _pdgToData;
+    // ParticleOutEvent* _outData{nullptr};
+    std::unique_ptr<ParticleOutEvent> _outData;
+    
     TString _outDir{"particleData"};
 
     UShort_t _addFinal{0};

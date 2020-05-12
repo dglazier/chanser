@@ -23,6 +23,7 @@ namespace chanser{
 
   using finalstate_uptr = std::unique_ptr<FinalState>;
   using finalstate_uptrs = std::vector<finalstate_uptr>;
+  using finalstate_ptrs = std::vector<FinalState*>;
     
     
   class FinalStateManager{
@@ -45,7 +46,8 @@ namespace chanser{
 
     void EndAndWrite();
       
-    finalstate_uptrs& GetFinalStates(){return _finalStates;};
+    finalstate_ptrs& GetFinalStates(){return _rawFinalStates;};
+   
     EventParticles& GetEventParticles(){return _eventParts;}
 
     const TString& BaseOutDir(){return _baseOutDir;};
@@ -60,6 +62,7 @@ namespace chanser{
   
   
     finalstate_uptrs _finalStates;//!
+    finalstate_ptrs _rawFinalStates;//! for sharing
       
       
     TString _baseOutDir;
