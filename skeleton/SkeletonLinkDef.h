@@ -11,5 +11,6 @@
 
 #pragma link C++ class chanser::Skeleton+;
 #pragma link C++ class chanser::FSSkeleton+;
+#pragma link C++ class chanser::SkeletonClass+;
 
 #endif

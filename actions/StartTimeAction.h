@@ -101,7 +101,7 @@ namespace chanser{
 
     void PrintAction() override;
     Bool_t Execute(UInt_t ti)  override{
-      //check cut for topology number ti
+      //subtract start time from each particle
       auto c12st=_stu.get();
       c12st->Reset();
       ranges::for_each(_particles[ti], [c12st](CLAS12Particle* p){ p->ShiftTime( - c12st->withParticle(p)); });

@@ -58,12 +58,14 @@ namespace chanser{
      
   }
   
-  void HipoProcessor::AddFilter(){
+  Bool_t HipoProcessor::Notify(){
+    cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
+    
     //This function is called whenever there is a new file
     _hipo.SetReader(_c12.get()); //use it to set the reader ptr
      
     //_hipo->addExactPid(11,1);    //exactly 1 electron
-    
+    return kTRUE;
   }
 
   Bool_t HipoProcessor::ProcessEvent(){

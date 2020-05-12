@@ -28,7 +28,7 @@ namespace chanser{
     void    SlaveTerminate() final;
     void    Terminate() final;
 
-    void AddFilter() override;
+    Bool_t Notify() override;
 
 
     void GetFinalStates(TString fsfile);

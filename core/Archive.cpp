@@ -30,8 +30,8 @@ namespace chanser{
     auto otherFiles = Remove(Loader::CompilesList(),files);
     
     //std::cout<<"Archive "<<Loader::CompilesList().size()<<" "<<otherFiles.size() << " "<<files.size()<<std::endl;
+    auto classesDir=fileDir->mkdir("Other");	  
     for(auto& fname : otherFiles){
-      auto classesDir=fileDir->mkdir("Other");
       classesDir->cd();
       ArchiveSourceFile(fname);
       //and include header file, assume .h
@@ -62,7 +62,7 @@ namespace chanser{
       std::cout<<" "<<name;
     std::cout<<std::endl;
     std::cout<<"Archive::Remove found "<<v3.size()<<std::endl;
-    return std::move(v3);
+    return v3;
   }
   
   TString Archive::BareClassName(const TString& className){
