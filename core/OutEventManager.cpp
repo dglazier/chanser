@@ -26,11 +26,12 @@ namespace chanser {
       auto finalTreeFile=fname+"FinalState.root";
       _finalTree.reset();
       _finalTree=FiledTree::Recreate(_listOfFinalTrees->GetName(),finalTreeFile);
-
+      //add file name to list so it can be merged after PROOF
       _listOfFinalTrees->Add(new TObjString(finalTreeFile));
       
       ConfigureOutTree(_finalTree->Tree());
     }
+  //////////////////////////////////////////////////////////
     void OutEventManager::CreateFinalHipo(const TString& filename){
        if(filename==TString()) return;
        auto finalHipoFile=filename+"FinalState.hipo";
@@ -39,6 +40,7 @@ namespace chanser {
     
       ConfigureOutHipo(_finalHipo.get());
     }
+  ///////////////////////////////////////////////////////////////////
   void  OutEventManager::ConfigureOutTree(TTree* tree)  const{
     if(_realTD.get()!=nullptr)_realTD->Branches(tree);
     

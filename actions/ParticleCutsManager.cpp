@@ -12,8 +12,7 @@ namespace chanser{
 
       
     if(_useableDefault!=nullptr)std::cout<<" default  cut "<< _useableDefault->GetName() <<std::endl;
-    else std::cout<<" default  cut "<< _defaultCut.GetName() <<std::endl;
-    std::cout<<std::endl;
+     std::cout<<std::endl;
   }
 
   ///////////////////////////////////////////////////////////////
@@ -21,13 +20,8 @@ namespace chanser{
  
     auto topos=fs->TopoManager().ObserveTopos();
       
-    // std::cout<<" ParticleCutsManager::Configure topos "<<topos.size()<<std::endl;
-
-    if(_useableDefault==nullptr) _useableDefault=&_defaultCut;
-      
     for(auto const& topo : topos){
 	
-      //	auto pcuts=ParticleCutsPtr{new ParticleCuts()};//don't construct tree
       auto pcuts=ParticleCuts{};
 	
       //Loop over all particles in this topology and assign a cut
@@ -38,14 +32,14 @@ namespace chanser{
 	  
 	//check if cut assigned for particular particle species
 	if(_pdgToCut.find(pdg)==_pdgToCut.end())
-	  pcuts.AddParticle(_useableDefault,particle);
+	  pcuts.AddParticle(_useableDefault.get(),particle);
 	else{ //if not use default
-	  pcuts.AddParticle(_pdgToCut[pdg],particle);
+	  pcuts.AddParticle(_pdgToCut[pdg].get(),particle);
 	}
 	  
 	    
       }
-      _particleCuts.push_back(std::move(pcuts));
+      _particleCuts.push_back(pcuts);
 
     }
     Branches(fs);

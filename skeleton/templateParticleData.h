@@ -13,7 +13,8 @@ namespace USERNAME{
 
   public :
       
-    templateClass()=default;
+    templateClass()=default;// must have default constructor
+    
     chanser::partoutev_uptr clone() final{return std::unique_ptr<templateClass>(new templateClass{});}
 
       

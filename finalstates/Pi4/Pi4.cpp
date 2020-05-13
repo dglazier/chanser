@@ -119,7 +119,7 @@ namespace someone{
     _kinCalc.SetMesonDecay(_k1.P4() , _k2.P4());
     _kinCalc.MesonDecayGJ();
     TD->MesonCosThGJ=_kinCalc.CosTheta();
-    TD->MesonPhiGJ=_kinCalc.CosTheta();
+    TD->MesonPhiGJ=_kinCalc.Phi();
   }
     
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  

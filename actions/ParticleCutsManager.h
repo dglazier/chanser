@@ -15,7 +15,8 @@ namespace chanser{
    
   
   using vecparticlecuts = std::vector< ParticleCuts >;
-
+  using basecut_uptr = std::unique_ptr<BaseCut>;
+ 
   class ParticleCutsManager : public ActionManager {
 
   public:
@@ -41,23 +42,24 @@ namespace chanser{
     void Configure(FinalState* fs) override;
       
    
-    void AddParticleCut(TString type,BaseCut& cut){
+    void AddParticleCut(TString type,BaseCut* cut){
       if(TDatabasePDG::Instance()->GetParticle(type)){
 	//cut.SetName(type);
 	AddParticleCut(TDatabasePDG::Instance()->GetParticle(type)->PdgCode(),cut);
       }
     }
-    void AddParticleCut(Int_t type,BaseCut& cut){
+    void AddParticleCut(Int_t type,BaseCut* cut){
       Int_t pdg=0;
       if(TDatabasePDG::Instance()->GetParticle(type))
-	pdg=TDatabasePDG::Instance()->GetParticle(type)->PdgCode();
-      _pdgToCut[type]=&cut;
- 
+    	pdg=TDatabasePDG::Instance()->GetParticle(type)->PdgCode();
+      _pdgToCut[type]=basecut_uptr{cut};
+      //cut now belongs to me, do not delete it elsewhere
     }
 
-    void SetDefaultCut(BaseCut&  defcut) {_useableDefault=&defcut;}
+    //defcut now belongs to me, do not delete it elsewhere
+    void SetDefaultCut(BaseCut*  defcut) {_useableDefault.reset(defcut);}
       
-    const BaseCut* getCut(Int_t type) const {return _pdgToCut.at(type);}
+    const BaseCut* getCut(Int_t type) const {return _pdgToCut.at(type).get();}
       
     void PrintAction() override;
 
@@ -70,10 +72,9 @@ namespace chanser{
     //This class manages ParticleCuts 
     vecparticlecuts _particleCuts; //!
       
-    std::map<Int_t,basecut_ptr > _pdgToCut;
-      
-    BaseCut  _defaultCut;
-    basecut_ptr _useableDefault{nullptr};//!
+    std::map<Int_t,basecut_uptr > _pdgToCut;  //needs written
+    
+    basecut_uptr _useableDefault{nullptr};  //needs written
 
     UInt_t _passCut{0};//!
     Short_t _forReal{0};
@@ -85,7 +86,4 @@ namespace chanser{
   using pcutsman_ptr = ParticleCutsManager*;
   using pcutsmans =std::vector<pcutsman_ptr>;
     
-
-
-
 }

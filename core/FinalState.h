@@ -25,7 +25,8 @@
 namespace chanser{
 
   using topo_funcs = std::map<TString,  VoidFuncs >;
-
+  using tlist_uptr= std::unique_ptr<TList>;
+  
   using std::vector;
 
   //enum class FSOutputType{NONE, ROOTTREE, HIPONTUPLE};
@@ -144,8 +145,13 @@ namespace chanser{
     const TString& GetOutputDir(){return _outputDir;}
 
     std::vector<TTree*>& GetOutTrees() {return _listOfOutTrees;}
-    std::vector<std::unique_ptr<TList> > UniqueMergeLists() {return std::move(_mergeLists);}
+    
+    //get the lists to be merged and delete it
+    //this function can only be called once
+    std::vector<tlist_uptr > UniqueMergeLists() {return std::move(_mergeLists);}
     TString FinalDirectory(){return _finalDirectory;}
+
+    void AddMergeList(TString name, TString filename);
     
   protected :
 

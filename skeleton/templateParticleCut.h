@@ -14,6 +14,8 @@ namespace USERNAME{
   class templateClass : public chanser::BaseCut{
       
   public:
+    templateClass()=default; // must have default constructor
+    
     templateClass(Float_t cut){_cutVal=cut;}
       
       

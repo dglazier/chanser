@@ -18,8 +18,11 @@ namespace chanser{
       
     for(auto const& topo : topos){
       auto topo_parts=topo.GetParticles();
-   
+
       auto outfile=_outDir+Form("/ParticleVariables_%d.root",topo.ID());
+      //add to merge list in case use proof, us outDir as unique name
+      fs->AddMergeList("PARTICLEDATAMANANGER",outfile); 
+      
       auto pdata=ParticleData{GetName(),outfile,topo_parts.size()};
 	
       //Loop over all particles in this topology and assign output data

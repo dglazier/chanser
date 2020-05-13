@@ -483,6 +483,16 @@ namespace chanser{
       pt->End();	
     }
   }
+  /////////////////////////////////////////////////////////////
+  ///Call this if you have an output file which will need
+  ///to be merged when using proof
+  void FinalState::AddMergeList(TString name, TString filename){
+      tlist_uptr li{new TList()};
+      li->SetName(FinalDirectory()+name);
+      li->Add(new TObjString(filename));
+      _mergeLists.push_back(std::move(li));
+  }
+
   //////////////////////////////////////////////////////////////
    void FinalState::Print(Option_t* option)const{
      Info("FinalState::Print",Form("From file %s ",InputFileName().Data()),"");
