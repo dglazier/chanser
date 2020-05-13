@@ -70,7 +70,7 @@ namespace chanser{
       return std::count(_trueDefinition.begin(),_trueDefinition.end(),pdg);
     }
     
-    void Print(Int_t verbose);
+    void Print(Int_t verbose)const;
     
     Bool_t FirstParticles(){
       //if(_isGenerated) return; //Truth generated analysis

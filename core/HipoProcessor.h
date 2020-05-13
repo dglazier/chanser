@@ -28,12 +28,14 @@ namespace chanser{
     void    SlaveTerminate() final;
     void    Terminate() final;
 
-    void AddFilter() override;
+    Bool_t Notify() override;
 
 
     void GetFinalStates(TString fsfile);
       
     FinalStateManager& Manager(){return _fsm;}
+
+    void    MergeFinalOutput();
 
   private:
     FinalStateManager _fsm;

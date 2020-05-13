@@ -83,7 +83,7 @@ namespace chanser{
   
     Int_t PDG()const {return _PDG;}
     void SetPDG(const Int_t pdg){_PDG=pdg;}; 
-    void Print(Int_t verbose);
+    void Print(Int_t verbose)const;
     void SetName(const TString name){fName=name;}
     TString GetName()const {return fName;}
       

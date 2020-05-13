@@ -11,22 +11,30 @@ int main(int argc, char **argv) {
   TRint  *app = new TRint("App", &argc, argv);
 
   TString runMacro;
+  TString optName;
+  
   //get command line options first check if makeall
   for(Int_t i=1;i<app->Argc();i++){
     TString opt=app->Argv(i);
     if((opt.Contains(".C"))){
       runMacro=opt;
     };
+    if((opt.Contains("name="))){
+      optName=TString(opt(5,opt.Length()));
+    };
   }
   
  // Run the TApplication (not needed if you only want to store the histograms.)
   app->ProcessLine(".x $CHANSER/macros/LoadSkeleton.C");
-  //app->Run();
 
   
   if(runMacro.Length()){
     std::cout<<"Run skeleton macro :    "<<runMacro<<std::endl;
-    app->ProcessLine(Form(".x %s",runMacro.Data()));
+    if(optName.Length())
+      app->ProcessLine(Form(".x %s(\"%s\")",runMacro.Data(),optName.Data()));
+    else
+      app->ProcessLine(Form(".x %s",runMacro.Data()));
+    
   }
   app->Terminate(0);
   

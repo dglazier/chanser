@@ -2,9 +2,9 @@ set(SKEL skeleton)
 set(DIRNAME skeleton)
 
 
-ROOT_GENERATE_DICTIONARY(G__${SKEL}  Skeleton.h FSSkeleton.h  LINKDEF SkeletonLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${SKEL}  Skeleton.h FSSkeleton.h SkeletonClass.h LINKDEF SkeletonLinkDef.h)
 
-add_library(${SKEL} SHARED Skeleton.cpp FSSkeleton.cpp G__${SKEL}.cxx)
+add_library(${SKEL} SHARED Skeleton.cpp FSSkeleton.cpp SkeletonClass.cpp G__${SKEL}.cxx)
 
 
 install(TARGETS ${SKEL} 

@@ -320,6 +320,7 @@ This will output a set of standard detector variables,  you may create you own P
 At the end you should write to a root file so it can be processed. The clas12_proof processor then just needs this root file to run as it extracts and compiles the source code from the file before running.
 
       FS->WriteToFile("ALLALL_configuration.root");
+      FS->Print(); //summarise configuration
 
       #in Create_Pi4.C
 

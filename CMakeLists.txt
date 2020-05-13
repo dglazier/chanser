@@ -19,6 +19,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS}")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/core)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/core)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/actions)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/actions)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
 

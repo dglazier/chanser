@@ -45,7 +45,7 @@ namespace chanser{
     void SetFinalState(const FinalState* fs){_fs=fs;}
     const FinalState* GetFinalState() const {return _fs;}
       
-    void Print();
+    void Print()const;
 
     void ClearTopos(){_topos.clear();}
       

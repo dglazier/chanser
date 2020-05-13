@@ -19,8 +19,10 @@ int main(int argc, char **argv) {
   
 
   TString CHANZER=gSystem->Getenv("CHANSER");
-
+ 
    app->ProcessLine(".x $CHANSER/macros/Load.C");
+
+ 
    std::cout<<"Loading Final State class : "<<finalState<<std::endl;
    if(finalState.Length()&&finalState.Contains(':')){
      app->ProcessLine(Form("Loader::CompileClass(\"%s\")",finalState.Data()));

@@ -30,21 +30,14 @@
 #pragma link C++ class chanser::Archive+;
 #pragma link C++ class chanser::Loader+;
 #pragma link C++ class chanser::ActionManager+;
-#pragma link C++ class chanser::ParticleCutsManager+;
-#pragma link C++ class chanser::ParticleCuts+;
-#pragma link C++ class chanser::ParticleDataManager+;
-#pragma link C++ class chanser::ParticleData+;
 #pragma link C++ class chanser::OutEventManager+;
 #pragma link C++ class chanser::BaseOutEvent+;
-#pragma link C++ class chanser::ParticleOutEvent+;
 #pragma link C++ class chanser::BaseCut+;
 #pragma link C++ class chanser::DeltaTimeCut+;
 #pragma link C++ class chanser::EventBuilderCut+;
 
 #pragma link C++ class chanser::CLAS12FinalState+;
-#pragma link C++ class chanser::CLAS12ParticleOutEvent+;
-#pragma link C++ class chanser::CLAS12ParticleOutEvent0+;
-#pragma link C++ class chanser::CLAS12SimPartOutEvent+;
+#pragma link C++ class chanser::CLAS12Particle+;
 
 //#pragma link C++ class chanser::+;
 

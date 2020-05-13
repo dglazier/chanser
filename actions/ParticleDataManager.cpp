@@ -5,7 +5,7 @@ namespace chanser{
     
   void ParticleDataManager::PrintAction(){
     std::cout<<" ParticleDataManager::Print() "<<_particleData.size()<<std::endl;
-    	
+    std::cout<<"     Using ParticleOut Data class "<<_outData->ClassName()<<std::endl<<std::endl;
   }
 
   ///////////////////////////////////////////////////////////////
@@ -18,20 +18,25 @@ namespace chanser{
       
     for(auto const& topo : topos){
       auto topo_parts=topo.GetParticles();
-   
+
       auto outfile=_outDir+Form("/ParticleVariables_%d.root",topo.ID());
+      //add to merge list in case use proof, us outDir as unique name
+      fs->AddMergeList("PARTICLEDATAMANANGER",outfile); 
+      
       auto pdata=ParticleData{GetName(),outfile,topo_parts.size()};
 	
       //Loop over all particles in this topology and assign output data
       UInt_t ip=0;
       for(auto const& particle : topo_parts){
 	//Add particle to output data
-	pdata.AddParticle(_outData,particle,topo.GetPartName(ip++));
+	pdata.AddParticle(_outData.get(),particle,topo.GetPartName(ip++));
 	  
       }
       //add branches from final state tree
-      if(_addFinal)fs->OutEvent().ConfigureOutTree(pdata.GetTree());
-
+      if(_addFinal){
+	fs->OutEvent().ConfigureOutTree(pdata.GetTree());
+      }
+      fs->GetOutTrees().push_back(pdata.GetTree());
       _particleData.push_back(std::move(pdata));
 
     }

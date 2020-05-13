@@ -45,7 +45,7 @@ namespace chanser{
   
  
   ///////////////////////////////////////////////////////////////////////
-  void Topology::Print(Int_t verbose){
+  void Topology::Print(Int_t verbose) const {
     cout<<" Topology::Print() : "<<_ID<<endl;
     cout<<"    particles = ";
     for(UInt_t i=0;i<_actualDefinition.size();i++)

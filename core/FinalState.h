@@ -25,7 +25,8 @@
 namespace chanser{
 
   using topo_funcs = std::map<TString,  VoidFuncs >;
-
+  using tlist_uptr= std::unique_ptr<TList>;
+  
   using std::vector;
 
   //enum class FSOutputType{NONE, ROOTTREE, HIPONTUPLE};
@@ -49,6 +50,8 @@ namespace chanser{
     FinalState& operator=(const FinalState& other)=default;
     FinalState& operator=(FinalState&& other)=default;
 
+    void Print(Option_t* option = "")const override;
+    
     void PostRead(){
       InitTopoMan();
       Define();
@@ -73,8 +76,8 @@ namespace chanser{
     void ProcessEvent();
       
     void WriteToFile(TString filename);
-    void ShowParticles();
-    void ShowTopologies(){_topoMan.Print();};
+    void ShowParticles()const;
+    void ShowTopologies()const{_topoMan.Print();};
 
     BaseParticle* GetParticle(const TString name) const;
     ParticleConfig GetParticleConfig(const TString name) const;
@@ -120,7 +123,7 @@ namespace chanser{
     const TString& WorkerName(){return _workerName;}
     
     void SetInputFileName(TString name){_inputConfigFile=name;_inputConfigFile.ReplaceAll(".root","");}
-    const TString& InputFileName(){return _inputConfigFile;}
+    const TString& InputFileName() const{return _inputConfigFile;}
 
        
     void RegisterPreTopoAction(ActionManager& tam){
@@ -141,7 +144,14 @@ namespace chanser{
     virtual TString GetUSER(){return "";};
     const TString& GetOutputDir(){return _outputDir;}
 
-    const std::vector<TTree*>& GetOutTrees() const {return _listOfOutTrees;}
+    std::vector<TTree*>& GetOutTrees() {return _listOfOutTrees;}
+    
+    //get the lists to be merged and delete it
+    //this function can only be called once
+    std::vector<tlist_uptr > UniqueMergeLists() {return std::move(_mergeLists);}
+    TString FinalDirectory(){return _finalDirectory;}
+
+    void AddMergeList(TString name, TString filename);
     
   protected :
 
@@ -180,7 +190,7 @@ namespace chanser{
     
     virtual void UserProcess(){
       _outEvent.Fill();
-     };
+    };
     
     void FSTruthProcess();
     
@@ -215,6 +225,8 @@ namespace chanser{
 
     std::vector<TTree*> _listOfOutTrees;//!
 
+    std::vector<std::unique_ptr<TList> > _mergeLists;//!
+    
     //action managers
     actionman_ptrs _preTopoAction;
     actionman_ptrs _postTopoAction;
@@ -228,6 +240,7 @@ namespace chanser{
     TString _workerName; //for PROOF worker ID
     TString _inputConfigFile; //where this FS was loaded from
     TString _outputDir;
+    TString _finalDirectory;
     
     Int_t _currTopoID=-1;
     Int_t _nPerm=0;
@@ -240,7 +253,7 @@ namespace chanser{
     Short_t _ownsActions=1;//!
     //   FSOutputType  _outputType=FSOutputType::NONE;
     
-    ClassDef(chanser::FinalState,1); //class FinalState
+    ClassDefOverride(chanser::FinalState,1); //class FinalState
   };
 
  

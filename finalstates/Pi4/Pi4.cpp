@@ -41,10 +41,10 @@ namespace someone{
     //Set Possible Topologies
     _doToTopo["Electron:Proton:Pip1:Pip2:Pim1:Pim2"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
-      auto startime=StartTimeFromTimeAndVertex(_electron.DeltaTime());
-      //auto startime=StartTimeFromEB();
-      for(auto& p:CurrentTopo()->GetParticles())
-	p->ShiftTime(-startime);
+      // auto startime=StartTimeFromTimeAndVertex(_electron.DeltaTime());
+      // //auto startime=StartTimeFromEB();
+      // for(auto& p:CurrentTopo()->GetParticles())
+      // 	p->ShiftTime(-startime);
       ///////+++++++++++++++++++++++++++++++++++///////
       auto miss= _beam + _target - _electron.P4() - _proton.P4()
       -_pip1.P4()-_pip2.P4() -_pim1.P4() -_pim2.P4();
@@ -60,10 +60,6 @@ namespace someone{
     _doToTopo["Electron:Proton:Pip1:Pip2:Pim1"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
-      auto startime=StartTimeFromTimeAndVertex(_electron.DeltaTime());
-      //auto startime=StartTimeFromEB();
-      for(auto& p:CurrentTopo()->GetParticles())
-	p->ShiftTime(-startime);
       ///////+++++++++++++++++++++++++++++++++++///////
       auto miss= _beam + _target - _electron.P4() - _proton.P4()
       -_pip1.P4()-_pip2.P4() -_pim1.P4();
@@ -82,11 +78,7 @@ namespace someone{
     _doToTopo["Electron:Proton:Pip1:Pim1"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
-      auto startime=StartTimeFromTimeAndVertex(_electron.DeltaTime());
-      //auto startime=StartTimeFromEB();
-      for(auto& p:CurrentTopo()->GetParticles())
-	p->ShiftTime(-startime);
-      ///////+++++++++++++++++++++++++++++++++++///////
+       ///////+++++++++++++++++++++++++++++++++++///////
       auto miss= _beam + _target - _electron.P4() - _proton.P4()
       -_pip1.P4() -_pim1.P4();
       
@@ -127,7 +119,7 @@ namespace someone{
     _kinCalc.SetMesonDecay(_k1.P4() , _k2.P4());
     _kinCalc.MesonDecayGJ();
     TD->MesonCosThGJ=_kinCalc.CosTheta();
-    TD->MesonPhiGJ=_kinCalc.CosTheta();
+    TD->MesonPhiGJ=_kinCalc.Phi();
   }
     
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  

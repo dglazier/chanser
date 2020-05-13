@@ -39,6 +39,7 @@ namespace chanser{
     }
      //fs->Init(); //now can initialise topology iterators
     // _finalStates.push_back((fs));
+    _rawFinalStates.push_back(fs.get());
     _finalStates.push_back(std::move(fs));//take a copy
 
     delete file;
@@ -54,6 +55,7 @@ namespace chanser{
       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
       fs->SetHasTruth();
     }
+    _rawFinalStates.push_back(fs.get());
     _finalStates.push_back(std::move(fs));//take a copy
   }
   ///////////////////////////////////////////////////////////////
@@ -94,8 +96,10 @@ namespace chanser{
 	fs->SetGenerated();
     }
     
-    for(const auto& fs:_finalStates)
+    for(const auto& fs:_finalStates){
       fs->Init(_baseOutDir);
+      fs->Print();
+    }
     
   }
   //////////////////////////////////////////////////////////////

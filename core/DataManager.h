@@ -8,7 +8,6 @@
 #include "BaseParticle.h"
 #include "BaseRunInfo.h"
 #include "BaseEventInfo.h"
-#include "CLAS12Particle.h"
 #include <memory>
 #include <vector>
 

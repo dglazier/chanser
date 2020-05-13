@@ -6,6 +6,7 @@
 #pragma once
 
 #include "DataManager.h"
+#include "CLAS12Particle.h"
 #include "RunInfo.h"
 #include "EventInfo.h"
 #include "clas12reader.h"

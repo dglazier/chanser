@@ -39,7 +39,7 @@ namespace chanser{
   }
   //////////////////////////////////////////////////////////////////
   //output particles
-  void FinalState::ShowParticles(){
+  void FinalState::ShowParticles()const{
     std::cout<<GetName()<<" ShowParticles "<<endl;
     for(auto& cp: _pconfigs){
       std::cout<<cp.GetName()<<" "<<cp.PDG()<<std::endl;
@@ -64,9 +64,9 @@ namespace chanser{
     _currIter=nullptr;
     AutoIter();
     _currTopo->Iter().ConfigureIters();
-    // _currTopo->Iter().Print(9);
     _itersConfigured++;
   }
+ 
   void FinalState::Init(const TString& baseDir){
     
     auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
@@ -74,7 +74,10 @@ namespace chanser{
     Info("FinalState::Init",Form("Using %s ",InputFileName().Data()),"");
     
     //add final state configuration name directory
-    _outputDir=outdir+GetName()+'_'+gSystem->BaseName(InputFileName())+"__"+WorkerName()+'/';
+    _finalDirectory= outdir+GetName()+'_'+gSystem->BaseName(InputFileName());
+    _outputDir=_finalDirectory+"__"+WorkerName()+'/';
+    
+    gSystem->Exec(Form("mkdir -p %s",_finalDirectory.Data()));
     gSystem->Exec(Form("mkdir -p %s",_outputDir.Data()));
     
     //Now contruct output event
@@ -464,7 +467,8 @@ namespace chanser{
     // if(_finalHipo.get())_finalHipo->close();
     // _finalHipo.reset();
     _outEvent.Finish();
-    
+    _mergeLists.push_back(_outEvent.UniqueFinalTreeList());
+      
     //end any action managers, e.g save trees
     for(auto pt : _preTopoAction) {
       pt->End();	
@@ -479,5 +483,40 @@ namespace chanser{
       pt->End();	
     }
   }
+  /////////////////////////////////////////////////////////////
+  ///Call this if you have an output file which will need
+  ///to be merged when using proof
+  void FinalState::AddMergeList(TString name, TString filename){
+      tlist_uptr li{new TList()};
+      li->SetName(FinalDirectory()+name);
+      li->Add(new TObjString(filename));
+      _mergeLists.push_back(std::move(li));
+  }
+
+  //////////////////////////////////////////////////////////////
+   void FinalState::Print(Option_t* option)const{
+     Info("FinalState::Print",Form("From file %s ",InputFileName().Data()),"");
+     ShowParticles();
+     ShowTopologies();
+     //_currTopo->Iter().Print(9);
+     //_outEvent.Finish();
+     
+     //end any action managers, e.g save trees
+     Info("FinalState::Print","PreTopoActions :");
+     for(auto pt : _preTopoAction) {
+       pt->PrintAction();	
+     }
+     //end any action managers, e.g save trees
+     Info("FinalState::Print","PostTopoActions :");
+     for(auto pt : _postTopoAction) {
+       pt->PrintAction();	
+     }
+     
+     //end any action managers, e.g save trees
+     Info("FinalState::Print","PostKinActions :");
+     for(auto pt : _postKinAction) {
+       pt->PrintAction();	
+     }
+   }
   
 }

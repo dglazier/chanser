@@ -226,7 +226,7 @@ namespace chanser{
   }
   
 
-  void ParticleIter::Print(Int_t verbose){
+  void ParticleIter::Print(Int_t verbose)const {
     if (verbose==1&&_evParts.size()==0) {if(_innerIter) _innerIter->Print(verbose); return;}
 
     cout<<" ParticleIter::Print() "<<endl;

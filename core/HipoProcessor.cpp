@@ -7,7 +7,9 @@
 namespace chanser{
   
  
-  HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) : HipoSelector(chain),_baseDir(base) {
+  HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) :
+    HipoSelector(chain),_baseDir(base) {
+
     chain->GetNRecords();//needed to count total records etc.
 
     if(!fsfile.BeginsWith('/'))
@@ -37,7 +39,7 @@ namespace chanser{
 
     _fsm.LoadData(&_hipo);
     //now initiliase all final states
-    _listOfFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES"))); //      _hipo.SetReader(_c12.get());
+    _listOfFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
 
     cout<<"HipoProcessor::SlaveBegin "<<_listOfFinalStates->GetEntries()<<endl;
     for(Int_t ifs=0;ifs<_listOfFinalStates->GetEntries();++ifs){
@@ -56,15 +58,21 @@ namespace chanser{
      
   }
   
-  void HipoProcessor::AddFilter(){
-    //   _c12->addExactPid(11,1);    //exactly 1 electron
+  Bool_t HipoProcessor::Notify(){
+    cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
+    
+    //This function is called whenever there is a new file
+    _hipo.SetReader(_c12.get()); //use it to set the reader ptr
+     
+    //_hipo->addExactPid(11,1);    //exactly 1 electron
+    return kTRUE;
   }
 
   Bool_t HipoProcessor::ProcessEvent(){
     //Equivalent to TSelector Process
     //Fill in what you would like to do with
     //the data for each event....
-    _hipo.SetReader(_c12.get());
+   
     // cout<<"HipoProcessor::ProcessEvent"<<endl;
     if(_hipo.FetchPids()){
       _fsm.ProcessEvent();
@@ -75,7 +83,27 @@ namespace chanser{
  
   void HipoProcessor::SlaveTerminate()
   {
+    cout<<"HipoProcessor::SlaveTerminate() "<<endl;
+ 
     _fsm.EndAndWrite();
+ 
+    //give all files to be merged to the output list
+    auto fstates = _fsm.GetFinalStates();
+    cout<<"N final states "<<fstates.size()<<endl;
+    Int_t ListNumber = 0;
+    for(auto& fs: fstates){
+      auto mergers = fs->UniqueMergeLists(); //we now own this list
+      cout<<"Go tmergers "<<mergers.size()<<endl;
+      for(auto& mergeList: mergers){
+	cout<<"add ouput "<<fOutput <<" "<<mergeList->GetName()<<endl;
+	auto forOutList=new TList();
+	forOutList->SetOwner();
+	forOutList->SetName(Form("MERGELIST_%d",ListNumber++));
+	forOutList->AddAll(mergeList.get());
+	forOutList->Add(new TNamed("DESTINATION",fs->FinalDirectory().Data()));
+	fOutput->Add(forOutList);
+      }
+    }
   }
 
   void HipoProcessor::Terminate()
@@ -83,11 +111,48 @@ namespace chanser{
     // The Terminate() function is the last function to be called during
     // a query. It always runs on the client, it can be used to present
     // the results graphically or save the results to file.
-
-
+    cout<<"HipoProcessor::Terminate() "<<endl;
+    MergeFinalOutput();
+    
     //Tidy up
     gROOT->ProcessLine(".! rm -r chanser_FinalStates/");
   }
+  /////////////////////////////////////////////////////////
+  ///Loop over final states and merge trees from workers
+  void HipoProcessor::MergeFinalOutput(){
+
+    for(const auto&& obj : *fOutput){
+      if(TString(obj->GetName()).Contains("MERGELIST")){
+	auto merge=dynamic_cast<TList*>(obj);
+	auto dest = dynamic_cast<TNamed*>(merge->FindObject("DESTINATION"));
+	TString hadd(".! hadd ");
+	hadd+=TString(dest->GetTitle())+"/";
+	
+	TString rm(".! rm  ");
+	TString baseName;
+	
+	for(const auto&& mergefile : *merge){
+	  if(TString(mergefile->GetName()).Contains("DESTINATION"))
+	    continue;//List contains destination object
+	  if(baseName.Length()==0){
+	    baseName=gSystem->BaseName(mergefile->GetName());
+	    hadd+=baseName+ " -f ";
+	  }
+	  hadd+=mergefile->GetName();
+	  hadd+=" ";
+	  rm+=mergefile->GetName();
+	  rm+=" ";
+	}
+	
+	cout<<hadd<<endl;
+	gROOT->ProcessLine(hadd);
+	cout<<rm<<endl;
+	gROOT->ProcessLine(rm);
+ 
+      }
+    }
+ }
+  /////////////////////////////////////////////////////////
 
   void HipoProcessor::GetFinalStates(TString fsfile){
     _listOfFinalStates=new TList();
