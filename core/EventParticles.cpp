@@ -41,7 +41,7 @@ namespace chanser{
       auto chpar= _chargetoParticle[part->Charge()+1];
       chpar->push_back(part);
       if(vecParts->size()==_maxPart) {return kFALSE;}
-      if(chpar->size()==_maxPart) {return kFALSE;}
+      if(chpar->size()==_maxPart) {return kFALSE;} //this should overide previous line ?! And max parts is just on charge
     }
      //  Print();
     return kTRUE;

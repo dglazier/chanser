@@ -9,21 +9,27 @@
   //FS->UseOutputHipoNtuple();
 
   ///StartTime
-  StartTimeAction st("EBStartTime",new C12StartTimeFromParticle("Electron"));
-  FS->RegisterPreTopoAction(st);
+  StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
+  FS->RegisterPreTopoAction(st);  //PRETOPO
   
   /////Make particle trees first in case want to add cut flags
   ParticleDataManager pdm{"particle",1};
-  pdm.SetParticleOut(new MyParticleOutEvent);
-  //  pdm.SetParticleOut(new CLAS12ParticleOutEvent0);
+  ///pdm.SetParticleOut(new MyParticleOutEvent);
+  pdm.SetParticleOut(new CLAS12ParticleOutEvent0);
   FS->RegisterPostKinAction(pdm);
 
-  ////
+  ////Cuts
   ParticleCutsManager pcm{"DeltaTimeCuts",1};
   pcm.AddParticleCut("e-",new MyParticleCut(12,1));
   DeltaTimeCut* dtc=new DeltaTimeCut(2); //Apply a Delta Time cut of 2ns
   pcm.SetDefaultCut(dtc);
-  FS->RegisterPostTopoAction(pcm);
+  FS->RegisterPostTopoAction(pcm); //POSTTOPO
+
+
+  ////Corrections
+  ParticleCorrectionManager pcorrm{"FTelEnergyCorrection"};
+  pcorrm.AddParticle("e-",new FTel_pol4_ECorrection());
+  FS->RegisterPreTopoAction(pcorrm); //PRETOPO
  
   FS->WriteToFile("NONEALL_configuration1.root");
   FS->Print();

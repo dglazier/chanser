@@ -11,7 +11,10 @@ namespace chanser{
     }
 
       
-    if(_useableDefault!=nullptr)std::cout<<" default  cut "<< _useableDefault->GetName() <<std::endl;
+    if(_useableDefault!=nullptr){
+      std::cout<<" default  cut "<< _useableDefault->ClassName() <<std::endl;
+      _useableDefault->Print();
+    }
      std::cout<<std::endl;
   }
 

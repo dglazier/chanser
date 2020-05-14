@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////
 ///
-///Class:		StartTimeAction
+///Class:		TemplateAction
 ///Description:
 ///
 
@@ -10,19 +10,19 @@
 
 namespace chanser{
     
-   class StartTimeAction : public ActionManager {
+   class TemplateAction : public ActionManager {
 
   public:
-    StartTimeAction()=default;
+    TemplateAction()=default;
     ///Must give an output directory for saving trees to
-   StartTimeAction(TString name):ActionManager(name){};
+   TemplateAction(TString name):ActionManager(name){};
     
-    virtual ~StartTimeAction()=default;
-    StartTimeAction(const StartTimeAction& other) = default; //Copy Constructor
-    StartTimeAction(StartTimeAction&& other) = default; //Move Constructor
+    virtual ~TemplateAction()=default;
+    TemplateAction(const TemplateAction& other) = default; //Copy Constructor
+    TemplateAction(TemplateAction&& other) = default; //Move Constructor
       
-    StartTimeAction& operator=(const StartTimeAction& other)=default;
-    StartTimeAction& operator=(StartTimeAction&& other)=default;
+    TemplateAction& operator=(const TemplateAction& other)=default;
+    TemplateAction& operator=(TemplateAction&& other)=default;
 
     void PrintAction() override;
     Bool_t Execute(UInt_t ti)  override{
@@ -34,7 +34,7 @@ namespace chanser{
     void Configure(FinalState* fs) override;
   
     
-    ClassDefOverride(chanser::StartTimeAction,1);
+    ClassDefOverride(chanser::TemplateAction,1);
   };
 
 }

@@ -39,7 +39,9 @@ namespace chanser{
   class DeltaTimeCut : public BaseCut{
       
   public:
-    DeltaTimeCut(Float_t cut=FLT_MAX){_timeCut=cut;}
+    DeltaTimeCut()=default;
+    DeltaTimeCut(Float_t cut){_timeCut=cut;}
+      
       
       
     Bool_t ParticleCut(const BaseParticle* part) const noexcept override{

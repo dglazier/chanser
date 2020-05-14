@@ -1,14 +1,14 @@
-#include "StartTimeAction.h"
+#include "TemplateAction.h"
 #include "FinalState.h"
 
 namespace chanser{
     
-  void StartTimeAction::PrintAction(){
-    std::cout<<" StartTimeAction::Print() "<<std::endl;
+  void TemplateAction::PrintAction(){
+    std::cout<<" TemplateAction::Print() "<<std::endl;
  	
   }
   ///////////////////////////////////////////////////////////////
-  void StartTimeAction::Configure(FinalState* fs){
+  void TemplateAction::Configure(FinalState* fs){
  
     auto topos=fs->TopoManager().ObserveTopos();
     

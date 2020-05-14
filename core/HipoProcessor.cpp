@@ -196,14 +196,14 @@ namespace chanser{
     /////////////////////////////////////////////////
     ///Max particles for event particle
     auto opt=dynamic_cast<TNamed*>(_options->FindObject("HIPOPROCESSOR_MAXPARTICLES"));
-    cout<<"HipoProcessor::ReadEnvSettings() "<<opt<<endl;
+    cout<<"HipoProcessor::ApplyOptions() "<<opt<<endl;
     if(opt!=nullptr){
       auto maxParts=TString(opt->GetTitle()).Atoi();
-      Info("HipoProcessor::ReadEnvSettings()",Form("Setting Max particles to %d",maxParts),"");
+      Info("HipoProcessor::ApplyOptions()",Form("Setting Max particles to %d",maxParts),"");
      
       _fsm.GetEventParticles().SetMaxParticles(maxParts);
     }
-    else exit(0);
+    //else exit(0);
     /////////////////////////////////////////////////
     
   }

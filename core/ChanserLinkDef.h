@@ -35,6 +35,7 @@
 #pragma link C++ class chanser::BaseCut+;
 #pragma link C++ class chanser::DeltaTimeCut+;
 #pragma link C++ class chanser::EventBuilderCut+;
+#pragma link C++ class chanser::BaseCorrection+;
 
 #pragma link C++ class chanser::CLAS12FinalState+;
 #pragma link C++ class chanser::CLAS12Particle+;

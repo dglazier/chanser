@@ -114,6 +114,7 @@ namespace chanser{
     void SetMeasMass(Double_t ti){_measMass=ti;};
       
     //Getting functions
+    //Imporant this return a copy of p4, if you want to change it use P4p
     HSLorentzVector P4() const {
       return _useTruth ? _truth->_p4 : _p4;
     } 
