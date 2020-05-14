@@ -20,15 +20,9 @@
 
   ////
   ParticleCutsManager pcm{"DeltaTimeCuts",1};
-  MyParticleCut elCut(12,1); 
   pcm.AddParticleCut("e-",new MyParticleCut(12,1));
-  DeltaTimeCut dtc1(1); //Apply a Delta Time cut of 2ns
   DeltaTimeCut* dtc=new DeltaTimeCut(2); //Apply a Delta Time cut of 2ns
   pcm.SetDefaultCut(dtc);
-  // pcm.AddParticleCut("e-",dtc1);
-  // pcm.AddParticleCut("proton",dtc);
-  //pcm.AddParticleCut("pi+",dtc);
-  //pcm.AddParticleCut("pi-",dtc);
   FS->RegisterPostTopoAction(pcm);
  
   FS->WriteToFile("NONEALL_configuration1.root");

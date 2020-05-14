@@ -35,13 +35,20 @@ namespace chanser{
       
     FinalStateManager& Manager(){return _fsm;}
 
+    void AddOption(TString opt,TString val){_options->Add(new TNamed(opt,val));};
+    
+  protected:
+    
     void    MergeFinalOutput();
-
+    void ApplyOptions();
+    
   private:
     FinalStateManager _fsm;
     HipoData _hipo;
 
     TList* _listOfFinalStates{nullptr};
+    std::unique_ptr<TList> _options;
+    
     TString _baseDir;
     
     ClassDefOverride(chanser::HipoProcessor,0);

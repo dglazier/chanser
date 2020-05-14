@@ -10,6 +10,11 @@ namespace chanser{
   HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) :
     HipoSelector(chain),_baseDir(base) {
 
+    //prepare extra options list
+    _options.reset(new TList{});
+    _options->SetName("HIPOPROCESSOR_OPTIONS");
+    _options->SetOwner();
+    
     chain->GetNRecords();//needed to count total records etc.
 
     if(!fsfile.BeginsWith('/'))
@@ -27,6 +32,8 @@ namespace chanser{
     fInput->Add(_listOfFinalStates);//make chain of files avaialbel on slaves
     //Give the base output directory
     fInput->Add(new TNamed("FSBASEDIR",_baseDir.Data()));
+    //additional options
+    fInput->Add(_options.get());
     
     HipoSelector::Begin(0); //Do not remove this line!
 
@@ -48,16 +55,17 @@ namespace chanser{
       _fsm.LoadFinalState(_listOfFinalStates->At(ifs)->GetName(),_listOfFinalStates->At(ifs)->GetTitle(),workerName);
     }
 
+    //read options 
+    ApplyOptions();
+    
     //Get the output directory
     _baseDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")))->GetTitle();
     _fsm.SetBaseOutDir(_baseDir);
 
-    _fsm.GetEventParticles().SetMaxParticles(6);
-    
     _fsm.Init();
      
   }
-  
+  ////////////////////////////////////////////////
   Bool_t HipoProcessor::Notify(){
     cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
     
@@ -178,5 +186,25 @@ namespace chanser{
     //Do any compilation that is needed
     Archive::doCompileThese();
   }
-}
+
   
+  ////////////////////////////////////////////////
+  ///Some configuration option can be passes as envirment variables
+  void HipoProcessor::ApplyOptions(){
+    _options.reset((dynamic_cast<TList*>(fInput->FindObject("HIPOPROCESSOR_OPTIONS"))));
+    
+    /////////////////////////////////////////////////
+    ///Max particles for event particle
+    auto opt=dynamic_cast<TNamed*>(_options->FindObject("HIPOPROCESSOR_MAXPARTICLES"));
+    cout<<"HipoProcessor::ReadEnvSettings() "<<opt<<endl;
+    if(opt!=nullptr){
+      auto maxParts=TString(opt->GetTitle()).Atoi();
+      Info("HipoProcessor::ReadEnvSettings()",Form("Setting Max particles to %d",maxParts),"");
+     
+      _fsm.GetEventParticles().SetMaxParticles(maxParts);
+    }
+    else exit(0);
+    /////////////////////////////////////////////////
+    
+  }
+}
