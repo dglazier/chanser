@@ -144,17 +144,6 @@ Here _electron, _proton etc are CLAS12Particles and so we have to call the P4() 
 
 Anything prefixed by  TD-> has to be included in the TreeData and will be written to the output.
 
-At the moment there is no automation of the start time for the event, so users must decide what to do themselves and apply in the doToTopo function.
-For example use start time from Electron candidate
-
-      auto startime=StartTimeFromTimeAndVertex(_electron.DeltaTime());
-      //auto startime=StartTimeFromEB();
-      for(auto& p:CurrentTopo()->GetParticles())
-	p->ShiftTime(-startime);
-
-      #in Pi4.cpp
-
-Note, if you want to use the EB start time use  StartTimeFromEB() instead.
 
 If you had any missing or parent particle you may choose to assign their 4-vectors here or in the Kinematics function. You can use the SetP4 or FixP4, the latter fixes the particle mass to the PDG value and recalculates the energy. In general this will be different for differnt topologies
 
@@ -275,13 +264,12 @@ Note the output tree file is given the name /basedir/username/config_file/FinalS
 
 For example you can add different particle ID cuts for different particles :
 
-    ParticleCutsManager pcm{"EBCuts",1};
-    EventBuilderCut ebc; //just use even  builder PID
-    pcm.AddParticleCut("e-",ebc);
-    pcm.AddParticleCut("proton",ebc);
-    pcm.AddParticleCut("pi+",ebc);
-    DeltaTimeCut dtc(2); //Apply a Delta Time cut of 2ns
-    pcm.AddParticleCut("pi-",dtc);
+    ParticleCutsManager pcm{"EBCuts",1}; //the 1 => cut will be applied
+  
+    pcm.AddParticleCut("e-",new EventBuilderCut());
+    pcm.AddParticleCut("proton",new EventBuilderCut());
+    pcm.AddParticleCut("pi+",new EventBuilderCut());
+    pcm.AddParticleCut("pi-",new DeltaTimeCut(2));
 
     //register it with this final state instance
     FS->RegisterPostTopoAction(pcm);
@@ -290,32 +278,57 @@ For example you can add different particle ID cuts for different particles :
 
 Note you can include as many different ParticleCutsManagers in you analysis as you want. For example you could hae one with all particles having DeltaTime cuts of 1ns and another with 2ns.
 
-      ParticleCutsManager pcm{"EBCuts",1};
-      DeltaTimeCut dtc(2); //Apply a Delta Time cut of 2ns
-      pcm.AddParticleCut("e-",dtc);
-      pcm.AddParticleCut("proton",dtc);
-      pcm.AddParticleCut("pi+",dtc);
-      pcm.AddParticleCut("pi-",dtc);
-      FS->RegisterPostTopoAction(pcm);
+      ParticleCutsManager pcm_dt{"DeltaTimeCuts2",0};
+      pcm_dt.AddParticleCut("e-",new DeltaTimeCut(2));
+      pcm_dt.AddParticleCut("proton",new DeltaTimeCut(2));
+      pcm_dt.AddParticleCut("pi+",new DeltaTimeCut(0.5));
+      pcm_dt.AddParticleCut("pi-",new DeltaTimeCut(1));
+      FS->RegisterPostTopoAction(pcm_dt);
 
       #in Create_Pi4.C
  
-Note the argument 1 provided in pcm{"EBCuts",1}, means that this cut will actually be applied to the data, if this is not included or a 0 is used instead then the cut is just included as a flag in the ouput tree.
+Note the argument 1 provided in pcm{"EBCuts",1}, means that this cut will actually be applied to the data, if this is not included or a 0 is used instead then the cut is just included as a flag in the ouput tree. So in this case "EBCuts" will be applied to the output data, while DeltaTimeCuts2 will just appear as a flag in the ouptput tree with a value equal to the number of particles that past the cut.
+To set a default cut for particles not called in AddParticleCut,
 
+      ParticleCutsManager pcm{"DeltaTimeCuts",1};
+       pcm.SetDefaultCut(new DeltaTimeCut(2));
+
+SetDefaultCut and AddParticleCut can be used in the same ParticleCutsManager
 
 ### Particle data
 
 Or output data related to each particle in the event to a root tree :
 
-     ParticleDataManager pdm{"particle","/outdir/particleData",1};
-     CLAS12ParticleOutEvent0 pout; //instance of class that defines particle output
-     pdm.SetParticleOut(&pout);
-     FS->RegisterPostTopoAction(pdm);
+       ParticleDataManager pdm{"particle",1};
+       pdm.SetParticleOut(new CLAS12ParticleOutEvent0);
+       FS->RegisterPostKinAction(pdm);
 
 
      #in Create_Pi4.C
 
 This will output a set of standard detector variables,  you may create you own ParticleOutEvent class for this purpose.
+
+### Start time
+
+You also have to decide where to get the event start time from. See the FAQ for details, but to calculate the starttime for each combitorial from the e- candidate,
+
+    ///StartTime
+    StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
+    FS->RegisterPreTopoAction(st);  //PRETOPO
+
+     #in Create_Pi4.C
+
+### Particle Corrections
+
+Ths particle corrections action is used much like the particle cuts. So far only a FT e- energy correction has been included. If you want to use it,
+
+     ParticleCorrectionManager pcorrm{"FTelEnergyCorrection"};
+     pcorrm.AddParticle("e-",new FTel_pol4_ECorrection());
+     FS->RegisterPreTopoAction(pcorrm); //PRETOPO
+
+     #in Create_Pi4.C
+
+See the FAQs for information on creating your own particle correction
 
 At the end you should write to a root file so it can be processed. The clas12_proof processor then just needs this root file to run as it extracts and compiles the source code from the file before running.
 
@@ -335,6 +348,7 @@ To set the data file
       ////Set hipo file to be analysed
       HipoData hdata;
       hdata.SetFile("/input/dir/file.hipo");
+      //hdata.Reader()->useFTBased();
 
       #in Run_Pi4.C
 
@@ -353,6 +367,10 @@ To Load your final state analysis objects
       fsm.LoadFinalState("Pi4", "NONEALL_configuration1.root");
 
       #in Run_Pi4.C
+
+Limit the number of particle of each charge for each event
+
+      fsm.GetEventParticles().SetMaxParticles(6);
 
 And run
 
@@ -381,13 +399,20 @@ Create a script to allocate the data files, e.g. Processor.C
 
        clas12root::HipoChain chain;
        chain.Add("/full/path/files_*.hipo");
-       
+       chain.SetReaderTags({0});
+       //chain.GetC12Reader()->useFTBased(); //if you want ot use FT PiD
+    
       #in Processor.C
 
 
 Create processor with list of final state analysis and output directory, remembering your ourtput files may be large.
 
        chanser::HipoProcessor processor(&chain,"finalstates.txt","/out/dir");
+
+Supply some options for the PROOF processing see FAQ for others,
+
+       processor.AddOption("HIPOPROCESSOR_MAXPARTICLES","5");
+
 
 Then process all the files
 
