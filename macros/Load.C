@@ -20,7 +20,7 @@ void Load(){
   TString skeleton=CHANSER+"/skeleton";
   TString macros=CHANSER+"/macros";
   TString user= gSystem->Getenv("USERNAME");
-  if(user>Length()==0) user= gSystem->Getenv("USER");
+  if(user.Length()==0) user= gSystem->Getenv("USER");
     
   if(!TString(gInterpreter->GetIncludePath()).Contains(core)){
     
