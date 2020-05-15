@@ -20,7 +20,8 @@ void Load(){
   TString skeleton=CHANSER+"/skeleton";
   TString macros=CHANSER+"/macros";
   TString user= gSystem->Getenv("USERNAME");
-  
+  if(user>Length()==0) user= gSystem->Getenv("USER");
+    
   if(!TString(gInterpreter->GetIncludePath()).Contains(core)){
     
     gInterpreter->AddIncludePath(core);
@@ -39,8 +40,10 @@ void Load(){
       gROOT->ProcessLine(".x $CHANSER_CLASSES/LoadMyClasses.C");
 
     //LEt the user namespace be used locally in chanser_root
-    if(gProof==nullptr)
+    if(gProof==nullptr){
+      gROOT->ProcessLine(Form("namespace %s{};",user.Data()));
       gROOT->ProcessLine(Form("using namespace %s;",user.Data()));
- }
+    }
+  }
   
 }
