@@ -12,8 +12,8 @@ namespace chanser{
 
     //prepare extra options list
     _options.reset(new TList{});
-    _options->SetName("HIPOPROCESSOR_OPTIONS");
-    _options->SetOwner();
+     _options->SetName("HIPOPROCESSOR_OPTIONS");
+     //cant be owner or crashes _options->SetOwner();
     
     chain->GetNRecords();//needed to count total records etc.
 

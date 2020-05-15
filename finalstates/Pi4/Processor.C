@@ -6,9 +6,9 @@
   chain.GetC12Reader()->useFTBased();
     
   chanser::HipoProcessor processor(&chain,"finalstates.txt","/work/dglazier/dump/dataft/");
-  processor.AddOption("HIPOPROCESSOR_MAXPARTICLES","5");
- 
-  gProof->Process(&processor,chain.GetNRecords());
-  //gProof->Process(&processor,4);
+   processor.AddOption("HIPOPROCESSOR_MAXPARTICLES","5");
+  chain.GetNRecords();
+  //  gProof->Process(&processor,chain.GetNRecords());
+  gProof->Process(&processor,20);
  
 }
