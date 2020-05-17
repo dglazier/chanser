@@ -46,11 +46,15 @@ namespace chanser{
   }
     inline void chanser::CLAS12Particle::SetCLAS12Particle(clas12::region_particle *p){
     _c12Particle=p;
+    SetPDGcode(p->getPid());//must take region_particle in case useFTbased
+
+    //Get momentum and vertex from pbank
     auto pbank=p->par();
-    SetPDGcode(pbank->getPid());
     _charge=pbank->getCharge();
     SetXYZT(pbank->getPx(),pbank->getPy(),pbank->getPz(),pbank->getP());
     SetVertex(pbank->getVx()/100,pbank->getVy()/100,pbank->getVz()/100);//change to m
+
+    //take time and path as defined by region_particle
     _time=p->getTime();
     _path=p->getPath()/100; //change to m
   

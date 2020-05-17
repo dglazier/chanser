@@ -260,10 +260,11 @@ namespace chanser{
 	cout<<endl;
       }
 
-      for(auto& topo: _topos)
-	topo.Print(1);
-    }
+       }
     else cout<<" ALL "<<endl;
+    for(auto& topo: _topos)
+      topo.Print(1);
+
   }
     
 }
