@@ -20,9 +20,9 @@ namespace chanser{
       Double_t p_mag = part->P4p()->P();
       if(p_mag==0)return;
       
-      Double_t p_mag_corrected = (_a0/p_mag + _a1 + _a2*p_mag
-				+ _a3*p_mag*p_mag
-				+ _a4*p_mag*p_mag*p_mag);
+      Double_t p_mag_corrected = (_a0 + _a1*p_mag + _a2*p_mag*p_mag
+				+ _a3*p_mag*p_mag*p_mag
+				+ _a4*p_mag*p_mag*p_mag*p_mag);
     
       part->SetP(p_mag_corrected);
 
