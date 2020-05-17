@@ -18,7 +18,7 @@ namespace chanser{
 	return; //only FT e-
       
       Double_t p_mag = part->P4p()->P();
-      if(pmag==0)return;
+      if(p_mag==0)return;
       
       Double_t p_mag_corrected = (_a0/p_mag + _a1 + _a2*p_mag
 				+ _a3*p_mag*p_mag
