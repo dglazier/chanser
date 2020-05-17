@@ -162,6 +162,8 @@ namespace chanser{
     void InitEvent(){_gotCorrectOne=0;  _nPerm=0;_currTopoID=-1;_rejectEvent=0;};
     void AddTopology(const TString names,const VoidFuncs funcE);
 
+    void RejectEvent(Short_t re=1){_rejectEvent=re;}
+    
     ParticleIter*  InnerParticle(Int_t pid);
     void InnerSelect(ParticleIter* recursiter,Int_t pid);
     void  ConfigureIters(Topology *tt);
