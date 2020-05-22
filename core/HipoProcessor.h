@@ -16,10 +16,10 @@ namespace chanser{
   public :
 
 
-  HipoProcessor(): _listOfFinalStates(nullptr) {};
-    // HipoProcessor(TString filename) ;
+    HipoProcessor()=default;
     HipoProcessor(clas12root::HipoChain *chain,TString fsfile,TString base) ;
-    virtual ~HipoProcessor();
+    virtual ~HipoProcessor()=default;
+
     void    Begin(TTree *tree) final;
     void    SlaveBegin(TTree *tree) final;
       
@@ -40,17 +40,30 @@ namespace chanser{
   protected:
     
     void    MergeFinalOutput();
-    void ApplyOptions();
+    void    ApplyOptions();
     
   private:
-    FinalStateManager _fsm;
-    HipoData _hipo;
 
-    TList* _listOfFinalStates{nullptr};
-    std::unique_ptr<TList> _options;
-    
-    TString _baseDir;
-    
+    //Data members should be objects
+    //or unique_ptrs
+    //Don't stream i.e. use //!
+    //members will be initialised on workers
+    //Use unique_ptrs for members that are given to fInputList
+    //but pass fInputList the RAW ptr
+    //on the worker just get and use the RAW ptr locally
+    //i.e. do not make it a data member
+
+    FinalStateManager _fsm; //!
+    HipoData _hipo;//!
+
+    //Note the Unique_ptrs should not be used on workers
+    //i.e. only in contructor, Begin, Terminate
+    std::unique_ptr<TList> _listOfFinalStates;//!
+    std::unique_ptr<TList> _options;//!
+    std::unique_ptr<TNamed> _baseDir;//!
+
+    Bool_t _boss{kFALSE};//!
+
     ClassDefOverride(chanser::HipoProcessor,0);
 
   };

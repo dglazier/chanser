@@ -8,35 +8,40 @@ namespace chanser{
   
  
   HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) :
-    HipoSelector(chain),_baseDir(base) {
+    HipoSelector{chain},_baseDir(new TNamed{"FSBASEDIR",base.Data()}),_boss{kTRUE} {
 
     //prepare extra options list
     _options.reset(new TList{});
-     _options->SetName("HIPOPROCESSOR_OPTIONS");
-     //cant be owner or crashes _options->SetOwner();
-    
-    chain->GetNRecords();//needed to count total records etc.
+    _options->SetName("HIPOPROCESSOR_OPTIONS");
+    _options->SetOwner(kTRUE);
 
+    //    chain->GetNRecords();//needed to count total records etc.
+
+    //make sure we have full path for file
     if(!fsfile.BeginsWith('/'))
       fsfile = TString(gSystem->Getenv("PWD"))+"/"+fsfile;
-    GetFinalStates(fsfile); //read which final states to process from text file
+
+    //read which final states to process from text file
+    GetFinalStates(fsfile);
+
     Info(" HipoProcessor::HipoProcessor",Form(" from %s found %d entries",fsfile.Data(),_listOfFinalStates->GetEntries()),"");
+
   }
-  HipoProcessor::~HipoProcessor() {
-    if(_listOfFinalStates) delete _listOfFinalStates;_listOfFinalStates=nullptr;
-  }
+
   void HipoProcessor::Begin(TTree * /*tree*/)
   {
+    /////Add to the input list. This is created in HipoSelector
+    /////fInput is no the owner of its ptrs, so we use unique_ptrs
+    ///// and give the raw ptr to fInput
 
     //Give list of final states to input so it can be initiated on slaves
-    fInput->Add(_listOfFinalStates);//make chain of files avaialbel on slaves
+    fInput->Add(_listOfFinalStates.get());
     //Give the base output directory
-    fInput->Add(new TNamed("FSBASEDIR",_baseDir.Data()));
+    fInput->Add(_baseDir.get());
     //additional options
-    fInput->Add(_options.get());
+    fInput->Add(_options.get()); 
     
     HipoSelector::Begin(0); //Do not remove this line!
-
 
   }
   
@@ -44,23 +49,26 @@ namespace chanser{
   {
     HipoSelector::SlaveBegin(0); //Do not remove this line!
 
+    //give the hipor data reader to FinalStateManager
+    //Data files are opened in Notify (see also HipoSelector)
     _fsm.LoadData(&_hipo);
+  
     //now initiliase all final states
-    _listOfFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
+    auto listFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
 
-    cout<<"HipoProcessor::SlaveBegin "<<_listOfFinalStates->GetEntries()<<endl;
-    for(Int_t ifs=0;ifs<_listOfFinalStates->GetEntries();++ifs){
+    //Read all the finalstate analysis objects
+    for(Int_t ifs=0;ifs<listFinalStates->GetEntries();++ifs){
       TString workerName;
       if(gProofServ) workerName=gProofServ->GetOrdinal();
-      _fsm.LoadFinalState(_listOfFinalStates->At(ifs)->GetName(),_listOfFinalStates->At(ifs)->GetTitle(),workerName);
+      _fsm.LoadFinalState(listFinalStates->At(ifs)->GetName(),listFinalStates->At(ifs)->GetTitle(),workerName);
     }
 
     //read options 
     ApplyOptions();
     
     //Get the output directory
-    _baseDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")))->GetTitle();
-    _fsm.SetBaseOutDir(_baseDir);
+    auto bDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")));
+    _fsm.SetBaseOutDir(bDir->GetTitle());
 
     _fsm.Init();
      
@@ -71,8 +79,7 @@ namespace chanser{
     
     //This function is called whenever there is a new file
     _hipo.SetReader(_c12.get()); //use it to set the reader ptr
-     
-    //_hipo->addExactPid(11,1);    //exactly 1 electron
+ 
     return kTRUE;
   }
 
@@ -80,30 +87,25 @@ namespace chanser{
     //Equivalent to TSelector Process
     //Fill in what you would like to do with
     //the data for each event....
-   
-    // cout<<"HipoProcessor::ProcessEvent"<<endl;
     if(_hipo.FetchPids()){
       _fsm.ProcessEvent();
     }
 
     return kTRUE;
   }
- 
+
   void HipoProcessor::SlaveTerminate()
   {
-    cout<<"HipoProcessor::SlaveTerminate() "<<endl;
  
+    //write all outputs
     _fsm.EndAndWrite();
  
     //give all files to be merged to the output list
     auto fstates = _fsm.GetFinalStates();
-    cout<<"N final states "<<fstates.size()<<endl;
     Int_t ListNumber = 0;
     for(auto& fs: fstates){
       auto mergers = fs->UniqueMergeLists(); //we now own this list
-      cout<<"Go tmergers "<<mergers.size()<<endl;
-      for(auto& mergeList: mergers){
-	cout<<"add ouput "<<fOutput <<" "<<mergeList->GetName()<<endl;
+        for(auto& mergeList: mergers){
 	auto forOutList=new TList();
 	forOutList->SetOwner();
 	forOutList->SetName(Form("MERGELIST_%d",ListNumber++));
@@ -123,7 +125,7 @@ namespace chanser{
     MergeFinalOutput();
     
     //Tidy up
-    gROOT->ProcessLine(".! rm -r chanser_FinalStates/");
+    gROOT->ProcessLine(".! rm -fr chanser_FinalStates/");
   }
   /////////////////////////////////////////////////////////
   ///Loop over final states and merge trees from workers
@@ -163,7 +165,7 @@ namespace chanser{
   /////////////////////////////////////////////////////////
 
   void HipoProcessor::GetFinalStates(TString fsfile){
-    _listOfFinalStates=new TList();
+    _listOfFinalStates.reset(new TList{});
     _listOfFinalStates->SetName("LISTOFFINALSTATES");
     _listOfFinalStates->SetOwner(kTRUE);
 
@@ -174,12 +176,11 @@ namespace chanser{
       const char* messa=Form("No final states list file found %s",fsfile.Data());
       Fatal("HipoProcessor::GetFinalStates",messa,"");
     }
-    cout<<" HipoProcessor::GetFinalStates("<<endl;
     std::string fss, fis; //finalstate name and root filename
     while (infile >> fss >> fis){
       if(fss[0]=='#') //comment out with #
       	continue; 
-      std::cout<<"HipoProcessor::LoadFinalStates : "<<fss << " "<<fis<<std::endl;
+      Info("HipoProcessor::LoadFinalStates",fss.data(),fis.data());
       _listOfFinalStates->Add(new TNamed(fss,fis));
       Archive::ExtractFinalState(fis,fss); //finalstate name, filename (full path)
     }
@@ -191,11 +192,13 @@ namespace chanser{
   ////////////////////////////////////////////////
   ///Some configuration option can be passes as envirment variables
   void HipoProcessor::ApplyOptions(){
-    _options.reset((dynamic_cast<TList*>(fInput->FindObject("HIPOPROCESSOR_OPTIONS"))));
     
+    auto options=dynamic_cast<TList*>(fInput->FindObject("HIPOPROCESSOR_OPTIONS"));
+    if(options==nullptr) return;
+
     /////////////////////////////////////////////////
     ///Max particles for event particle
-    auto opt=dynamic_cast<TNamed*>(_options->FindObject("HIPOPROCESSOR_MAXPARTICLES"));
+    auto opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_MAXPARTICLES"));
     cout<<"HipoProcessor::ApplyOptions() "<<opt<<endl;
     if(opt!=nullptr){
       auto maxParts=TString(opt->GetTitle()).Atoi();
@@ -203,7 +206,6 @@ namespace chanser{
      
       _fsm.GetEventParticles().SetMaxParticles(maxParts);
     }
-    //else exit(0);
     /////////////////////////////////////////////////
     
   }
