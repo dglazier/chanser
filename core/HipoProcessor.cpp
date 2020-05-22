@@ -135,7 +135,7 @@ namespace chanser{
       if(TString(obj->GetName()).Contains("MERGELIST")){
 	auto merge=dynamic_cast<TList*>(obj);
 	auto dest = dynamic_cast<TNamed*>(merge->FindObject("DESTINATION"));
-	TString hadd(".! hadd ");
+	TString hadd(".! $ROOTSYS/bin/hadd ");
 	hadd+=TString(dest->GetTitle())+"/";
 	
 	TString rm(".! rm  ");

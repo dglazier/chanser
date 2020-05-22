@@ -12,12 +12,14 @@ int main(int argc, char **argv) {
 
   auto Nworkers=argv[1];
   if(TString(Nworkers).Atoi()==0 ) {Fatal("chanser_proof","Must give a number of workers, chanser_proof N Process.C");}
-  
+
+
   TRint  *app = new TRint("App", &argc, argv);
 // Run the TApplication (not needed if you only want to store the histograms.)
   app->SetPrompt("chanser [%d] ");
   app->ProcessLine(".x $CLAS12ROOT/RunRoot/LoadClas12Root.C");
   app->ProcessLine(Form(".x $CLAS12ROOT/RunRoot/LoadProofLib.C(%s)",Nworkers));
+  app->ProcessLine(Form("gROOT->SetBatch();"));
   //app->ProcessLine(Form("gProof->Load(\"%s\");",selectorMacro));
 
   // get the sandbox directroy
