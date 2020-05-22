@@ -93,7 +93,7 @@ namespace chanser{
     void SetP4(const HSLorentzVector &v){_p4=v;}
     void FixP4(const HSLorentzVector &v){_p4=v;TakePDGMass();}
     void SetVectPDG(const HSLorentzVector &v){_p4.SetXYZT(v.X(),v.Y(),v.Z(),sqrt(v.P2()+_pdgMass*_pdgMass));}
-    void SetVectPDG(){_p4.SetXYZT(_p4.X(),+_p4.Y(),_p4.Z(),sqrt(_p4.P2()+_pdgMass*_pdgMass));}
+    void SetVectPDG(){_p4.SetXYZT(_p4.X(),_p4.Y(),_p4.Z(),sqrt(_p4.P2()+_pdgMass*_pdgMass));}
     void SetP4(const HSLorentzVector *v){_p4=*v;}
     void SetXYZT(Double_t X,Double_t Y,Double_t Z,Double_t T){_p4.SetXYZT(X,Y,Z,T);}
     void SetXYZM(Double_t X,Double_t Y,Double_t Z,Double_t M){_p4.SetXYZT(X,Y,Z,sqrt(M*M+X*X+Y*Y+Z*Z));}

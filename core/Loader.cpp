@@ -36,7 +36,7 @@ namespace chanser{
       return kTRUE;
     
     cl.push_back(fullfile);
-    std::cout<<" Loader::Compile "<<filename<<" "<<CompilesList().size()<<std::endl;
+   
     gROOT->ProcessLine(Form(".L %s+",filename.Data()));
     
     return kTRUE;
@@ -91,11 +91,9 @@ namespace chanser{
   }
 
  
-  std::vector<TString>&  Loader::CompilesList(){ std::cout<<"getting "<<loader::gCompilesList.size()<<std::endl;return loader::gCompilesList;}
+  std::vector<TString>&  Loader::CompilesList(){return loader::gCompilesList;}
   std::map<TString,TString>& Loader::ClassFileMap(){return loader::gClassFile;}
   std::vector<std::pair<TString,TString>>& Loader::CompilesToList(){return loader::gCompilesToList;}
  
-  // std::vector<TString>& Loader::CompiledList()  {
-  //   return chanser::global::gCompilesList;
-  // }
+ 
 }

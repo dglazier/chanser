@@ -4,13 +4,15 @@
 #include <TString.h>
 #include <TSystem.h>
 #include <TProof.h>
+#include <TError.h>
 
 
 int main(int argc, char **argv) {
   gSystem->Load("libEG.so");
 
   auto Nworkers=argv[1];
-  //auto selectorMacro=argv[2];
+  if(TString(Nworkers).Atoi()==0 ) {Fatal("chanser_proof","Must give a number of workers, chanser_proof N Process.C");}
+  
   TRint  *app = new TRint("App", &argc, argv);
 // Run the TApplication (not needed if you only want to store the histograms.)
   app->SetPrompt("chanser [%d] ");

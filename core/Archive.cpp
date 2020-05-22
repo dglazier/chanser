@@ -45,7 +45,7 @@ namespace chanser{
   ////////////////////////////////////////////////////////
   ///return elements of v1 which are not in v2
   std::vector<TString >  Archive::Remove(const std::vector<TString >& v1,const std::vector<TString >& v2){
-      std::cout<<"Archive::Remove from "<<std::endl;
+    
       for(auto& name : v1)
 	std::cout<<" "<<name;
       std::cout<<std::endl;
@@ -58,9 +58,9 @@ namespace chanser{
      [&v2](const TString& arg)
      { return (std::find(v2.begin(), v2.end(), arg) == v2.end());});
     
-    for(auto& name : v3)
-      std::cout<<" "<<name;
-    std::cout<<std::endl;
+    // for(auto& name : v3)
+    //   std::cout<<" "<<name;
+    // std::cout<<std::endl;
     std::cout<<"Archive::Remove found "<<v3.size()<<std::endl;
     return v3;
   }
@@ -108,12 +108,11 @@ namespace chanser{
  
     }
 
-    return std::move(files);
+    return files;
   }
 
   void Archive::ArchiveSourceFile(const TString& afile){
     TString actualName=afile;
-    std::cout<<"ArchiveSourceFile "<<afile<<std::endl;
     if(actualName.Contains("$CHANSER_CLASSES"))
       actualName.ReplaceAll("$CHANSER_CLASSES",gSystem->Getenv("CHANSER_CLASSES"));
     TMacro m(actualName);
@@ -144,8 +143,7 @@ namespace chanser{
     if(classname.Contains("::"))//has namespace
       classname.ReplaceAll("::","_");//for filename e.g. dglazier_Pi4
     
-    std::cout<<"ExtractFinalState "<<classname<<" "<<chfsname<<std::endl;
-    
+     
     //filesystem directory for this specific final state
     TString topFinalState = Form("chanser_FinalStates/%s/",classname.Data());
     if(gSystem->MakeDirectory(topFinalState)==0){ 
@@ -175,21 +173,21 @@ namespace chanser{
     //This instance of the Final state class may use additional other
     //classes so extract them if required
     auto otherDir=dynamic_cast<TDirectoryFile*>(finalStateDir->Get("Other"));
-    std::cout<<"GOING TO Adding Other source code "<<otherDir<<std::endl;
+ 
     if(otherDir){
       gSystem->MakeDirectory(Form("chanser_FinalStates/%s/Other",classname.Data()));
       //loop over all files in Other and save source if not already  present
       auto otherKeys=otherDir->GetListOfKeys();
-      std::cout<<"GOING TO Adding Other source code keys"<<otherKeys->GetEntries()<<std::endl;
+     
    
       //TIter nextOther(otherKeys);
       // while( (otherMacro=dynamic_cast<TMacro*>(nextOther())) ){
       for(Int_t iother=0;iother<otherKeys->GetEntries();iother++){
-	std::cout<<"Adding Other source code "<<otherKeys->At(iother)->GetName()<<" "<<otherKeys->At(iother)->ClassName()<<" "<<otherKeys->At(iother)->Class_Name()<<std::endl;
+
 	//TObject* otherObject=dynamic_cast<TObject*>(otherKeys->At(iother));
 	//std::cout<<"Adding Other source code "<<otherMacro->GetName()<<std::endl;
 	TMacro* otherMacro=dynamic_cast<TMacro*>(otherDir->Get(otherKeys->At(iother)->GetName()));
-	std::cout<<"Adding Other source code "<<otherMacro->GetName()<<std::endl;
+
 	//test if file exists
 	if( gSystem->Which(Form("%s/Other/",topFinalState.Data()),gSystem->BaseName(otherMacro->GetName())) )
 	  continue;
@@ -228,12 +226,12 @@ namespace chanser{
   ///Check if this library is already scheduled for compilation
   Bool_t Archive::insertInCompileThese(const TString& filename, const TString& libname){
     auto& cl=archive::gCompileThese;
-    std::cout<<"insetCompile "<<CompileThese().size()<<" "<<filename<<" "<<libname<<std::endl;
+   
     
     if( std::find_if( cl.begin(), cl.end(),[&libname](const std::pair<TString, TString>& element){ return element.second == libname;} ) != cl.end())
       return kFALSE; //already there
     
-    std::cout<<"insetCompile pushing back "<<CompileThese().size()<<std::endl;
+   
     cl.push_back(std::make_pair(filename, libname));
     return kTRUE;
     
