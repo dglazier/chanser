@@ -1,5 +1,5 @@
 {
-  auto FS = someone::Pi4::Make("NONE","ALL");
+  auto FS = someone::Pi4::Make("ALL","ALL");
   FS->AddTopology("Electron:Proton:Pip1:Pip2:Pim1:Pim2");
   FS->AddTopology("Electron:Proton:Pip1:Pip2:Pim1");
   // FS->AddTopology(OTHER_TOPOLOGY);
@@ -21,12 +21,12 @@
   ////Cuts
   ParticleCutsManager pcm{"DeltaTimeCuts",1};
   pcm.AddParticleCut("e-",new MyParticleCut(12,1));
-  DeltaTimeCut* dtc=new DeltaTimeCut(2); //Apply a Delta Time cut of 2ns
+  //DeltaTimeCut* dtc=new DeltaTimeCut(2); //Apply a Delta Time cut of 2ns
   // pcm.SetDefaultCut(new DeltaTimeCut(2));
   // pcm.AddParticleCut("e-",new DeltaTimeCut(2));
-  pcm.AddParticleCut("proton",new DeltaTimeCut(1));
-  pcm.AddParticleCut("pi+",new DeltaTimeCut(1));
-  pcm.AddParticleCut("pi-",new DeltaTimeCut(1));
+  pcm.AddParticleCut("proton",new DeltaTimeCut(2));
+  pcm.AddParticleCut("pi+",new DeltaTimeCut(2));
+  pcm.AddParticleCut("pi-",new DeltaTimeCut(2));
    
   FS->RegisterPostTopoAction(pcm); //POSTTOPO
 
