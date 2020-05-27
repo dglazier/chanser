@@ -36,6 +36,9 @@ namespace chanser{
       if(_addFinal){
 	fs->OutEvent().ConfigureOutTree(pdata.GetTree());
       }
+      //add core branches from final state tree
+      fs->AddFinalOutput(pdata.GetTree());
+      
       fs->GetOutTrees().push_back(pdata.GetTree());
       _particleData.push_back(std::move(pdata));
 

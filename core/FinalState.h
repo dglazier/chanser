@@ -69,7 +69,10 @@ namespace chanser{
     void SetEventParticles(EventParticles *eventp){_eventParts=eventp;}
 
     void SetTruthParticles(const truth_ptrs *tr){_truth=tr;}
+    const truth_ptrs& GetTruthParticles()const noexcept{cout<<"GETTRUTH "<<HasTruth()<<" "<<_truth->size()<<endl;return *_truth;}
+    void SetTruthMatched(Short_t match) noexcept{_truthMatchedCombi=match;}
 
+    
     virtual void SetEventInfo(const BaseEventInfo* evi){};
     void SetRunInfo(const BaseRunInfo* rui){};
       
@@ -118,7 +121,9 @@ namespace chanser{
     virtual  BaseOutEvent* GetOutEvent() noexcept{return nullptr;}
        
     hipo::ntuple_writer* FinalHipo()const noexcept{return _outEvent.FinalHipo();}
-
+    void AddFinalOutput(hipo::ntuple_writer* nt);
+    void AddFinalOutput(TTree* tree);
+    
     void SetWorkerName(TString name){_workerName=name;}
     const TString& WorkerName(){return _workerName;}
     
@@ -159,7 +164,8 @@ namespace chanser{
       
     void FSProcess();
  
-    void InitEvent(){_gotCorrectOne=0;  _nPerm=0;_currTopoID=-1;_rejectEvent=0;};
+    void InitEvent();
+    
     void AddTopology(const TString names,const VoidFuncs funcE);
 
     void RejectEvent(Short_t re=1){_rejectEvent=re;}
@@ -243,18 +249,23 @@ namespace chanser{
     TString _inputConfigFile; //where this FS was loaded from
     TString _outputDir;
     TString _finalDirectory;
-    
-    Int_t _currTopoID=-1;
-    Int_t _nPerm=0;
-    Short_t _gotCorrectOne=0;
-    Short_t _isGenerated=0;
-    Short_t _isPermutating0=0;
-    Short_t _rejectEvent=0;
-    Short_t _hasTruth=0;
-    Short_t _itersConfigured=0;
+
+    //Do not stream these
+    //in future can add datamembers here
+    //but to allow backward compatability with
+    //final state analyssis already saved as root file
+    //streaming is removed
+    Int_t _currTopoID=-1;//!
+    Int_t _nPerm=0;//!
+    Int_t _truthMatchedCombi=0;//!
+    Short_t _gotCorrectCombi=0;//!
+    Short_t _isGenerated=0;//!
+    Short_t _isPermutating0=0;//!
+    Short_t _rejectEvent=0;//!
+    Short_t _hasTruth=0;//!
+    Short_t _itersConfigured=0;//!
     Short_t _ownsActions=1;//!
-    //   FSOutputType  _outputType=FSOutputType::NONE;
-    
+   
     ClassDefOverride(chanser::FinalState,1); //class FinalState
   };
 

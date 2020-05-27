@@ -31,7 +31,8 @@ namespace chanser{
     ParticleCutsManager& operator=(const ParticleCutsManager& other)=default;
     ParticleCutsManager& operator=(ParticleCutsManager&& other)=default;
 
-  
+
+    void InitDataEvent() override{ _passCut=0; }
     Bool_t Execute(UInt_t ti)  override{
       //check cut for topology number ti
       _passCut=_particleCuts[ti].PassCuts();
@@ -40,6 +41,7 @@ namespace chanser{
       
   
     void Configure(FinalState* fs) override;
+    void PostConfigure(FinalState* fs) override;
       
    
     void AddParticleCut(TString type,BaseCut* cut){

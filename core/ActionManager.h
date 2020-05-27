@@ -24,11 +24,14 @@ namespace chanser{
   ActionManager(TString name):_name(std::move(name)){};
     virtual ~ActionManager()=default;
       
-    virtual Bool_t Execute(UInt_t ti){return kTRUE;}
-    virtual void End(){};
-    virtual void  Configure(FinalState* fs){};
+    virtual Bool_t Execute(UInt_t ti){return kTRUE;} //per combitorial
+    virtual void InitDataEvent(){} //per read event, not combitorial
+    
+    virtual void End(){}; //end of run
+    virtual void  Configure(FinalState* fs){};//run initialisation
+    virtual void  PostConfigure(FinalState* fs){}; //post initialisation (access other actions)
 
-    virtual void PrintAction(){std::cout<<"ActionManager"<<std::endl;};
+    virtual void PrintAction(){std::cout<<"ActionManager"<<std::endl;} //report exaclty what this class does
       
     const char* GetName(){return _name.Data();}
 

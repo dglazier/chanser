@@ -45,8 +45,12 @@ namespace chanser{
       _particleCuts.push_back(pcuts);
 
     }
-    Branches(fs);
    }
+  /////////////////////////////////////////////////////////////////
+  void ParticleCutsManager::PostConfigure(FinalState* fs){
+    //can now add branches to particle data trees
+    Branches(fs);
+  }
   ///////////////////////////////////////////////////////////////// 
   void ParticleCutsManager::Branches( FinalState* fs){
     auto trees=fs->GetOutTrees();

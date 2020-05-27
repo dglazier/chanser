@@ -73,13 +73,7 @@ namespace chanser{
     void Print(Int_t verbose)const;
     
     Bool_t FirstParticles(){
-      //if(_isGenerated) return; //Truth generated analysis
-      //_nPerm++;
-      //	auto piter=_currTopo->Iter();
-      //	_particleIter.GotoStart();
       return _particleIter.FirstCombitorial0();
-      //	_isPermutating0=0;//no other combination
-      //return moreToCome; 
     }
  
   private:
