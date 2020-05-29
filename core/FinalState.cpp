@@ -71,13 +71,13 @@ namespace chanser{
     
     nt->linkItemFunc("FSInfo","Topo/I",&_currTopoID);
     nt->linkItemFunc("FSInfo","NPerm/I",&_nPerm);
-    nt->linkItemFunc("FSInfo","Truth/I",&_truthMatchedCombi);
+    if(HasTruth())nt->linkItemFunc("FSInfo","Truth/I",&_truthMatchedCombi);
   }
   /////FinalState variables for root tree output
   void FinalState::AddFinalOutput(TTree* tree){
     tree->Branch("Topo",&_currTopoID,"Topo/I");
     tree->Branch("NPerm",&_nPerm,"NPerm/I");
-    tree->Branch("Truth",&_truthMatchedCombi,"Truth/I");
+    if(HasTruth())tree->Branch("Truth",&_truthMatchedCombi,"Truth/I");
   }
   void FinalState::Init(const TString& baseDir){
     

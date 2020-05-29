@@ -14,12 +14,10 @@
 
   ////
   //ParticleCutsManager pcm{"EBCuts",1};
-  //EventBuilderCut* ebc=new EventBuilderCut(); //just use even  builder PID
-  //pcm.AddParticleCut("e-",ebc);
-  //pcm.AddParticleCut("proton",ebc);
-  //pcm.AddParticleCut("pi+",ebc);
-  //DeltaTimeCut* dtc=new DeltaTimeCut(2); //Apply a Delta Time cut of 2ns
-  //pcm.AddParticleCut("pi-",dtc);
+  //pcm.AddParticleCut("e-",new EventBuilderCut());
+  //pcm.AddParticleCut("proton",new EventBuilderCut());
+  //pcm.AddParticleCut("pi+",new EventBuilderCut());
+  //pcm.AddParticleCut("pi-",dtcnew DeltaTimeCut(2));//Apply a Delta Time cut of 2ns
   // FS->RegisterPostTopoAction(pcm);
  
   ////Write to file for later processing
