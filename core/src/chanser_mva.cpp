@@ -19,7 +19,8 @@ int main(int argc, char **argv) {
   TRint  *app = new TRint("App", &argc, argv);
 // Run the TApplication (not needed if you only want to store the histograms.)
   app->SetPrompt("chanser_mva [%d] ");
-  
+  app->ProcessLine(".x $CHANSER/macros/Load.C");
+
 
    gSystem->Load("libTMVA.so");
 

@@ -1,3 +1,4 @@
+//Based on $ROOTSYS/tutorials/tmva/TMVAClassification.C
 //Run with: chanser_mva RunTrainSignalID.C
 
 #include "GetTutorialFile.h"
@@ -16,6 +17,7 @@ void RunTrainSignalID(){
   train.IgnoreBranches("");//Any branches in tree not used must be flagged!
   train.AddSignalTree(signalTree);
   train.AddBackgroundTree(background);
+  train.SetNTrainTest(1500,1500);
   train.PrepareTrees();
 
   //Can Book methods either via standard TMVA::Factory interface...
@@ -28,5 +30,4 @@ void RunTrainSignalID(){
   train.DrawResponses();
   train.DrawROCCurve();//Got to come after responses
 
-  //TMVA::mvas("TMVAClassificationTut","/work/dump/tmva//TMVAClassificationTut/Training.root")
-}
+  }

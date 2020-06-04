@@ -26,6 +26,7 @@ namespace chanser{
       _method=dynamic_cast<TMVA::MethodBase *>(Reader()->BookMVA( methodname, weightfile ));
     }
     void ResultInterface::AddToTree(){
+      cout<<" ResultInterface::AddToTree() "<<Method()<<" "<<Tree()<<endl;
       if(!Tree()){
 	cout<<"ResultByTree::AddToTree() I do not own a tree! Need to add kTRUE as extra argument in constructor"<<endl;
 	exit(1);
@@ -34,6 +35,8 @@ namespace chanser{
 	AddRegressionToTree();
       else
 	AddClassificationToTree();
+
+      Tree()->ResetBranchAddresses();
     }
     void ResultInterface::AddRegressionToTree(){
       auto vecTargets=DataSetInfo()->GetTargetInfos();
@@ -54,13 +57,14 @@ namespace chanser{
     
     }
     void ResultInterface::AddClassificationToTree(){
- 
+      cout<<" ResultInterface::AddClassificationToTree()"<<endl;
       Float_t response=0;
       auto branch=Tree()->Branch(Method()->GetName(),&response,TString(Method()->GetName())+"/F");
   
       //classification
       while(NextEntry()){
 	response=Eval();
+
 	branch->Fill();
       }
   
@@ -71,7 +75,7 @@ namespace chanser{
 
       //Create _vars for linking tree to Reader
       const UInt_t NVars=DataSetInfo()->GetNVariables();
-      auto vars=Vars();
+      auto& vars=Vars();
       vars.resize(NVars);
       //Note internal name in principle could have been a formula in TMVA
       //in HSMVA only actual branch variables are supported
@@ -87,10 +91,12 @@ namespace chanser{
     ///In the case we know all branches are floats we can just
     //directly link the branch addresses to _vars
     void ResultByFloatTree::SetBranchAddresses(TTree* tree){
-      auto vars=Vars();
+      auto& vars=Vars();
       const UInt_t NVars=DataSetInfo()->GetNVariables();
+   
       for(UInt_t i=0;i<NVars;i++){
-	auto res=tree->SetBranchAddress(DataSetInfo()->GetVariableInfo(i).GetInternalName(),&(vars)[i]);
+	cout<<DataSetInfo()->GetVariableInfo(i).GetInternalName()<<endl;
+	auto res=tree->SetBranchAddress(DataSetInfo()->GetVariableInfo(i).GetInternalName(),&(vars.at(i)));
 	if(res!=0){
 	  cout<<"Error ResultInterface::SetBranchAllFloats, Branch "<<Method()->GetInputVar(i) <<" not set, perhaps it is not a float "<<tree->GetBranch(Method()->GetInputVar(i))->GetTitle()<<endl;
 	  exit(1);
@@ -106,7 +112,7 @@ namespace chanser{
 
       //Create _vars for linking tree to Reader
       const UInt_t NVars=DataSetInfo()->GetNVariables();
-      auto vars=Vars();
+      auto& vars=Vars();
       vars.resize(NVars);
       //Note internal name in principle could have been a formula in TMVA
       //in HSMVA only actual branch variables are supported
@@ -114,12 +120,15 @@ namespace chanser{
 	Reader()->AddVariable(DataSetInfo()->GetVariableInfo(i).GetInternalName(),&(vars.at(i)));
       if(copyTree){
 	//Make a copy of the tree
-	SetTreePtr(FiledTree::RecreateCopyFull(tree,methodname+".root"));
+	InitTreePtr(FiledTree::RecreateCopyFull(tree,methodname+".root"));
 	fNEntries=Tree()->GetEntries();
 	SetBranchAddresses(Tree());
       }
-      else //just link to tree
+      else{ //just link to tree
+	SetTreePtr(tree);
+	fNEntries=Tree()->GetEntries();
 	SetBranchAddresses(tree);
+      }
   
       InitMethod(trainpath,methodname);
     };
@@ -130,7 +139,7 @@ namespace chanser{
     //To allow for non float branches we connect to other types
     //first then transfer to _vars in each event
     void ResultByTree::SetBranchAddresses(TTree* tree){
-      auto vars=Vars();
+      auto& vars=Vars();
       const UInt_t NVars=DataSetInfo()->GetNVariables();
  
       _treeVarsD.resize(NVars);
@@ -193,7 +202,7 @@ namespace chanser{
     }
 
     void ResultByTree::ReadVars(){
-      auto vars=Vars();
+      auto& vars=Vars();
 
       // for(auto const& val : *vars)
 	//   cout<<val<<" ";

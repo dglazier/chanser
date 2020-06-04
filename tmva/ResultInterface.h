@@ -50,8 +50,8 @@ namespace chanser{
       
       Float_t EvalClass();
       Float_t EvalReg1();
-      Float_t Eval(const vector<Float_t> vars){_vars=vars;return Eval();}
-      void SetVars(const vector<Float_t> vars){_vars=vars;};
+      Float_t Eval(const floats vars){_vars=vars;return Eval();}
+      void SetVars(const floats vars){_vars=vars;};
       
       Bool_t NextEntry(){
 	if(_entry<fNEntries){ Tree()->GetEntry(_entry++);return kTRUE;}
@@ -59,7 +59,7 @@ namespace chanser{
 	return kFALSE;
       };
       
-      ttree_ptr Tree()const noexcept{return _tree->Tree();}
+      ttree_ptr Tree()const noexcept{return _treeptr;}
 
       TMVA::Reader* Reader()const noexcept{return _reader.get();}
       TMVA::MethodBase* Method()const noexcept{return _method;}
@@ -67,9 +67,8 @@ namespace chanser{
   
     protected:
   
-      //unique_ptr<FiledTree> *TreePtr()const noexcept{return &_tree;}
-      void SetTreePtr(filed_uptr tp){_tree=std::move(tp);} 
-
+      void InitTreePtr(filed_uptr tp){_tree=std::move(tp);_treeptr=_tree->Tree();} 
+      void SetTreePtr(TTree* tree){_treeptr=tree;}
       floats& Vars()noexcept{return _vars;}
       
       void InitMethod(TString trainpath,TString methodname);
@@ -84,7 +83,8 @@ namespace chanser{
       unique_ptr<TMVA::DataSetInfo> _dataSetInfo{nullptr};
       unique_ptr<TMVA::Reader> _reader=unique_ptr<TMVA::Reader>{new TMVA::Reader( "!Color:!Silent" )}; 
       unique_ptr<FiledTree> _tree{nullptr};
-
+      TTree* _treeptr{nullptr};//!
+      
       TMVA::MethodBase *_method{nullptr};//will be owned by _reader
  
       floats _vars;
