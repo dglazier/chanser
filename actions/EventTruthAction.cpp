@@ -13,7 +13,9 @@ namespace chanser{
 
   ///////////////////////////////////////////////////////////////
   void EventTruthAction::Configure( FinalState* fs){
- 
+
+    if(fs->HasTruth()==kFALSE) return;
+				 
     auto topos=fs->TopoManager().ObserveTopos(); //const, can't change them   
     //get truth particles to match to
     _truth=&fs->GetTruthParticles(); //copy the ptrs
@@ -25,7 +27,7 @@ namespace chanser{
       _particles.push_back(parts);
 
     }
-
+    //use a Lambda to capture the finalstate class so we don't have to
     FinalStateTruthMatch =[fs](Short_t match){fs->SetTruthMatched(match);};
   }
  

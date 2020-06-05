@@ -67,6 +67,8 @@ namespace chanser{
 
         
     void SetEventParticles(EventParticles *eventp){_eventParts=eventp;}
+    
+    Bool_t HasTruth()const noexcept{return _hasTruth;};
 
     void SetTruthParticles(const truth_ptrs *tr){_truth=tr;}
     const truth_ptrs& GetTruthParticles()const noexcept{cout<<"GETTRUTH "<<HasTruth()<<" "<<_truth->size()<<endl;return *_truth;}
@@ -183,7 +185,6 @@ namespace chanser{
     void InitTruth();
     void UseTruth();
     void NotTruth();
-    Bool_t HasTruth()const noexcept{return _hasTruth;};
     void TruthKinematics();
     
     virtual base_outevt_uptr TreeDataFactory(){return base_outevt_uptr{}; }

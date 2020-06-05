@@ -36,8 +36,9 @@ namespace chanser{
 
     void PrintAction() override;
       
-    void InitDataEvent() override{FinalStateTruthMatch(0); }
+    void InitDataEvent() override{if(_truth==nullptr) return;FinalStateTruthMatch(0); }
     Bool_t Execute(UInt_t ti)  override{
+      if(_truth==nullptr)return kTRUE;
       //check if we have the correct truth
       FinalStateTruthMatch(static_cast<Short_t>(CheckEventTruth(_particles[ti])));
       //return true as do not want to cut event
@@ -55,7 +56,7 @@ namespace chanser{
   private :
 
     //link to the final state class truth match function
-    std::function<void(Short_t)> FinalStateTruthMatch;
+    std::function<void(Short_t)> FinalStateTruthMatch;//!
     
     const truth_ptrs* _truth{nullptr};//! truth particles for event
     std::vector< baseparticle_ptrs > _particles; //! a set for each topology

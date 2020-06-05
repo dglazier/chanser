@@ -115,7 +115,7 @@ namespace chanser{
       
       Float_t Eval() override;
       vector<Float_t> EvalRegN() override;
-      
+      void ShowVars();
       
     protected:
       void ReadVars();
@@ -132,7 +132,7 @@ namespace chanser{
       vector<UInt_t> _isVarL;
       vector<UInt_t> _isVarI;
       
-    };//ResultByTee
+    };//ResultByTree
     
     //////////////////////////////////////////////
     using mapNameFloat = std::map<TString, Float_t* >;

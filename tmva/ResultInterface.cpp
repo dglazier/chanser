@@ -95,7 +95,7 @@ namespace chanser{
       const UInt_t NVars=DataSetInfo()->GetNVariables();
    
       for(UInt_t i=0;i<NVars;i++){
-	cout<<DataSetInfo()->GetVariableInfo(i).GetInternalName()<<endl;
+
 	auto res=tree->SetBranchAddress(DataSetInfo()->GetVariableInfo(i).GetInternalName(),&(vars.at(i)));
 	if(res!=0){
 	  cout<<"Error ResultInterface::SetBranchAllFloats, Branch "<<Method()->GetInputVar(i) <<" not set, perhaps it is not a float "<<tree->GetBranch(Method()->GetInputVar(i))->GetTitle()<<endl;
@@ -127,7 +127,7 @@ namespace chanser{
       else{ //just link to tree
 	SetTreePtr(tree);
 	fNEntries=Tree()->GetEntries();
-	SetBranchAddresses(tree);
+	SetBranchAddresses(Tree());
       }
   
       InitMethod(trainpath,methodname);
@@ -148,9 +148,11 @@ namespace chanser{
       _treeVarsI.resize(NVars);
  
       for(UInt_t i=0;i<NVars;i++){
+	cout<<DataSetInfo()->GetVariableInfo(i).GetInternalName()<<endl;
 	//First get the branch type
 	TString bname=DataSetInfo()->GetVariableInfo(i).GetInternalName();
 	auto branch=tree->GetBranch(bname);
+	cout<<branch<<endl;
 	Int_t res=-1;
 	if(TString(branch->GetTitle()).Contains("/F")){
 	  UInt_t vsize=_isVarF.size();
@@ -161,25 +163,25 @@ namespace chanser{
 	if(TString(branch->GetTitle()).Contains("/D")){
 	  UInt_t vsize=_isVarD.size();
 	  _treeVarsD[vsize]=0;
-	  res=tree->SetBranchAddress(bname,&_treeVarsD[_treeVarsD.size()-1]);
+	  res=tree->SetBranchAddress(bname,&_treeVarsD[vsize]);
 	  _isVarD.push_back(i);
 	}
 	if(TString(branch->GetTitle()).Contains("/I")){
 	  UInt_t vsize=_isVarI.size();
 	  _treeVarsI[vsize]=0;
-	  res=tree->SetBranchAddress(bname,&_treeVarsI[_treeVarsI.size()-1]);
+	  res=tree->SetBranchAddress(bname,&_treeVarsI[vsize]);
 	  _isVarI.push_back(i);
 	}
      
 	if(TString(branch->GetTitle()).Contains("/L")){
 	  UInt_t vsize=_isVarL.size();
 	  _treeVarsL[vsize]=0;
-	  res=tree->SetBranchAddress(bname,&_treeVarsL[_treeVarsL.size()-1]);
+	  res=tree->SetBranchAddress(bname,&_treeVarsL[vsize]);
 	  _isVarL.push_back(i);
 	}
       
 	if(res!=0)
-	  cout<<"ResultInterface::SetBranchAddresses, Branch "<< Method()->GetInputVar(i) <<"not set "<<endl;
+	  cout<<"ResultInterface::SetBranchAddresses, Branch "<< bname <<"not set "<<endl;
       
       }
   
@@ -188,10 +190,6 @@ namespace chanser{
       _treeVarsL.resize(_isVarL.size());
       _treeVarsI.resize(_isVarI.size());
 
-      _treeVarsD.shrink_to_fit();
-      _treeVarsF.shrink_to_fit();
-      _treeVarsL.shrink_to_fit();
-      _treeVarsI.shrink_to_fit();
   
       cout<<" ResultInterface::SetBranchAddresses found branches : "<<endl;
       cout<< "   double "<<_isVarD.size()<<endl;
@@ -199,15 +197,12 @@ namespace chanser{
       cout<< "   long "<<_isVarL.size()<<endl;
       cout<< "   int "<<_isVarI.size()<<endl;
       cout<<"   total vars in reader are "<<vars.size()<<endl;
+
     }
 
     void ResultByTree::ReadVars(){
       auto& vars=Vars();
-
-      // for(auto const& val : *vars)
-	//   cout<<val<<" ";
-	// cout<<endl;
-      for(UInt_t i=0;i<_isVarD.size();i++)
+        for(UInt_t i=0;i<_isVarD.size();i++)
 	(vars)[_isVarD[i]]=_treeVarsD[i];
       
       for(UInt_t i=0;i<_isVarF.size();i++)
@@ -218,6 +213,27 @@ namespace chanser{
    
       for(UInt_t i=0;i<_isVarI.size();i++)
 	(vars)[_isVarI[i]]=_treeVarsI[i];
+    }
+    
+    void ResultByTree::ShowVars(){
+      auto& vars=Vars();
+      cout<<"ResultByTree::ShowVars()";
+      
+      for(UInt_t i=0;i<_isVarD.size();i++)
+	cout<<" "<<(vars)[_isVarD[i]];
+      
+      for(UInt_t i=0;i<_isVarF.size();i++)
+	cout<<" "<<(vars)[_isVarF[i]];
+    
+   
+      for(UInt_t i=0;i<_isVarL.size();i++)
+	cout<<" "<<(vars)[_isVarL[i]];
+ 
+   
+      for(UInt_t i=0;i<_isVarI.size();i++)
+	cout<<" "<<(vars)[_isVarI[i]];
+ 
+      cout<<endl;
     }
     ///////////////////////////////////////////////////ResultByRefLink
     ////////////////////////////////////////////////////////////////

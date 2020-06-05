@@ -34,9 +34,9 @@ namespace chanser{
 	Int_t pdg = particle->PDG();
 	  
 	//check if cut assigned for particular particle species
-	if(_pdgToCut.find(pdg)==_pdgToCut.end())
+	if(_pdgToCut.find(pdg)==_pdgToCut.end())//if not use default
 	  pcuts.AddParticle(_useableDefault.get(),particle);
-	else{ //if not use default
+	else{ 
 	  pcuts.AddParticle(_pdgToCut[pdg].get(),particle);
 	}
 	  
