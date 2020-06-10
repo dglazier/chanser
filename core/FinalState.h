@@ -71,7 +71,7 @@ namespace chanser{
     Bool_t HasTruth()const noexcept{return _hasTruth;};
 
     void SetTruthParticles(const truth_ptrs *tr){_truth=tr;}
-    const truth_ptrs& GetTruthParticles()const noexcept{cout<<"GETTRUTH "<<HasTruth()<<" "<<_truth->size()<<endl;return *_truth;}
+    const truth_ptrs& GetTruthParticles()const noexcept{return *_truth;}
     void SetTruthMatched(Short_t match) noexcept{_truthMatchedCombi=match;}
 
     

@@ -25,7 +25,7 @@ namespace chanser{
   public:
   BaseOutEvent(TString name):TNamed(name,name){}
     BaseOutEvent()=default;
-    virtual ~BaseOutEvent()=default;
+    // virtual ~BaseOutEvent()=default;
     //virtual  std::unique_ptr<BaseOutEvent> clone()=0;
  
     virtual void FillData(){};

@@ -41,7 +41,7 @@ namespace chanser{
       ResultInterface()=default;
       ResultInterface(TString trainpath,TString methodname);
       
-      virtual ~ResultInterface()=default;
+      // virtual ~ResultInterface()=default;
       
       void AddToTree();
       
@@ -99,7 +99,7 @@ namespace chanser{
     public:
       ResultByFloatTree()=default;
       ResultByFloatTree(TString trainpath,TString methodname,TTree *tree);
-      virtual ~ResultByFloatTree()=default;
+      // virtual ~ResultByFloatTree()=default;
       
     protected:
       void SetBranchAddresses(TTree* tree);
@@ -111,7 +111,7 @@ namespace chanser{
     public:
       ResultByTree()=default;
       ResultByTree(TString trainpath,TString methodname,TTree *tree,Bool_t copyTree = kFALSE);
-      virtual ~ResultByTree()=default;
+      //virtual ~ResultByTree()=default;
       
       Float_t Eval() override;
       vector<Float_t> EvalRegN() override;
@@ -135,13 +135,13 @@ namespace chanser{
     };//ResultByTree
     
     //////////////////////////////////////////////
-    using mapNameFloat = std::map<TString, Float_t* >;
+    using nameToFloatRef_t = std::map<TString, Float_t* >;
  
     class ResultByRefLink :  public ResultInterface{
     public:
       ResultByRefLink()=default;
-      ResultByRefLink(TString trainpath,TString methodname,mapNameFloat links);
-      virtual ~ResultByRefLink()=default;
+      ResultByRefLink(TString trainpath,TString methodname,nameToFloatRef_t links);
+      // virtual ~ResultByRefLink()=default;
       
       //void AddToTree() override {}; 
       

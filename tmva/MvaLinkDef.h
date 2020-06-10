@@ -10,6 +10,7 @@
 #pragma link C++ class chanser::mva::ResultInterface+;
 #pragma link C++ class chanser::mva::TrainingInterface+;
 #pragma link C++ class chanser::mva::TrainSignalID+;
+#pragma link C++ class chanser::mva::nameToFloatRef_t+;
 
 
 #endif

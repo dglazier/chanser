@@ -244,7 +244,7 @@ namespace chanser{
     ///     mylinks["v1"]=&v1;
     ///     ...
     ///     ResultByRefLink result("/path/to/Training.root","defBDT",mylinks);
-    ResultByRefLink::ResultByRefLink(TString trainpath,TString methodname,mapNameFloat links):
+    ResultByRefLink::ResultByRefLink(TString trainpath,TString methodname,nameToFloatRef_t links):
       ResultInterface(trainpath,methodname){
 
       const UInt_t NVars=DataSetInfo()->GetNVariables();

@@ -14,7 +14,10 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   void ParticleCorrectionManager::Configure(FinalState* fs){
- 
+
+    if(fs->HasTruth()&&(!_forSim) ) return;
+    else _forSim=2; //only apply correction if valid for sim and analysing sim data
+    
     auto topos=fs->TopoManager().ObserveTopos();
 
     //loop over topologies

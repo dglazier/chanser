@@ -36,7 +36,7 @@ namespace chanser{
       
       TrainSignalID()=default;
       TrainSignalID(TString name,TString opt="!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
-      virtual ~TrainSignalID()=default;
+      //   virtual ~TrainSignalID()=default; //use rule of 5
       
       void AddSignalTree(TTree*  tree,TString wvar="",Double_t weight=1);
       void AddBackgroundTree(TTree*  tree,TString wvar="",Double_t weight=1);

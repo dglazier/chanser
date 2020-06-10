@@ -21,7 +21,7 @@ namespace chanser{
   public:
     ///Must give an output directory for saving trees to
     ActionManager()=default;
-  ActionManager(TString name):_name(std::move(name)){};
+  ActionManager(const TString& name):_name(name){};
     virtual ~ActionManager()=default;
       
     virtual Bool_t Execute(UInt_t ti){return kTRUE;} //per combitorial
@@ -34,6 +34,7 @@ namespace chanser{
     virtual void PrintAction(){std::cout<<"ActionManager"<<std::endl;} //report exaclty what this class does
       
     const char* GetName(){return _name.Data();}
+    void SetName(const TString& name){_name=name;}
 
   private:
     

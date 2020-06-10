@@ -20,7 +20,7 @@ namespace chanser{
   public:
     ParticleCorrectionManager()=default;
     ///Must give an output directory for saving trees to
-   ParticleCorrectionManager(TString name):ActionManager(name){};
+   ParticleCorrectionManager(TString name,Short_t forsim=0):ActionManager(name),_forSim{forsim}{};
     
     virtual ~ParticleCorrectionManager()=default;
     ParticleCorrectionManager(const ParticleCorrectionManager& other) = default; //Copy Constructor
@@ -31,6 +31,7 @@ namespace chanser{
 
     void PrintAction() override;
     Bool_t Execute(UInt_t ti)  override{
+      if(_forSim<1)  return kTRUE; //not for sim, or not simulated data
       //apply corrections for topology number ti
       _particleCorrs[ti].Apply();
       return kTRUE;
@@ -57,7 +58,8 @@ namespace chanser{
     
     vec_applycorrs _particleCorrs;//!
     std::map<Int_t,basecorr_uptr > _pdgToCorr; ///needs written
-  
+
+    Short_t _forSim{kFALSE}; //should this correction be applie dto simulated data
     ClassDefOverride(chanser::ParticleCorrectionManager,1);
    };//ParticleCorrectionManager
 

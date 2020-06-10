@@ -14,7 +14,7 @@ namespace chanser{
   public :
       
     CLAS12ParticleOutEvent0()=default;
-    chanser::partoutev_uptr clone() final{return std::unique_ptr<CLAS12ParticleOutEvent0>(new CLAS12ParticleOutEvent0{});}
+    chanser::partoutev_uptr clone() const final{return std::unique_ptr<CLAS12ParticleOutEvent0>(new CLAS12ParticleOutEvent0{});}
 
       
     void FillData() final;

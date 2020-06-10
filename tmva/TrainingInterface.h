@@ -45,7 +45,7 @@ namespace chanser{
     
       TrainingInterface()=default;
       TrainingInterface(TString name,TString opt);
-      virtual ~TrainingInterface()=default;
+      // virtual ~TrainingInterface()=default; //use rule of 5
   
       void LoadTreeVars(TTree* tree,Double_t weight=1);
       void SetNTrainTest(Long64_t ntr,Long64_t nte){_nTrain=ntr;_nTest=nte;}

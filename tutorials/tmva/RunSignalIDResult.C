@@ -36,5 +36,24 @@ void RunSignalIDResult(){
 
    //now can look in MLP.root for tree + response
    signalTree->Draw("var1:MLP");
- 
+
+   ////////////////////////////////////////////////////////
+   ///Example 3 using nameToFloatRef_t
+   Float_t v1,v2,v3,v4,val;
+   signalTree->SetBranchAddress( "var1", &v1 );
+   signalTree->SetBranchAddress( "var2", &v2 );
+   signalTree->SetBranchAddress( "var3", &v3 );
+   signalTree->SetBranchAddress( "var4", &v4 );
+   nameToFloatRef_t links;
+   links["var1"]=&v1; //these do not have to be variables linked to a tree
+   links["var2"]=&v2; //they can be a reference to any Float_t
+   links["var3"]=&v3; //these do not have to be variables linked to a tree
+   links["var4"]=&v4; //they can be a reference to any Float_t
+   ResultByRefLink clasif3("/work/dump/tmva/TMVAClassificationTut","MLP",links);
+   TH1F his3("MLP","MLP using reference link",100,0,1);
+   for(Int_t i=0;i<Nent;i++){
+     signalTree->GetEntry(i);
+     his3.Fill(clasif3.Eval());
+   }
+   his3.DrawCopy();
 }
