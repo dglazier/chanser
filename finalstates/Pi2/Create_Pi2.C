@@ -7,10 +7,12 @@
   FS->UseOutputRootTree();
   //FS->UseOutputHipoNtuple();
 
+  FS->SetStartTimePeak(43.9);
 
+  
   //Truth Matching, before ParticleData so can add to that tree
   EventTruthAction etra("EventTruth");
-  //FS->RegisterPostKinAction(etra); //PostKin
+  FS->RegisterPostKinAction(etra); //PostKin
   
   //  Make particle trees first in case want to add cut flags
   ParticleDataManager pdm{"particle",1};
@@ -18,20 +20,11 @@
   pdm.SetParticleOut("e-",new MVA_El_Data);
   FS->RegisterPostKinAction(pdm);
 
-  MVASignalIDAction mva_mlp{"mva1","MLP","Electron:Proton:Pip:Pim"};
-  mva_mlp.SetParticleOut(new MyParticleOutEvent);
-  mva_mlp.SetParticleOut("e-",new MVA_El_Data);
-  FS->RegisterPostTopoAction(mva_mlp);
-  MVASignalIDAction mva_bdt;
-  mva_bdt.AddTopology("mva1","BDT","Electron:Proton:Pip:Pim");
-  mva_bdt.SetParticleOut(new MyParticleOutEvent);
-  mva_bdt.SetParticleOut("e-",new MVA_El_Data);
-  FS->RegisterPostTopoAction(mva_bdt);
   
    ////
   ParticleCutsManager pcm2{"DTCuts2",1};
-  //  pcm2.AddParticleCut("e-",new EventBuilderCut);
-  pcm2.AddParticleCut("e-",new  DeltaTimeCut(2));
+  pcm2.AddParticleCut("e-",new EventBuilderCut); //Use EB for elecron ID
+  //pcm2.AddParticleCut("e-",new  DeltaTimeCut(2));
   pcm2.AddParticleCut("proton",new DeltaTimeCut(2));
   pcm2.AddParticleCut("pi+",new DeltaTimeCut(2));
   pcm2.AddParticleCut("pi-",new DeltaTimeCut(2));
