@@ -15,8 +15,8 @@ ROOT_GENERATE_DICTIONARY(G__${CHANZER}   ParticleCuts.h ParticleCutsManager.h FT
 add_library(${CHANZER} SHARED  ParticleCuts.cpp ParticleCutsManager.cpp ParticleCorrection.cpp ParticleCorrectionManager.cpp ParticleData.cpp ParticleDataManager.cpp MVASignalIDAction.cpp StartTimeAction.cpp  EventTruthAction.cpp G__${CHANZER}.cxx)
 
 target_link_libraries(${CHANZER} -lClas12Banks)
-target_link_libraries(${CHANZER} -L${CHANSERBASE}/lib  -lchansermva)
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chanser)
+target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chansermva)
 
 
 install(TARGETS ${CHANZER} 
