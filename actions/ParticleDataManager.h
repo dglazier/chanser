@@ -45,7 +45,22 @@ namespace chanser{
        
     //void SetParticleOut(ParticleOutEvent& out){_outData=&out;}
     //   void SetParticleOut(ParticleOutEvent& out){_outData.reset(out);}
-    void SetParticleOut(ParticleOutEvent* out){_outData.reset(out);}
+    void SetParticleOut(TString type,ParticleOutEvent* out){
+     if(TDatabasePDG::Instance()->GetParticle(type)){
+       SetParticleOut(TDatabasePDG::Instance()->GetParticle(type)->PdgCode(),out);
+     }
+    }
+    void SetParticleOut(Int_t type,ParticleOutEvent* out){
+      Int_t pdg=0;
+      if(TDatabasePDG::Instance()->GetParticle(type))
+ 	pdg=TDatabasePDG::Instance()->GetParticle(type)->PdgCode();
+      
+      _pdgToData[type]=poutev_uptr{out};
+       //data now belongs to me, do not delete it elsewhere
+    
+    }
+    //set default (keep function name for backward compatability)
+    void SetParticleOut(ParticleOutEvent* out){_defData.reset(out);}
 
   protected:
       
@@ -58,9 +73,10 @@ namespace chanser{
 
       
     std::vector< ParticleData > _particleData; //!
-    //std::map<Int_t,ParticleOutEvent> _pdgToData;
+    std::map<Int_t,poutev_uptr> _pdgToData;
     // ParticleOutEvent* _outData{nullptr};
-    std::unique_ptr<ParticleOutEvent> _outData;
+
+    std::unique_ptr<ParticleOutEvent> _defData; //default
     
     TString _outDir{"particleData"};
 

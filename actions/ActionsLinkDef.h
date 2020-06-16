@@ -20,5 +20,7 @@
 #pragma link C++ class chanser::ParticleCorrectionManager+;
 #pragma link C++ class chanser::ParticleCorrection+;
 #pragma link C++ class chanser::FTel_pol4_ECorrection+;
+#pragma link C++ class chanser::EventTruthAction+;
+#pragma link C++ class chanser::MVASignalIDAction+;
 
 #endif

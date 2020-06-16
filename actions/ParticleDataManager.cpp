@@ -5,7 +5,12 @@ namespace chanser{
     
   void ParticleDataManager::PrintAction(){
     std::cout<<" ParticleDataManager::Print() "<<_particleData.size()<<std::endl;
-    std::cout<<"     Using ParticleOut Data class "<<_outData->ClassName()<<std::endl<<std::endl;
+    for( const auto& data : _pdgToData ){
+      std::cout<<" for particle "<<data.first<<" will use data : "<<std::endl;
+      data.second->Print();
+    }
+   std::cout<<std::endl<<" for default   will use data : "<<std::endl;
+      _defData->Print();
   }
 
   ///////////////////////////////////////////////////////////////
@@ -27,15 +32,22 @@ namespace chanser{
 	
       //Loop over all particles in this topology and assign output data
       UInt_t ip=0;
-      for(auto const& particle : topo_parts){
+       for(auto const& particle : topo_parts){
+	 Int_t pdg = particle->PDG();
 	//Add particle to output data
-	pdata.AddParticle(_outData.get(),particle,topo.GetPartName(ip++));
-	  
+	if(_pdgToData.find(pdg)==_pdgToData.end())//if not use default
+	  pdata.AddParticle(_defData.get(),particle,topo.GetPartName(ip++));
+	else{ 
+	  pdata.AddParticle(_pdgToData[pdg].get(),particle,topo.GetPartName(ip++));
+	}  
       }
       //add branches from final state tree
       if(_addFinal){
 	fs->OutEvent().ConfigureOutTree(pdata.GetTree());
       }
+      //add core branches from final state tree
+      fs->AddFinalOutput(pdata.GetTree());
+      
       fs->GetOutTrees().push_back(pdata.GetTree());
       _particleData.push_back(std::move(pdata));
 

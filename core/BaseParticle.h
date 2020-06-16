@@ -106,7 +106,7 @@ namespace chanser{
     void TakePDGMassFromE(){Double_t rho0=_p4.P();Double_t rho=sqrt(_p4.E()*_p4.E()-_pdgMass*_pdgMass);rho/=rho0;_p4.SetXYZT(_p4.X()*rho,_p4.Y()*rho,_p4.Z()*rho,_p4.E());}; //preserves energy
    
     void SetTruth(const TruthParticle* part){ _truth=part;}
-    const TruthParticle* Truth(const TruthParticle* part)const noexcept{ return _truth;}
+    const TruthParticle* Truth()const noexcept{ return _truth;}
  
       
     void SetDetector(Short_t det){_detector=det;}
@@ -163,7 +163,7 @@ namespace chanser{
     //to be filled with object not pointers for this to work
     friend bool operator< ( const BaseParticle& lhs, const BaseParticle& rhs ){return lhs._p4.P() < rhs._p4.P(); };
 
-    Double_t p3Distance(HSMomentum vec){return (_p4.Vect()-vec).Mag2();}
+    Double_t p3DistanceSq(HSMomentum vec){return (_p4.Vect()-vec).Mag2();}
 
     Double_t ResTheta() const {return _truth!=nullptr?_p4.Theta()-_truth->_p4.Theta():0;};
     Double_t ResPhi() const {return _truth!=nullptr?_p4.Phi()-_truth->_p4.Phi():0;};

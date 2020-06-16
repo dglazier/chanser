@@ -14,7 +14,7 @@ namespace chanser{
   public :
       
     CLAS12SimPartOutEvent()=default;
-    chanser::partoutev_uptr clone() final{return std::unique_ptr<CLAS12SimPartOutEvent>(new CLAS12SimPartOutEvent{});}
+    chanser::partoutev_uptr clone() const final{return std::unique_ptr<CLAS12SimPartOutEvent>(new CLAS12SimPartOutEvent{});}
 
       
     void FillData() final;

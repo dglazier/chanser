@@ -6,6 +6,7 @@
 #pragma once
 
 #include "BaseOutEvent.h"
+#include "BaseParticle.h"
 
 namespace chanser{
 
@@ -15,8 +16,9 @@ namespace chanser{
   public :
       
     ParticleOutEvent()=default;
+    virtual ~ParticleOutEvent()=default; //delete copy/move
 
-    virtual std::unique_ptr<ParticleOutEvent> clone() {return std::unique_ptr<ParticleOutEvent>(new ParticleOutEvent{});}
+    virtual std::unique_ptr<ParticleOutEvent> clone() const {return std::unique_ptr<ParticleOutEvent>(new ParticleOutEvent{});}
       
     //
     virtual void SetParticle(BaseParticle* particle){};

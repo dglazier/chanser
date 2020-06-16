@@ -2,7 +2,7 @@
 ///
 ///Class:		ParticleData
 ///Description:
-///
+///             Keeps tree and branches for particle data
 
 #pragma once
 

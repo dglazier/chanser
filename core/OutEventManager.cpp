@@ -45,7 +45,9 @@ namespace chanser {
     if(_realTD.get()!=nullptr)_realTD->Branches(tree);
     
     if(_truTD.get()!=nullptr){
-      _truTD->SetName(TString("tru")+_truTD->GetName());
+      if(TString(_truTD->GetName()).BeginsWith("tru")==kFALSE){
+	_truTD->SetName(TString("tru")+_truTD->GetName());
+      }
       _truTD->Branches(tree);
     }
   

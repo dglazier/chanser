@@ -66,7 +66,19 @@ namespace chanser{
     _currTopo->Iter().ConfigureIters();
     _itersConfigured++;
   }
- 
+  /////FinalState variables for final hipo output
+  void FinalState::AddFinalOutput(hipo::ntuple_writer* nt){
+    
+    nt->linkItemFunc("FSInfo","Topo/I",&_currTopoID);
+    nt->linkItemFunc("FSInfo","NPerm/I",&_nPerm);
+    if(HasTruth())nt->linkItemFunc("FSInfo","Truth/I",&_truthMatchedCombi);
+  }
+  /////FinalState variables for root tree output
+  void FinalState::AddFinalOutput(TTree* tree){
+    tree->Branch("Topo",&_currTopoID,"Topo/I");
+    tree->Branch("NPerm",&_nPerm,"NPerm/I");
+    if(HasTruth())tree->Branch("Truth",&_truthMatchedCombi,"Truth/I");
+  }
   void FinalState::Init(const TString& baseDir){
     
     auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
@@ -87,22 +99,20 @@ namespace chanser{
     if(_outEvent.FinalTree()){
       //add branches with FinalState datamembers
       auto tree=_outEvent.FinalTree();
-      tree->Branch("Topo",&_currTopoID,"Topo/I");
-      tree->Branch("NPerm",&_nPerm,"NPerm/I");
+      AddFinalOutput(tree);
       _listOfOutTrees.push_back(_outEvent.FinalTree());
     }
     if(_outEvent.FinalHipo()){
       //add banks with FinalState datamembers
-      auto tree=_outEvent.FinalHipo();
-      tree->linkItemFunc("FSInfo","Topo/I",&_currTopoID);
-      tree->linkItemFunc("FSInfo","NPerm/I",&_nPerm);
-      tree->open();//hipo writer must be opened after all banks defined!
- 
+      auto nt=_outEvent.FinalHipo();
+      AddFinalOutput(nt);
+      nt->open();//hipo writer must be opened after all banks defined!
     }
 
     for(auto& topo: _topoMan.Topos())
       ConfigureIters(&topo);
 
+    //Initial configuration stage
     for(auto pt : _preTopoAction) {
       //Let action manager link to this final state
       pt->Configure(this);	
@@ -115,7 +125,24 @@ namespace chanser{
       //Let action manager link to this final state
       pt->Configure(this);	
     }
+    
+    ///////\\\\\\\\
+    //secondary initialisation stage in case depend
+    //on other actions
+    for(auto pt : _preTopoAction) {
+      //Let action manager link to this final state
+      pt->PostConfigure(this);	
+    }
+   for(auto pt : _postTopoAction) {
+      //Let action manager link to this final state
+      pt->PostConfigure(this);	
+    }
+    for(auto pt : _postKinAction) {
+      //Let action manager link to this final state
+      pt->PostConfigure(this);	
+    }
 
+    
     _currTopo=nullptr;
       
   }
@@ -175,6 +202,25 @@ namespace chanser{
     return ParticleConfig();
   }
   ////////////////////////////////////////////////////////////
+  void FinalState::InitEvent(){
+    _gotCorrectCombi=0;
+    _nPerm=0;_currTopoID=-1;
+    _rejectEvent=0;
+    _truthMatchedCombi=0;
+
+    //For actions
+    for(auto pt : _preTopoAction) {
+       pt->InitDataEvent();	
+    }
+    for(auto pt : _postTopoAction) {
+     pt->InitDataEvent();	
+    }
+    for(auto pt : _postKinAction) {
+      pt->InitDataEvent();	
+    }
+
+    
+  }
   /////////////////////////////////////////////////////////////
   ///Analyse one event 
   void FinalState::ProcessEvent(){

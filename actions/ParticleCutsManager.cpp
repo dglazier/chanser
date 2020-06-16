@@ -34,9 +34,14 @@ namespace chanser{
 	Int_t pdg = particle->PDG();
 	  
 	//check if cut assigned for particular particle species
-	if(_pdgToCut.find(pdg)==_pdgToCut.end())
+	if(_pdgToCut.find(pdg)==_pdgToCut.end()){//if not use default
+	  if(_useableDefault!=nullptr){
+	    Warning("ParticleCutsManager::Configure(FinalState* fs)","No default or cut defined for all particles");
+	    continue;//don't add a cut for this particle
+	  }
 	  pcuts.AddParticle(_useableDefault.get(),particle);
-	else{ //if not use default
+	}
+	else{ 
 	  pcuts.AddParticle(_pdgToCut[pdg].get(),particle);
 	}
 	  
@@ -45,8 +50,12 @@ namespace chanser{
       _particleCuts.push_back(pcuts);
 
     }
-    Branches(fs);
    }
+  /////////////////////////////////////////////////////////////////
+  void ParticleCutsManager::PostConfigure(FinalState* fs){
+    //can now add branches to particle data trees
+    Branches(fs);
+  }
   ///////////////////////////////////////////////////////////////// 
   void ParticleCutsManager::Branches( FinalState* fs){
     auto trees=fs->GetOutTrees();

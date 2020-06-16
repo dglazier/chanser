@@ -6,6 +6,13 @@ namespace chanser{
   ///Initialise clas12reader from hipo filename
   Bool_t HipoData::SetFile(const TString filename){
     _c12=nullptr;
+
+    //current hack for finding if simulated data
+    //Only works if run number from gemc ==11  !!!!
+    if(clas12::clas12reader::readQuickRunConfig(filename.Data())==11){
+      _dataType=static_cast<Short_t> (chanser::DataType::Sim);
+    }
+
     _myC12.reset(new clas12::clas12reader(filename.Data())); //for ownership
     _c12=_myC12.get(); //for using
     if(!_c12) return kFALSE; 
@@ -15,7 +22,7 @@ namespace chanser{
   ////////////////////////////////////////////////////////////////////////
   ///Initialise clas12reader from hipo filename
   Bool_t HipoData::Init(){
-    if(_c12->mcparts()) _dataType=static_cast<Short_t> (chanser::DataType::Sim);
+    
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
   }
@@ -103,7 +110,7 @@ namespace chanser{
       
     const Int_t  Ngen=mcpbank->getRows();
     
-   _eventTruth.clear();
+    _eventTruth.clear();
     _eventTruth.reserve(Ngen);
 
     while(_truthPool.size()<Ngen)
@@ -117,11 +124,9 @@ namespace chanser{
       auto py=mcpbank->getPy();
       auto pz=mcpbank->getPz();
       auto pm=mcpbank->getMass();
-      
-      particle->_p4.SetXYZT(px,py,pz,sqrt(px*px+py*py+pz*pz)+pm);
+      particle->_p4.SetXYZT(px,py,pz,sqrt(static_cast<Double_t>((px*px+py*py+pz*pz+pm*pm))));
       particle->_vertex.SetXYZ(mcpbank->getVx() ,mcpbank->getVy() ,mcpbank->getVz());
       particle->_pdgCode=mcpbank->getPid();
-	
       _eventTruth.emplace_back(particle);
     }
 

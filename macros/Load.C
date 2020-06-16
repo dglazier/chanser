@@ -17,6 +17,7 @@ void Load(){
   TString classes=gSystem->Getenv("CHANSER_CLASSES");
   TString core=CHANSER+"/core";
   TString actions=CHANSER+"/actions";
+  TString mva=CHANSER+"/tmva";
   TString skeleton=CHANSER+"/skeleton";
   TString macros=CHANSER+"/macros";
   TString user= gSystem->Getenv("USERNAME");
@@ -28,6 +29,9 @@ void Load(){
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(core).Data()));
     gSystem->Load("$CHANSER/lib/libchanser.so");
     
+    gInterpreter->AddIncludePath(mva);
+    gSystem->Load("$CHANSER/lib/libchansermva.so");
+
     gInterpreter->AddIncludePath(actions);
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(actions).Data()));
     gSystem->Load("$CHANSER/lib/libchanseractions.so");

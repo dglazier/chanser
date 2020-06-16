@@ -15,7 +15,7 @@ namespace USERNAME{
       
     templateClass()=default;// must have default constructor
     
-    chanser::partoutev_uptr clone() final{return std::unique_ptr<templateClass>(new templateClass{});}
+    chanser::partoutev_uptr clone() const final{return std::unique_ptr<templateClass>(new templateClass{});}
 
       
     void FillData() final;

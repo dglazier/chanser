@@ -31,10 +31,12 @@ int main(int argc, char **argv) {
 
   gSystem->Exec(Form("cp %s/lib/libchanser_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
   gSystem->Exec(Form("cp %s/lib/libchanseractions_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/libchansermva_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
   app->ProcessLine(".x $CHANSER/macros/Load.C");
   
   app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANSER\"))+\"/lib/libchanser.so\",kTRUE)"));
   app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANSER\"))+\"/lib/libchanseractions.so\",kTRUE)"));
+  app->ProcessLine(Form("gProof->Load(TString(gSystem->Getenv(\"CHANSER\"))+\"/lib/libchansermva.so\",kTRUE)"));
 
 
   //Wild card for 6.20 =>EG.pcm previous libEG_rdict.pcm
