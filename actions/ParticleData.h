@@ -28,11 +28,18 @@ namespace chanser{
     ParticleData& operator=(ParticleData&& other)=default;
 
     void AddParticle( ParticleOutEvent* out,BaseParticle* particle,TString name){
-      _outputs[_nParticles]=(out->clone()); //make a copy as each particle needs its own
-      _outputs[_nParticles]->SetName(name); 
-      _outputs[_nParticles]->SetParticle(particle);
-      _outputs[_nParticles]->Branches(_tree->Tree());
+      if(out==nullptr)return;
+      auto addOut=out->clone(); //clone return unique_ptr
+      addOut->SetName(name);
+      addOut->SetParticle(particle);
+      addOut->Branches(_tree->Tree());
+      _outputs.push_back(std::move(addOut));
       _nParticles++;
+      /* _outputs[_nParticles]=(out->clone()); //make a copy as each particle needs its own */
+      /* _outputs[_nParticles]->SetName(name);  */
+      /* _outputs[_nParticles]->SetParticle(particle); */
+      /* _outputs[_nParticles]->Branches(_tree->Tree()); */
+      /* _nParticles++; */
     }
 
     void Fill();

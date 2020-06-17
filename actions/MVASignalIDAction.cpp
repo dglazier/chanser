@@ -64,7 +64,8 @@ namespace chanser{
       for(auto const& particle : topo_parts){
 	Int_t pdg = particle->PDG();
 	if(_pdgToData.find(pdg)==_pdgToData.end()){//if not use default
-	  std::cout<<"MVASignalIDAction::Configure "<<_defData->Class()->GetName()<<_defData->Class_Name()<<" "<<_defData->ClassName()<<std::endl;
+	  // std::cout<<"MVASignalIDAction::Configure "<<_defData->Class()->GetName()<<_defData->Class_Name()<<" "<<_defData->ClassName()<<std::endl;
+	  
 	  AddParticleData(_defData.get(),particle,topo.GetPartName(ip++));
 	}
 	else{ 
@@ -81,7 +82,9 @@ namespace chanser{
 
   }
   void MVASignalIDAction::AddParticleData(const ParticleOutEvent* pdata,BaseParticle* particle,const TString& name){
-    std::cout<<"MVASignalIDAction::AddParticleData "<<name<<std::endl;
+
+    if(pdata==nullptr) return;//particle data not defined for this particle
+    
     for(auto& pexists : _particleData)
       if(TString(pexists->GetName())==name)
 	return; //already got it
