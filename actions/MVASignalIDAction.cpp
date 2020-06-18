@@ -30,9 +30,10 @@ namespace chanser{
       std::cout<<" for particle "<<data.first<<" will use data : "<<std::endl;
       data.second->Print();
     }
-    std::cout<<std::endl<<" for default   will use data : "<<std::endl;
-    _defData->Print();
-
+    if( _defData.get()){
+      std::cout<<std::endl<<" for default   will use data : "<<std::endl;
+      _defData->Print();
+    }
     for(auto& conf:_configs){
       std::cout<<" Using training weights from "<<conf._dirname<<" for method "<<conf._method<<" for topology "<<conf._topo<<std::endl<<std::endl<<std::endl;
     }

@@ -9,8 +9,10 @@ namespace chanser{
       std::cout<<" for particle "<<data.first<<" will use data : "<<std::endl;
       data.second->Print();
     }
-   std::cout<<std::endl<<" for default   will use data : "<<std::endl;
+    if( _defData.get()){
+      std::cout<<std::endl<<" for default   will use data : "<<std::endl;
       _defData->Print();
+    }
   }
 
   ///////////////////////////////////////////////////////////////
