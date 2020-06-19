@@ -18,7 +18,7 @@ namespace chanser{
       
   public:
     ParticleData()=default;
-  ParticleData(const TString& treename,const TString& filename,size_t np):_tree{FiledTree::Recreate(treename,filename)},_outputs(np){};
+  ParticleData(const TString& treename,const TString& filename,size_t np):_tree{FiledTree::Recreate(treename,filename)}{};
       
     virtual ~ParticleData()=default;
     ParticleData(const ParticleData& other) = default; //Copy Constructor
@@ -28,18 +28,13 @@ namespace chanser{
     ParticleData& operator=(ParticleData&& other)=default;
 
     void AddParticle( ParticleOutEvent* out,BaseParticle* particle,TString name){
-      if(out==nullptr)return;
+      if(out==nullptr) return;
       auto addOut=out->clone(); //clone return unique_ptr
       addOut->SetName(name);
       addOut->SetParticle(particle);
       addOut->Branches(_tree->Tree());
       _outputs.push_back(std::move(addOut));
       _nParticles++;
-      /* _outputs[_nParticles]=(out->clone()); //make a copy as each particle needs its own */
-      /* _outputs[_nParticles]->SetName(name);  */
-      /* _outputs[_nParticles]->SetParticle(particle); */
-      /* _outputs[_nParticles]->Branches(_tree->Tree()); */
-      /* _nParticles++; */
     }
 
     void Fill();
