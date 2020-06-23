@@ -16,11 +16,12 @@
 namespace chanser{
 
   constexpr Int_t THIS_INT_MAX = 2147483647;
-  
+ 
   class FinalState;
 
     
   using particle_uptr = std::unique_ptr<BaseParticle>;
+  using particle_ptr = BaseParticle*;
   using particle_uptrs = std::vector<particle_uptr>;
   using particles_ptrs = std::vector<BaseParticle*>;
     
@@ -34,42 +35,52 @@ namespace chanser{
       
     EventParticles& operator=(const EventParticles& other)=default;
     EventParticles& operator=(EventParticles&& other)=default;
- 
+
+    constexpr Short_t NegID() const {return -1E4;}
+    constexpr Short_t PosID() const {return 1E4;}
     //PDG ID particles
-    particles_ptrs _vecProtons{0};//!
-    particles_ptrs _vecNeutrons{0};//!
-    particles_ptrs _vecPiPs{0};//!
-    particles_ptrs _vecPiMs{0};//!
-    particles_ptrs _vecKPs{0};//!
-    particles_ptrs _vecKMs{0};//!
-    particles_ptrs _vecEls{0};//!
-    particles_ptrs _vecPos{0};//!
-    particles_ptrs _vecPi0s{0};//!
-    particles_ptrs _vecGams{0};//!
-    particles_ptrs _vecAntiProtons{0};//!
+    particles_ptrs _vecProtons;//!
+    particles_ptrs _vecNeutrons;//!
+    particles_ptrs _vecPiPs;//!
+    particles_ptrs _vecPiMs;//!
+    particles_ptrs _vecKPs;//!
+    particles_ptrs _vecKMs;//!
+    particles_ptrs _vecEls;//!
+    particles_ptrs _vecPos;//!
+    particles_ptrs _vecPi0s;//!
+    particles_ptrs _vecGams;//!
+    particles_ptrs _vecAntiProtons;//!
  
     //Charge ID particles
-    particles_ptrs _vecPlus{0};//!
-    particles_ptrs _vecMinus{0};//!
-    particles_ptrs _vec0{0};//!
-    particles_ptrs _vec45{0};//!
+    particles_ptrs _vecPlus;//!
+    particles_ptrs _vecMinus;//!
+    particles_ptrs _vec0;//!
+    particles_ptrs _vec45;//!
 
-    Bool_t ReadEvent(const particles_ptrs &event);
+    virtual Bool_t ReadEvent(const particles_ptrs &event);
 
     Int_t GetNElectrons(){return _vecEls.size();}
       
-    particles_ptrs* GetParticleVector(Int_t pdg) const{
+    particles_ptrs* GetParticleVector(Short_t pdg) const{
       return _mapPDGtoParticle.at(pdg);
     }
 
     void SetMaxParticles(int max){_maxPart=max;}
 
     void Print() const;
-    
+
+    virtual void SetMapVector(Short_t pdg, particles_ptrs* vec){
+      if(std::find(_pids.begin(), _pids.end(), pdg) == _pids.end())
+	_pids.push_back(pdg);
+      _mapPDGtoParticle[pdg]=vec;
+    }
+
+    std::vector<Short_t> _pids;
+
   private:
     //map pdg value to particle type vector
-    std::map< Int_t , particles_ptrs* > _mapPDGtoParticle{};//!
-    std::vector<std::vector<BaseParticle*> *> _chargetoParticle={&_vecMinus,&_vec0,&_vecPlus};//! 
+    std::map< Short_t , particles_ptrs* > _mapPDGtoParticle{};//!
+    std::vector<std::vector<BaseParticle*> *> _chargetoParticle={&_vecMinus,&_vec0,&_vecPlus};//!
    
     int _maxPart{THIS_INT_MAX};
 

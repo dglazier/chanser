@@ -7,7 +7,7 @@
 #pragma once
 
 #include "ActionManager.h"
-#include "ActionsUtility.h"
+#include "VectorUtility.h"
 #include "BaseParticle.h"
 #include "CLAS12FinalState.h"
 

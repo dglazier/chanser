@@ -59,15 +59,14 @@ namespace chanser{
 
     DataManager* _data=nullptr; //!
     EventParticles _eventParts;//!
-  
-  
+   
     finalstate_uptrs _finalStates;//!
     finalstate_ptrs _rawFinalStates;//! for sharing
       
       
     TString _baseOutDir;
     
-    ClassDef(chanser::FinalStateManager,1); //class EventParticles
+    ClassDef(chanser::FinalStateManager,2); //class EventParticles
       
   };
 }

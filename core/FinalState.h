@@ -6,6 +6,7 @@
 #pragma once
 
 #include "EventParticles.h"
+#include "MaskedEventParticles.h"
 #include "ParticleConfig.h"
 #include "Topology.h"
 #include "TopologyManager.h"
@@ -66,7 +67,7 @@ namespace chanser{
     virtual Bool_t CheckParticle(const BaseParticle* part) const{return kTRUE;}
 
         
-    void SetEventParticles(EventParticles *eventp){_eventParts=eventp;}
+    void SetEventParticles(EventParticles *eventp);
     
     Bool_t HasTruth()const noexcept{return _hasTruth;};
 
@@ -159,14 +160,16 @@ namespace chanser{
     TString FinalDirectory(){return _finalDirectory;}
 
     void AddMergeList(TString name, TString filename);
-    
+
+    //sink function mask no longer valid after calling this outside of this
+    void MaskParticles(MaskedEventParticles* mask){_maskedParticles.reset(mask);}
   protected :
 
   FinalState():_topoMan{this},_ownsActions{1}{};
       
     void FSProcess();
  
-    void InitEvent();
+    Bool_t InitEvent();
     
     void AddTopology(const TString names,const VoidFuncs funcE);
 
@@ -217,7 +220,8 @@ namespace chanser{
       
     EventParticles* _eventParts{nullptr};//!
     const truth_ptrs* _truth{nullptr}; //!
-   
+    std::unique_ptr<MaskedEventParticles> _maskedParticles{nullptr};//want to save this and so have moved class version to 2
+ 
  
    	
     Topology *_currTopo{nullptr};//!

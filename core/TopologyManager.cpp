@@ -150,6 +150,7 @@ namespace chanser{
 	
       Int_t thiscount = std::count (_eventTopo.begin(), _eventTopo.end(), acti);
       Int_t topocount = std::count (actual.begin(), actual.end(), acti);
+ 
       if(thiscount<topocount)//Not sufficient of this type, not this topo
 	return kFALSE;
       //Check if this is an allowed inclusive particle
