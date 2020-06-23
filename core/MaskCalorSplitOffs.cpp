@@ -46,8 +46,10 @@ namespace chanser{
 		      c12gam->cal(clas12::PCAL)->getZ());
 
       Bool_t maskIt=kFALSE;
+      particles_ptrs maskedParticles;
+      
       ////////////////////////////////////////////////////////
-      auto compareToOther =[&maskIt,&hitPos,gam,this]
+      auto compareToOther =[&maskIt,&maskedParticles,&hitPos,gam,this]
 	(const Short_t charge=0,const Float_t rmin,TH1F& hR){
 
 	CLAS12Particle*  other{nullptr};
@@ -56,6 +58,7 @@ namespace chanser{
 	       (NextParticle(charge,entry)))!=nullptr){
 	  
 	  if(other==gam) continue; //don't compare to myself!
+	  if(charge==0 && ranges::contains(maskedParticles,other) ) continue;//don't compare to an already rejected cluster
 	  
 	  Position otherPos(other->CLAS12()->cal(clas12::PCAL)->getX(),
 			    other->CLAS12()->cal(clas12::PCAL)->getY(),
@@ -64,6 +67,8 @@ namespace chanser{
 	  auto diff= otherPos - hitPos; //now difference relative to gamma
 	  if( diff.R()<rmin ){
 	    maskIt=kTRUE;
+	    maskedParticles.push_back(gam); //so don't remove both
+
 	    if(charge==0&&_addSplits){
 	      //give my energy to the other
 	      other->SetP4(gam->P4()+other->P4());
@@ -120,7 +125,7 @@ namespace chanser{
   // }
   void MaskCalorSplitOffs::PrintMask() const{
     Info("MaskCalorSplitOffs::PrintMask() ",Form("Masking EventParticles with  = %s",Class_Name()),"");
-    Info("MaskCalorSplitOffs::PrintMask() ",Form("   cutting Gamma candidates at r0=%f , r+=%f , r-=%f",_r0min,_rpmin,_rnmin),"");
+    Info("MaskCalorSplitOffs::PrintMask() ",Form("   cutting Gamma candidates at r0=%f , r+=%f , r-=%f .\n Will I combine splitoff neutrals ?  %d",_r0min,_rpmin,_rnmin,(Int_t)_addSplits),"");
   }
 
 }
