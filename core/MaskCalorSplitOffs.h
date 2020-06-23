@@ -21,7 +21,7 @@ namespace chanser{
   public :
     MaskCalorSplitOffs()=default;
 
-  MaskCalorSplitOffs(Float_t r0,Float_t rp,Float_t rm):_r0min{r0},_rpmin{rp},_rnmin{r0}{};
+  MaskCalorSplitOffs(Float_t r0,Float_t rp,Float_t rm,Short_t add):_r0min{r0},_rpmin{rp},_rnmin{r0},_addSplits{add}{};
     
     virtual ~MaskCalorSplitOffs();//=default;
     MaskCalorSplitOffs(const MaskCalorSplitOffs& other) = default; //Copy Constructor
@@ -47,6 +47,9 @@ namespace chanser{
     TH1F _hR0={"R0","Distance to neutral",1000,0,500};//!
     TH1F _hRp={"Rp","Distance to +ve",1000,0,500};//!
     TH1F _hRm={"Rm","Distance to -ve",1000,0,500};//!
+
+
+    Short_t _addSplits={0}; //Combine clusters?
     
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;

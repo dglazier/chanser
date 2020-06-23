@@ -62,9 +62,15 @@ namespace chanser{
 			    other->CLAS12()->cal(clas12::PCAL)->getZ());
 	  
 	  auto diff= otherPos - hitPos; //now difference relative to gamma
-	  if( diff.R()<rmin )maskIt=kTRUE;
-
+	  if( diff.R()<rmin ){
+	    maskIt=kTRUE;
+	    if(charge==0&&_addSplits){
+	      //give my energy to the other
+	      other->SetP4(gam->P4()+other->P4());
+	    }
+	  }
 	  hR.Fill(diff.R()); //histogram distance between neutral clusters
+
 
 	}
       };/////////////////////////////////////////////////////////
