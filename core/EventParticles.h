@@ -19,7 +19,9 @@ namespace chanser{
  
   class FinalState;
 
-    
+  static constexpr Short_t NegID()  {return -1E4;}
+  static constexpr Short_t PosID()  {return 1E4;}
+ 
   using particle_uptr = std::unique_ptr<BaseParticle>;
   using particle_ptr = BaseParticle*;
   using particle_uptrs = std::vector<particle_uptr>;
@@ -36,8 +38,6 @@ namespace chanser{
     EventParticles& operator=(const EventParticles& other)=default;
     EventParticles& operator=(EventParticles&& other)=default;
 
-    constexpr Short_t NegID() const {return -1E4;}
-    constexpr Short_t PosID() const {return 1E4;}
     //PDG ID particles
     particles_ptrs _vecProtons;//!
     particles_ptrs _vecNeutrons;//!
