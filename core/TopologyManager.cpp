@@ -72,6 +72,8 @@ namespace chanser{
     for(const auto& pid:pids){
       _eventTopo.emplace_back(ParticleID(pid));
     }
+    std::sort(_eventTopo.begin(),_eventTopo.begin()+_eventTopo.size());
+ 
     //now check to see if this topology matches any of our predefines ones
     _validTopos.clear();
     for(size_t i=0;i<_nTopo;++i){
