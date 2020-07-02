@@ -7,6 +7,15 @@ namespace chanser{
   namespace ranges
   {
     ////////////////////////////////////////////////////
+    template<typename Range, typename T>
+      bool contains(Range& range, T t)
+    {
+      return std::find(begin(range), end(range), t) != end(range);
+    }
+
+
+    ///////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
     template<typename Range, typename Function>
       Function for_each(Range& range, Function f)
     {

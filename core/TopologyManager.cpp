@@ -72,6 +72,8 @@ namespace chanser{
     for(const auto& pid:pids){
       _eventTopo.emplace_back(ParticleID(pid));
     }
+    std::sort(_eventTopo.begin(),_eventTopo.begin()+_eventTopo.size());
+ 
     //now check to see if this topology matches any of our predefines ones
     _validTopos.clear();
     for(size_t i=0;i<_nTopo;++i){
@@ -150,6 +152,7 @@ namespace chanser{
 	
       Int_t thiscount = std::count (_eventTopo.begin(), _eventTopo.end(), acti);
       Int_t topocount = std::count (actual.begin(), actual.end(), acti);
+ 
       if(thiscount<topocount)//Not sufficient of this type, not this topo
 	return kFALSE;
       //Check if this is an allowed inclusive particle

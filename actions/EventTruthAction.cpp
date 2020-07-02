@@ -1,6 +1,6 @@
 #include "EventTruthAction.h"
 #include "FinalState.h"
-#include "ActionsUtility.h"
+#include "VectorUtility.h"
 
 namespace chanser{
     

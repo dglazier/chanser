@@ -79,6 +79,21 @@ namespace chanser{
     tree->Branch("NPerm",&_nPerm,"NPerm/I");
     if(HasTruth())tree->Branch("Truth",&_truthMatchedCombi,"Truth/I");
   }
+
+  void FinalState::SetEventParticles(EventParticles *eventp){
+    //if I want to apply a mask to the particle vectors
+    //I must set it with MaskParticles(MaskedEventParticles*)
+    if(_maskedParticles.get()){
+      _maskedParticles->AssignVectors(eventp);
+      _maskedParticles->ReadyFile(_outputDir);
+      _eventParts=_maskedParticles.get();
+    }
+    else  _eventParts=eventp;
+    
+  }
+  
+  ///////////////////////////////////////////////////
+  ///Initialise ouput directory and assinged actions
   void FinalState::Init(const TString& baseDir){
     
     auto outdir=baseDir+GetUSER()+'/'; //Add user name directory
@@ -202,7 +217,8 @@ namespace chanser{
     return ParticleConfig();
   }
   ////////////////////////////////////////////////////////////
-  void FinalState::InitEvent(){
+  //called once per read data event
+  Bool_t FinalState::InitEvent(){
     _gotCorrectCombi=0;
     _nPerm=0;_currTopoID=-1;
     _rejectEvent=0;
@@ -219,13 +235,24 @@ namespace chanser{
       pt->InitDataEvent();	
     }
 
+    //check if this final state has a particle mask
+    if(_maskedParticles){
+      _maskedParticles->ReReadEvent();
+      _maskedParticles->PidCounter();
+      //if so recheck if event still valid when mask applied
+      if(CheckForValidTopos(_maskedParticles->Pids())==kFALSE)
+	return kFALSE;//going to ignore event
+    }
     
+    
+    return kTRUE;
   }
   /////////////////////////////////////////////////////////////
   ///Analyse one event 
   void FinalState::ProcessEvent(){
 
-    InitEvent();
+    if(InitEvent()==kFALSE) return;
+    
     if(_hasTruth) InitTruth();
 
     if(_isGenerated){//Just analysing generated events
@@ -528,6 +555,14 @@ namespace chanser{
     for(auto pt : _postKinAction) {
       pt->End();	
     }
+
+    //open maseked particle root files
+    if(_maskedParticles.get()){
+        _maskedParticles->ReadyFile(_outputDir);
+	_maskedParticles.reset(); //write to file and close/delete
+	//_maskedParticles is now deleted
+    }
+  
   }
   /////////////////////////////////////////////////////////////
   ///Call this if you have an output file which will need
@@ -563,6 +598,9 @@ namespace chanser{
      for(auto pt : _postKinAction) {
        pt->PrintAction();	
      }
+
+     if(_maskedParticles.get())
+       _maskedParticles->PrintMask();
    }
   
 }

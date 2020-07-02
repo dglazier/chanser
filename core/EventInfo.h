@@ -30,7 +30,7 @@ namespace chanser{
       Short_t _TarPolDir{0}; //!direction of target polarisation
 
       void SetCLAS12(clas12::clas12reader* c12){_c12=c12;}
-      clas12::clas12reader* CLAS12(){return _c12;}
+      clas12::clas12reader* CLAS12() const{return _c12;}
       
     private :
       
