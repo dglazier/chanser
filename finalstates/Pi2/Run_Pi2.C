@@ -12,7 +12,7 @@
 
   ////load one or more FinalStates
   fsm.LoadFinalState("Pi2",
-		     "Pi2_NONE_ALL.root");
+		     "Pi2_Masked.root");
   // fsm.LoadFinalState("K2",
   //		     "/dir/fs/file_name_for_this_configuration_2.root");
 

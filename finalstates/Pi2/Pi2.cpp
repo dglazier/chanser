@@ -51,7 +51,7 @@ namespace dglazier{
       miss= _beam + _target -_electron.P4() -_pim.P4() -_proton.P4();
       TD->MissMassPPim=miss.M2();
 
-      
+      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
       ///////------------------------------------///////
     };
 
