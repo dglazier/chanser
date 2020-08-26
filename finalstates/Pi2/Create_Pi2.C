@@ -1,8 +1,9 @@
 {
-  auto FS = dglazier::Pi2::Make("NONE","ALL");
+  auto FS = dglazier::Pi2::Make("ALL","ALL");
   FS->AddTopology("Electron:Proton:Pip:Pim");
   
-
+  //  FS->MaskParticles(new MaskCalorSplitOffs(50,50,50,1) );//currently only works with inclusive =="ALL"
+  
   ////Save TreeDataK2
   FS->UseOutputRootTree();
   //FS->UseOutputHipoNtuple();
@@ -16,7 +17,7 @@
   
   //  Make particle trees first in case want to add cut flags
   ParticleDataManager pdm{"particle",1};
-  pdm.SetParticleOut(new MyParticleOutEvent);
+  // pdm.SetParticleOut(new MyParticleOutEvent);
   pdm.SetParticleOut("e-",new MVA_El_Data);
   FS->RegisterPostKinAction(pdm);
 
@@ -60,7 +61,7 @@
   FS->RegisterPreTopoAction(pcorrm); //PRETOPO
 
   ////Write to file for later processing
-  FS->WriteToFile("Pi2_NONE_ALL.root");
+  FS->WriteToFile("Pi2_Masked.root");
 
   FS->Print();
   //Delete the final state rather than let ROOT try

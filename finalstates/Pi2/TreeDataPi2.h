@@ -36,8 +36,9 @@ namespace dglazier{
     Double_t ProdCosThGJ=0;
     Double_t ProdPhiGJ=0;  
     Double_t MesonCosThGJ=0;
-    Double_t MesonPhiGJ=0;  
-
+    Double_t MesonPhiGJ=0;
+    
+    Short_t MesonExTrig=0;
 
     ///////////////////////////////////////////////////////////
     //LEAVE THE FOLLOWING FUNCTIONS
