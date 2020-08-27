@@ -13,7 +13,7 @@ namespace chanser{
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
 
-    _myC12.reset(new clas12::clas12reader(filename.Data())); //for ownership
+    _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
     _c12=_myC12.get(); //for using
     if(!_c12) return kFALSE; 
     Init();
@@ -25,6 +25,8 @@ namespace chanser{
     
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
+    if( _myWriter.get()&& (_c12!=nullptr) ) _myWriter->assignReader(*_c12);
+ 
   }
   /////////////////////////////////////////////////////////////////////
   //Check if there is another event

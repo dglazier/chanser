@@ -223,7 +223,8 @@ namespace chanser{
     _nPerm=0;_currTopoID=-1;
     _rejectEvent=0;
     _truthMatchedCombi=0;
-
+    _goodEvent=0;
+    
     //For actions
     for(auto pt : _preTopoAction) {
        pt->InitDataEvent();	
@@ -250,7 +251,7 @@ namespace chanser{
   /////////////////////////////////////////////////////////////
   ///Analyse one event 
   void FinalState::ProcessEvent(){
-
+ 
     if(InitEvent()==kFALSE) return;
     
     if(_hasTruth) InitTruth();
@@ -262,23 +263,24 @@ namespace chanser{
     }
 
     auto validTopos =_topoMan.ValidTopos();
-   
+    
     for(auto* topo : validTopos){
       _currTopo=topo;
       _currTopoID=_currTopo->ID();
       //First combination
       auto singleCombination=(!_currTopo->FirstParticles()); //true if no other combination. Calls ParticleIter::FirstCombitorial0
       FSProcess();
-   
+      if(_rejectEvent==kFALSE) _goodEvent++;
+ 
       if(singleCombination) continue;
       //Now iterate over others
       auto piter=_currTopo->Iter();
       //cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl<<endl; 
       while(piter.NextCombitorial0()){
 	FSProcess();
+	if(_rejectEvent==kFALSE) _goodEvent++;
       }
     }
-      
     _TotPerm+=_nPerm;
     _nEvents++;
   }

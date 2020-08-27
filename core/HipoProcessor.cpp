@@ -63,13 +63,14 @@ namespace chanser{
       _fsm.LoadFinalState(listFinalStates->At(ifs)->GetName(),listFinalStates->At(ifs)->GetTitle(),workerName);
     }
 
-    //read options 
-    ApplyOptions();
     
     //Get the output directory
     auto bDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")));
     _fsm.SetBaseOutDir(bDir->GetTitle());
 
+    //read options 
+    ApplyOptions();
+    
     _fsm.Init();
      
   }
@@ -79,7 +80,6 @@ namespace chanser{
     
     //This function is called whenever there is a new file
     _hipo.SetReader(_c12.get()); //use it to set the reader ptr
- 
     return kTRUE;
   }
 
@@ -199,7 +199,6 @@ namespace chanser{
     /////////////////////////////////////////////////
     ///Max particles for event particle
     auto opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_MAXPARTICLES"));
-    cout<<"HipoProcessor::ApplyOptions() "<<opt<<endl;
     if(opt!=nullptr){
       auto maxParts=TString(opt->GetTitle()).Atoi();
       Info("HipoProcessor::ApplyOptions()",Form("Setting Max particles to %d",maxParts),"");
@@ -207,6 +206,16 @@ namespace chanser{
       _fsm.GetEventParticles().SetMaxParticles(maxParts);
     }
     /////////////////////////////////////////////////
-    
+    /////////////////////////////////////////////////
+    ///Write filtered hipo output file
+    opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_FILTERHIPO"));
+    if(opt!=nullptr){
+      TString workerName;
+      if(gProofServ) workerName=gProofServ->GetOrdinal();
+      
+      cout<<"Writing hipo filtered to "<<_fsm.BaseOutDir()+opt->GetTitle()<<endl;
+      _hipo.SetWriteToFile(_fsm.BaseOutDir()+"worker_"+workerName+opt->GetTitle());
+    }
   }
+
 }

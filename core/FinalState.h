@@ -163,6 +163,9 @@ namespace chanser{
 
     //sink function mask no longer valid after calling this outside of this
     void MaskParticles(MaskedEventParticles* mask){_maskedParticles.reset(mask);}
+
+    Short_t WasGoodEvent(){return _goodEvent;}
+    
   protected :
 
   FinalState():_topoMan{this},_ownsActions{1}{};
@@ -270,7 +273,8 @@ namespace chanser{
     Short_t _hasTruth=0;//!
     Short_t _itersConfigured=0;//!
     Short_t _ownsActions=1;//!
-   
+    Short_t _goodEvent=0;//!
+    
     ClassDefOverride(chanser::FinalState,1); //class FinalState
   };
 
