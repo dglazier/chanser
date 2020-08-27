@@ -117,6 +117,7 @@ namespace chanser{
     auto eventTopo = _data->eventPids();
     Bool_t doneRead=kFALSE;
     //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
+    Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
       //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<std::endl;
       //See if this final state had any topologies
@@ -135,10 +136,12 @@ namespace chanser{
 	//	_data->IsSim() ? fs->SetHasTruth() : fs->SetHasntTruth();
       }
 
-
       //process this final state
       fs->ProcessEvent();
+      if(fs->WasGoodEvent()) goodEvent=kTRUE;
     }
+    //if any final state though this was a good event, write it
+    if(goodEvent) _data->WriteEvent(); //only if the data can write itself
   }
   ///////////////////////////////////////////////////////
   //Write output files etc...

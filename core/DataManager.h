@@ -32,6 +32,7 @@ namespace chanser{
     virtual Bool_t InitEvent()=0;
       
     virtual Bool_t ReadEvent(Long64_t entry=-1)=0;
+    virtual void WriteEvent(Long64_t entry=-1){};//by default do nothing
 
     virtual const particle_ptrs& GetParticles() const = 0;
     virtual const std::vector<short> eventPids() = 0;
