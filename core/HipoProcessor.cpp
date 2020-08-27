@@ -140,25 +140,28 @@ namespace chanser{
 	
 	TString rm(".! rm  ");
 	TString baseName;
-	
+	bool gotMerge=kFALSE;
 	for(const auto&& mergefile : *merge){
 	  if(TString(mergefile->GetName()).Contains("DESTINATION"))
-	    continue;//List contains destination object
+	    continue;//List contains destination objects
 	  if(baseName.Length()==0){
 	    baseName=gSystem->BaseName(mergefile->GetName());
 	    hadd+=baseName+ " -f ";
 	  }
+	  gotMerge=kTRUE;
 	  hadd+=mergefile->GetName();
 	  hadd+=" ";
 	  rm+=mergefile->GetName();
 	  rm+=" ";
 	}
-	
-	cout<<hadd<<endl;
-	gROOT->ProcessLine(hadd);
-	cout<<rm<<endl;
-	gROOT->ProcessLine(rm);
- 
+
+	if(gotMerge){//other than DESTINATION
+	  cout<<hadd<<endl;
+	  gROOT->ProcessLine(hadd);
+	  cout<<rm<<endl;
+	  gROOT->ProcessLine(rm);
+	}
+
       }
     }
  }
