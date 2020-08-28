@@ -80,8 +80,8 @@ namespace chanser{
     void SetTree(TTree* t){ _tree.reset(t);}
 
   private:
-    tfile_uptr _file;//file before tree as is owner
-    ttree_uptr _tree;
+    tfile_uptr _file={nullptr};//file before tree as is owner
+    ttree_uptr _tree={nullptr};
     Mode_t fMode=Mode_t::null;
 
     FiledTree()=default;

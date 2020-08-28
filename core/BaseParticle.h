@@ -71,7 +71,7 @@ namespace chanser{
 
     Bool_t _useTruth{0};//
       
-    const TruthParticle* _truth{nullptr};
+    const TruthParticle* _truth={nullptr};
   
   public:
     BaseParticle()=default;  	        //Constructor

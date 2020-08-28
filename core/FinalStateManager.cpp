@@ -57,6 +57,7 @@ namespace chanser{
     }
     _rawFinalStates.push_back(fs.get());
     _finalStates.push_back(std::move(fs));//take a copy
+    return kTRUE;
   }
   ///////////////////////////////////////////////////////////////
   ///Process all events in the hipo file

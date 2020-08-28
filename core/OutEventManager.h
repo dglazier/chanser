@@ -48,19 +48,18 @@ namespace chanser{
   private:
 
    //Tree Output Data
-    BaseOutEvent* TD{nullptr};//!
-    std::unique_ptr<BaseOutEvent> _realTD;//!
-    std::unique_ptr<BaseOutEvent> _truTD;//!
+    BaseOutEvent* TD={nullptr};//!
+    std::unique_ptr<BaseOutEvent> _realTD={nullptr};//!
+    std::unique_ptr<BaseOutEvent> _truTD={nullptr};//!
 
-    filed_uptr _finalTree;//!
-    // TString _finalTreeFile;
+    filed_uptr _finalTree={nullptr};//!
     
-    std::unique_ptr<hipo::ntuple_writer> _finalHipo;//!
+    std::unique_ptr<hipo::ntuple_writer> _finalHipo={nullptr};//!
     // TString _finalHipoFile;
     
     FSOutputType  _outputType=FSOutputType::NONE;
 
-    std::unique_ptr<TList> _listOfFinalTrees{nullptr};
+    std::unique_ptr<TList> _listOfFinalTrees={nullptr};
     
     ClassDef(chanser::OutEventManager,1);
 

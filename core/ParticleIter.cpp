@@ -41,6 +41,8 @@ namespace chanser{
     
     if(_innerIter) //recursively go through all linked iterators
       _innerIter->UpdateCombitorial();
+
+    return kTRUE;
   }
   Bool_t ParticleIter::NextCombitorial(){
        

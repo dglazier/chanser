@@ -64,7 +64,7 @@ namespace chanser{
   private :
 
     //clas12root
-    std::unique_ptr<clas12::clas12reader> _myC12; //if created here
+    std::unique_ptr<clas12::clas12reader> _myC12={nullptr}; //if created here
 
     particle_objs _particlePool; //pool of particle objects can use for each event
     std::vector<CLAS12Particle> _particlePool2; //pool of particle objects can use for each event

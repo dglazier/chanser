@@ -26,7 +26,7 @@ namespace chanser{
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
     if( _myWriter.get()&& (_c12!=nullptr) ) _myWriter->assignReader(*_c12);
- 
+    return kTRUE;
   }
   /////////////////////////////////////////////////////////////////////
   //Check if there is another event

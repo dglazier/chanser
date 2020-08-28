@@ -48,7 +48,7 @@ namespace chanser{
     std::vector<Short_t> _pidCounts;//!
 
 
-    std::unique_ptr<TFile> _outFile;//!
+    std::unique_ptr<TFile> _outFile={nullptr};//!
     
     ClassDef(chanser::MaskedEventParticles,1); //class MaskedEventParticles
     

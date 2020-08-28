@@ -221,14 +221,14 @@ namespace chanser{
 
   private:
       
-    EventParticles* _eventParts{nullptr};//!
-    const truth_ptrs* _truth{nullptr}; //!
-    std::unique_ptr<MaskedEventParticles> _maskedParticles{nullptr};//want to save this and so have moved class version to 2
+    EventParticles* _eventParts={nullptr};//!
+    const truth_ptrs* _truth={nullptr}; //!
+    std::unique_ptr<MaskedEventParticles> _maskedParticles={nullptr};//want to save this and so have moved class version to 2
  
  
    	
-    Topology *_currTopo{nullptr};//!
-    ParticleIter* _currIter{nullptr};//!
+    Topology *_currTopo={nullptr};//!
+    ParticleIter* _currIter={nullptr};//!
       
     std::vector< ParticleConfig  > _pconfigs;//!
       
