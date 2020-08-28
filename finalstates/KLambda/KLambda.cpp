@@ -37,7 +37,7 @@ namespace dglazier{
     _doToTopo["Electron:Proton:Pim:Kp"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
-      if(!(_kp.CLAS12()->getP()<2.0&&_kp.CLAS12()->getRegion()))
+      if(!(_kp.CLAS12()->getP()<2.0&&_kp.CLAS12()->getRegion()==clas12::FD))
 	{RejectEvent();return;}
       
       auto p4lambda = _proton.P4() + _pim.P4();

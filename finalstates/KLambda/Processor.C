@@ -15,10 +15,6 @@
   chain.GetC12Reader()->addExactPid(-211,1);
 
   chanser::HipoProcessor processor(&chain,"finalstates.txt","/work/clas12/dglazier/chanser_out");
-  //processor.AddOption("HIPOPROCESSOR_MAXPARTICLES","8");
-  //processor.AddOption("HIPOPROCESSOR_FILTERHIPO","filtered.hipo");
-  //chain.GetNRecords();
   gProof->Process(&processor,chain.GetNRecords());
-  //gProof->Process(&processor,1000);
- 
+  
 }

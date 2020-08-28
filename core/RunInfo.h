@@ -20,7 +20,7 @@ namespace chanser{
     
   private :
     
-    clas12::clas12reader* _c12{nullptr};
+    clas12::clas12reader* _c12={nullptr};
  
            
   };//class RunInfo

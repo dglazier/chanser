@@ -107,12 +107,12 @@ namespace chanser{
     Selection _combi; //handler for the combination/permuations
 
     //std::shared_ptr<ParticleIter> _innerIter;  //!recursive iterator
-    ParticleIter* _innerIter{nullptr};  //!recursive iterator
-    ParticleIter *_selIter{nullptr};  //!selected iterator
-    ParticleIter *_remIter{nullptr};  //!remaining iterator
+    ParticleIter* _innerIter={nullptr};  //!recursive iterator
+    ParticleIter *_selIter={nullptr};  //!selected iterator
+    ParticleIter *_remIter={nullptr};  //!remaining iterator
 
 
-    vector<BaseParticle*> *_allParticles=nullptr; //!vector of particles for this event
+    vector<BaseParticle*> *_allParticles={nullptr}; //!vector of particles for this event
     vector<BaseParticle*>  _selected; //!combitorial for selected particles
     vector<BaseParticle*>  _remainder; //!combitorial for unselected particles
     

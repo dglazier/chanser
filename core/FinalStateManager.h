@@ -57,7 +57,7 @@ namespace chanser{
   private :
       
 
-    DataManager* _data=nullptr; //!
+    DataManager* _data={nullptr}; //!
     EventParticles _eventParts;//!
    
     finalstate_uptrs _finalStates;//!

@@ -46,7 +46,7 @@ namespace chanser{
     TString _name="";//!
     std::vector<TString > _forBranch;//!
 
-    std::unique_ptr<hipo::bank> _hipoBank;//!
+    std::unique_ptr<hipo::bank> _hipoBank={nullptr};//!
     std::vector<void* > _linksHipo;//!
        
     ClassDef(TreeData,1);

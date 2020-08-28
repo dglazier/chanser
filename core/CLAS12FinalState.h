@@ -47,8 +47,8 @@ namespace chanser{
     chanser::Kinematics _kinCalc;//!
   private :
       
-    const EventInfo* _eventInfo{nullptr};//!
-    const RunInfo* _runInfo{nullptr};//!
+    const EventInfo* _eventInfo={nullptr};//!
+    const RunInfo* _runInfo={nullptr};//!
 
     Float_t _startTime{0};
   

@@ -58,9 +58,9 @@ namespace chanser{
 
     //Note the Unique_ptrs should not be used on workers
     //i.e. only in contructor, Begin, Terminate
-    std::unique_ptr<TList> _listOfFinalStates;//!
-    std::unique_ptr<TList> _options;//!
-    std::unique_ptr<TNamed> _baseDir;//!
+    std::unique_ptr<TList> _listOfFinalStates={nullptr};//!
+    std::unique_ptr<TList> _options={nullptr};//!
+    std::unique_ptr<TNamed> _baseDir={nullptr};//!
 
     Bool_t _boss{kFALSE};//!
 

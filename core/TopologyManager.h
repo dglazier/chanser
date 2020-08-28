@@ -84,7 +84,7 @@ namespace chanser{
 
 
     std::vector<Topology> _topos; 
-    const FinalState* _fs=nullptr; //!
+    const FinalState* _fs={nullptr}; //!
 
       
     std::map<Short_t,Short_t>_pdg2pid;

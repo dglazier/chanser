@@ -50,8 +50,8 @@ namespace chanser{
   private:
       
     TString _name;
-    BaseParticle* _particle=nullptr;
-    ParticleConfig* _parent=nullptr;
+    BaseParticle* _particle={nullptr};
+    ParticleConfig* _parent={nullptr};
     std::vector<BaseParticle*> _children;
       
     Int_t _geni=-1; //index in generated events if has one
