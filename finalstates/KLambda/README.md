@@ -23,8 +23,8 @@ Create code
 
 ### 2) Code the calculations you would like with these particles in KLambda.cpp Define() function
 
-   _doToTopo["Electron:Proton:Pim:Kp"]=[&](){
-      //TOPOLOGY Define your topology dedendent code in here
+    _doToTopo["Electron:Proton:Pim:Kp"]=[&](){
+
       ///////+++++++++++++++++++++++++++++++++++///////
       if(!(_kp.CLAS12()->getP()<2.0&&_kp.CLAS12()->getRegion()))
 	{RejectEvent();return;}
@@ -75,6 +75,10 @@ Note here we include the FT energy correction.
  	//Delete the final state rather than let ROOT try
   	FS.reset();
      }
+
+To creat obeject and save to named ROOT file
+
+      chanser_root KLambda:KLambda.cpp Create_KLambda.C
 
 ### 4) Run on PROOF
 
