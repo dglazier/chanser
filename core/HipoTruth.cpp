@@ -9,7 +9,8 @@ namespace chanser{
   Bool_t HipoTruth::Init(){
     if(_c12->mcparts()) _dataType=static_cast<Short_t> (chanser::DataType::Lund);
     else Fatal("HipoTruth::Init()","No MC::Lund banks in hipo file");
-   }
+    return kTRUE;
+  }
   /////////////////////////////////////////////////////////////////////
   //Check if there is another event
   //Can now get Pid list for this event
