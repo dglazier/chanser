@@ -17,6 +17,7 @@ void Load(){
   TString classes=gSystem->Getenv("CHANSER_CLASSES");
   TString core=CHANSER+"/core";
   TString actions=CHANSER+"/actions";
+  TString rga_actions=CHANSER+"/rga_actions";
   TString mva=CHANSER+"/tmva";
   TString skeleton=CHANSER+"/skeleton";
   TString macros=CHANSER+"/macros";
@@ -35,6 +36,10 @@ void Load(){
     gInterpreter->AddIncludePath(actions);
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(actions).Data()));
     gSystem->Load("$CHANSER/lib/libchanseractions.so");
+
+    gInterpreter->AddIncludePath(rga_actions);
+    gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(rga_actions).Data()));
+    gSystem->Load("$CHANSER/lib/libchanseractions_rga.so");
 
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(skeleton).Data()));
 
