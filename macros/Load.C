@@ -23,7 +23,7 @@ void Load(){
   TString macros=CHANSER+"/macros";
   TString user= gSystem->Getenv("USERNAME");
   if(user.Length()==0) user= gSystem->Getenv("USER");
-    
+
   if(!TString(gInterpreter->GetIncludePath()).Contains(core)){
     
     gInterpreter->AddIncludePath(core);
@@ -44,6 +44,8 @@ void Load(){
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(skeleton).Data()));
 
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(macros).Data()));
+
+    gROOT->ProcessLine(".L $CHANSER/macros/RGA.C");
 
     if(classes.Length()&&(gProof==nullptr))
       gROOT->ProcessLine(".x $CHANSER_CLASSES/LoadMyClasses.C");

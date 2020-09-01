@@ -35,7 +35,7 @@ namespace chanser{
 	  
 	//check if cut assigned for particular particle species
 	if(_pdgToCut.find(pdg)==_pdgToCut.end()){//if not use default
-	  if(_useableDefault!=nullptr){
+	  if(_useableDefault==nullptr){
 	    Warning("ParticleCutsManager::Configure(FinalState* fs)","No default or cut defined for all particles");
 	    continue;//don't add a cut for this particle
 	  }
