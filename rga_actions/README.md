@@ -18,3 +18,8 @@ A cut on the fiducial region of the PCAL U, V and W strips. The cut values recom
     pcalFiducial.AddParticleCut("e-", new FiducialCutPCAL_uvw(9));
     FS->RegisterPostKineAction(pcalFiducial);
      
+### DC Fiducial Cut: Robert
+
+### Quality Assurance: Richard
+
+### Z-vertex cut: Richard
