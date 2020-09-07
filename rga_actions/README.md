@@ -22,4 +22,4 @@ A cut on the fiducial region of the PCAL U, V and W strips. The cut values recom
 
 ### Quality Assurance: Richard
 
-### Z-vertex cut: Richard
+### Electron Z-vertex cut: Richard
