@@ -8,6 +8,7 @@
 //#pragma link C++ nestedtypedef;
 
 #pragma link C++ namespace chanser;
+#pragma link C++ class chanser::ZVertexCut+;
 #pragma link C++ class chanser::FiducialCutPCAL_uvw+;
 
 #endif

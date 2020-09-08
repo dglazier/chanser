@@ -1,5 +1,5 @@
 void RGA(CLAS12FinalState* FS){
-  //std::unique_ptr<richardt::eep, std::default_delete<richardt::eep> >
+  
   /*
    * Loose (9cm) cut on PCAL Fiducial region, applied to electrons. 
    */
@@ -42,6 +42,12 @@ void RGA(CLAS12FinalState* FS){
   gpfct.AddParticleCut("gamma", new FiducialCutPCAL_uvw(19));
   FS->RegisterPostKinAction(gpfct);
 
+  /*
+   * Recommended cut on the electron z-vertex position.
+   */
+  ParticleCutsManager zVertex{"ZVertex",0};
+  zVertex.AddParticleCut("e-", new ZVertexCut(-13,12));
+  FS->RegisterPostKinAction(zVertex);
 
   FS->WriteToFile("eep_config.root");
   FS->Print();
