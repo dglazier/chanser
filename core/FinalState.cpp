@@ -2,6 +2,7 @@
 #include "AutoIterUtils.h"
 #include <TFile.h>
 #include <TSystem.h>
+#include <TObjString.h>
 #include <memory>
 
 namespace chanser{
