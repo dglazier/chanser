@@ -25,6 +25,9 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/tmva)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/actions)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/actions)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/rga_actions)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/rga_actions)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
 
