@@ -15,7 +15,7 @@
 namespace chanser{
   
   constexpr Float_t THIS_FLT_MAX = 3.40282e+38;
-
+  constexpr Int_t THIS_INT_MAX2 = 2147483647;
     
   class BaseCut: public TNamed {
       

@@ -31,7 +31,17 @@ A cut on the z-vertex position. The cut values for electrons recommended in the 
     zVertex.AddParticleCut("e-", new ZVertexCut(-13,12));
     FS->RegisterPostKineAction(zVertex);
      
-### DC Fiducial Cut: Robert
+### DC Fiducial Cut (local theta/phi variables): Robert
+
+In local theta/phi variables a four parameter fit is used to determine a cut on the fiducial volume in the DC. The RG-A analysis note recommends this cut for hadrons in the inbending data (electrons and all outbending data cuts are recommended to use the cut in local XY variables. 
+To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 36 in the cut, respectively. This cut is instantiated in your 'Create_xxx.C' file with:
+
+    ParticleCutsManager DC_FidCut{"DCFidCutsTP_R3", 0};
+    DC_FidCut.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(36));
+    FS->RegisterPostTopoAction(DC_FidCut);
+
+### DC Fiducial Cut (local X/Y variables): Robert
+
 
 ### Quality Assurance: Richard
 
