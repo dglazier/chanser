@@ -1,4 +1,5 @@
 #include "OutEventManager.h"
+#include <TObjString.h>
 
 namespace chanser {
   
