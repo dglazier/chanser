@@ -1,0 +1,80 @@
+* RGA Analysis Overview Notes
+This doc will summerise the work needed to implement the analysis methods with
+clas12root/chanser
+
+
+** Template task
+ - Section:
+ - Type:
+ - Description:
+ - Notes:
+
+-----
+
+
+** Trigger (mesonex)
+ - Section: 2.4.2
+ - Type: trigger
+ - Description:
+   An emulation of the trigger is needed to match the simulated data with
+   experiment. This will need the same conditions on detectors that is
+   implemnted for the actual hardware.
+ - Notes:
+   Some work on this is already complete (AT)
+
+** Detector calibration fix
+ - Section:3
+ - Type: calibration
+ - Description:
+   A general task for any detector specific fixes that might be needed (similar
+   to FT energy correction)
+ - Notes:
+
+** Run Selection (QC)
+ - Section: 5.3
+ - Type: cut
+ - Description:
+   Run that have been deemed to have any type of issue that might impact
+   analysis has been labeled with a quality rating called 'defect'. The details
+   on the values for this are given in the analysis note. 
+ - Notes:
+   Choose which level of defect is acceptable
+
+** Note on 7.1.1
+   If we don't use our own particle ID, then the following here will be useful
+   in defining the selection criteria 
+
+** Electron PCAL Min Energy Dep Cut
+ - Section: 7.3.1.1
+ - Type: cut
+ - Description:
+   Using an electron energy deposition cut on the ECAL to help with electron/pi-
+   miss-ID
+ - Notes:
+   PCAL cut of 0.06
+
+** Electron Sampling fraction
+ - Section: 7.3.1.2
+ - Type: cut 
+ - Description:
+   To further reduce the pi- contamination in the electrons, using the mean of
+   the sampling fraction (the ratio of the sum of energy deposited in the
+   calorimeter layers to reconstructed track momentum, vs deposited energy for
+   each pre-shower calorimeter sector) and only accepting electrons within 3.5
+   sigma. 
+   Additionally a cut can also be placed on a function of sampling fraction of
+   the inner calorimeter and the PCAL (linear slope, see secton for detail).
+ - Notes:
+
+** Electron z-vertex position
+ - Section: 7.3.1.3
+ - Type: cut
+ - Description:
+   Remove electrons scattered in the beamline or at the exit window of the
+   target using the V_z value:
+   -13cm < V_z < +12cm (in-bending)
+   -18cm < V_z < +10cm (out-bending)
+ - Notes:
+   Torus field dependent!!
+
+
