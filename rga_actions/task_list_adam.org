@@ -2,16 +2,6 @@
 This doc will summerise the work needed to implement the analysis methods with
 clas12root/chanser
 
-
-** Template task
- - Section:
- - Type:
- - Description:
- - Notes:
-
------
-
-
 ** Trigger (mesonex)
  - Section: 2.4.2
  - Type: trigger
@@ -76,5 +66,60 @@ clas12root/chanser
    -18cm < V_z < +10cm (out-bending)
  - Notes:
    Torus field dependent!!
+   
+** Hadron ID: Electron vs. Hadron vertex diff
+ - Section: 7.3.2.1
+ - Type: cut
+ - Description: 
+   Rejecting hadrons outside of the target region, loose cut on vertex between
+   hadron and electron of 20cm
+   | Vz (ele) − Vz (had) | < 20 cm
+ - Notes:
+   Can apply to both inbending outbending
 
+** Hadron ID: chi2PID cuts
+ - Section: 7.3.2.2
+ - Type: cut
+ - Description:
+   Use the chi2PID value (distance in sigma from 0 of a delta time calculation)
+   to restrict the hadrons. Details in section of the momentum dependent cuts
+ - Notes:
+
+** Photons: Max Beta at Calorimeter
+ - Section: 7.3.3.1
+ - Type: cut
+ - Description:
+   Set a maximum value for the photon beta at the calorimeter of 1.1 to remove
+   uncorrelated photons from previous bunches
+ - Notes:
+
+** Fiducial: PCAL 
+ - Section: 7.4.1
+ - Type: fiducial cut
+ - Description:
+   Tracking efficiences near the edge of the PCAL reduces the electron and photo
+   PID. The doc gives 3 different levels of cut to apply, corresponding to bar
+   widths from the edge of the detector volume (v and w).
+ - Notes:
+
+** Fiducial: DC
+ - Section: 7.4.2.1
+ - Type: fiducial cut
+ - Description:
+   - Approach 1
+     Fitting the events as a function of phi and theta, bounds on the angles
+     have been calculated. Slightly different treatment given to electrons and
+     other particles. The values for the cuts are not actually given in the doc!
+   - Approach 2
+     The same method but using x and y positions instead of angle. No values
+     given for this either.
+ - Notes:
+   Approach 1 for hadrons, approach 2 for electrons. We need to values for the
+   cuts however!
+
+** Template task
+ - Section:
+ - Type:
+ - Description:
+ - Notes:
 
