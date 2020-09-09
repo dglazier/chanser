@@ -1,0 +1,125 @@
+* RGA Analysis Overview Notes
+This doc will summerise the work needed to implement the analysis methods with
+clas12root/chanser
+
+** Trigger (mesonex)
+ - Section: 2.4.2
+ - Type: trigger
+ - Description:
+   An emulation of the trigger is needed to match the simulated data with
+   experiment. This will need the same conditions on detectors that is
+   implemnted for the actual hardware.
+ - Notes:
+   Some work on this is already complete (AT)
+
+** Detector calibration fix
+ - Section:3
+ - Type: calibration
+ - Description:
+   A general task for any detector specific fixes that might be needed (similar
+   to FT energy correction)
+ - Notes:
+
+** Run Selection (QC)
+ - Section: 5.3
+ - Type: cut
+ - Description:
+   Run that have been deemed to have any type of issue that might impact
+   analysis has been labeled with a quality rating called 'defect'. The details
+   on the values for this are given in the analysis note. 
+ - Notes:
+   Choose which level of defect is acceptable
+
+** Note on 7.1.1
+   If we don't use our own particle ID, then the following here will be useful
+   in defining the selection criteria 
+
+** Electron PCAL Min Energy Dep Cut
+ - Section: 7.3.1.1
+ - Type: cut
+ - Description:
+   Using an electron energy deposition cut on the ECAL to help with electron/pi-
+   miss-ID
+ - Notes:
+   PCAL cut of 0.06
+
+** Electron Sampling fraction
+ - Section: 7.3.1.2
+ - Type: cut 
+ - Description:
+   To further reduce the pi- contamination in the electrons, using the mean of
+   the sampling fraction (the ratio of the sum of energy deposited in the
+   calorimeter layers to reconstructed track momentum, vs deposited energy for
+   each pre-shower calorimeter sector) and only accepting electrons within 3.5
+   sigma. 
+   Additionally a cut can also be placed on a function of sampling fraction of
+   the inner calorimeter and the PCAL (linear slope, see secton for detail).
+ - Notes:
+
+** Electron z-vertex position
+ - Section: 7.3.1.3
+ - Type: cut
+ - Description:
+   Remove electrons scattered in the beamline or at the exit window of the
+   target using the V_z value:
+   -13cm < V_z < +12cm (in-bending)
+   -18cm < V_z < +10cm (out-bending)
+ - Notes:
+   Torus field dependent!!
+   
+** Hadron ID: Electron vs. Hadron vertex diff
+ - Section: 7.3.2.1
+ - Type: cut
+ - Description: 
+   Rejecting hadrons outside of the target region, loose cut on vertex between
+   hadron and electron of 20cm
+   | Vz (ele) − Vz (had) | < 20 cm
+ - Notes:
+   Can apply to both inbending outbending
+
+** Hadron ID: chi2PID cuts
+ - Section: 7.3.2.2
+ - Type: cut
+ - Description:
+   Use the chi2PID value (distance in sigma from 0 of a delta time calculation)
+   to restrict the hadrons. Details in section of the momentum dependent cuts
+ - Notes:
+
+** Photons: Max Beta at Calorimeter
+ - Section: 7.3.3.1
+ - Type: cut
+ - Description:
+   Set a maximum value for the photon beta at the calorimeter of 1.1 to remove
+   uncorrelated photons from previous bunches
+ - Notes:
+
+** Fiducial: PCAL 
+ - Section: 7.4.1
+ - Type: fiducial cut
+ - Description:
+   Tracking efficiences near the edge of the PCAL reduces the electron and photo
+   PID. The doc gives 3 different levels of cut to apply, corresponding to bar
+   widths from the edge of the detector volume (v and w).
+ - Notes:
+
+** Fiducial: DC
+ - Section: 7.4.2.1
+ - Type: fiducial cut
+ - Description:
+   - Approach 1
+     Fitting the events as a function of phi and theta, bounds on the angles
+     have been calculated. Slightly different treatment given to electrons and
+     other particles. The values for the cuts are not actually given in the doc!
+   - Approach 2
+     The same method but using x and y positions instead of angle. No values
+     given for this either.
+ - Notes:
+   Approach 1 for hadrons, approach 2 for electrons. We need to values for the
+   cuts however!
+
+** Template task
+ - Section:
+ - Type:
+ - Description:
+ - Notes:
+
