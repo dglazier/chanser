@@ -45,3 +45,6 @@ To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 
 
 ### Quality Assurance: Richard
 
+### Electron PCAL Min Energy Dep Cut: Adam
+
+### Electron Sampling fraction: Adam
