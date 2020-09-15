@@ -12,21 +12,22 @@ namespace chanser{
 
 
   class DC_FiducialCut_ThetaPhi : public chanser::BaseCut{
-      
+    
+    using Array4D = std::vector<std::vector<std::vector<std::vector<double>>>>;      
+
   public:
     DC_FiducialCut_ThetaPhi()=default; // must have default constructor
-    DC_FiducialCut_ThetaPhi(Int_t layer){_regionVal=layer;}
+    DC_FiducialCut_ThetaPhi(Int_t layer, Int_t field){_regionVal=layer, _fieldVal=field;}
       
       
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override
     {
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12(); //if you require other DST data
-      
-      bool inbending = true;
-      bool outbending = false;
 
-const double maxparams_in[6][6][3][4] = {
+      if(c12->getRegion()!=clas12::FD) return true; //cut only applies to FD
+
+const double  maxparams_in[6][6][3][4] = {
 {{{-51.2054, 38.3199, -2.34912, 0.0195708},{-35.124, 26.5405, -1.09976, 0.0054436},{-38.4667, 28.8007, -1.29647, 0.00723946}},
 {{-37.5758, 26.6792, -1.00373, 0.00425542},{-45.5585, 35.2513, -2.21029, 0.0196454},{-40.6878, 30.355, -1.42152, 0.00817034}},
 {{-38.3878, 29.6034, -1.68592, 0.0150766},{-36.8921, 27.4735, -1.14582, 0.00554924},{-23.5149, 18.0147, -0.38597, 2.87092e-09}},
@@ -183,69 +184,64 @@ const double minparams_out[6][6][3][4] = {
 {{2.7955e-07, -13.1311,0.848222, -0.00812719},{29.5508, -32.9514,2.77917, -0.0291596},{59.7514, -47.3033,3.54495, -0.0341802}}}};
 
 
-const auto minparams = ((inbending && !outbending) ? minparams_in : minparams_out);
-const auto maxparams = ((inbending && !outbending) ? maxparams_in : maxparams_out);
+ bool inbending;
+
+ if(_fieldVal==1)
+   {//positive outbending
+     inbending = false;
+   }
+ if(_fieldVal==-1)
+   {//negative outbending
+     inbending = true;
+   }
+
+ const auto minparams = (inbending ? minparams_in : minparams_out);
+ const auto maxparams = (inbending ? maxparams_in : maxparams_out);
+
  double theta_DCr = 5000;
  double phi_DCr_raw = 5000;
  Double_t Pival = TMath::Pi();
  Int_t _partPidVal = c12->par()->getPid();
 
- switch (_regionVal)
-   {
-   case 6:
-     theta_DCr = 180 / Pival * acos(c12->traj(6,6)->getZ() / sqrt(pow(c12->traj(6,6)->getX(),2) + pow(c12->traj(6,6)->getY(),2) + pow(c12->traj(6,6)->getZ(),2)));
-     phi_DCr_raw = 180 / Pival * atan2(c12->traj(6,6)->getY() / sqrt(pow(c12->traj(6,6)->getX(),2) + pow(c12->traj(6,6)->getY(),2) + pow(c12->traj(6,6)->getZ(),2)), 
-				       c12->traj(6,6)->getX() /sqrt(pow(c12->traj(6,6)->getX(),2) + pow(c12->traj(6,6)->getY(),2) + pow(c12->traj(6,6)->getZ(),2)));
-     break;
-     
-   case 18:
-     theta_DCr = 180 / Pival * acos(c12->traj(6,18)->getZ() / sqrt(pow(c12->traj(6,18)->getX(),2) + pow(c12->traj(6,18)->getY(),2) + pow(c12->traj(6,18)->getZ(),2)));
-     phi_DCr_raw = 180 / Pival * atan2(c12->traj(6,18)->getY() / sqrt(pow(c12->traj(6,18)->getX(),2) + pow(c12->traj(6,18)->getY(),2) + pow(c12->traj(6,18)->getZ(),2)), 
-				       c12->traj(6,18)->getX() /sqrt(pow(c12->traj(6,18)->getX(),2) + pow(c12->traj(6,18)->getY(),2) + pow(c12->traj(6,18)->getZ(),2)));
-     break;
-     
-   case 36:
-     theta_DCr = 180 / Pival * acos(c12->traj(6,36)->getZ() / sqrt(pow(c12->traj(6,36)->getX(),2) + pow(c12->traj(6,36)->getY(),2) + pow(c12->traj(6,36)->getZ(),2)));
-     phi_DCr_raw = 180 / Pival * atan2(c12->traj(6,36)->getY() / sqrt(pow(c12->traj(6,36)->getX(),2) + pow(c12->traj(6,36)->getY(),2) + pow(c12->traj(6,36)->getZ(),2)), 
-				       c12->traj(6,36)->getX() /sqrt(pow(c12->traj(6,36)->getX(),2) + pow(c12->traj(6,36)->getY(),2) + pow(c12->traj(6,36)->getZ(),2)));
-     break;
+ auto trajZ = c12->traj(6, _regionVal)->getZ();
+ auto trajY = c12->traj(6, _regionVal)->getY();
+ auto trajX = c12->traj(6, _regionVal)->getX();
 
-   default: return false; break;
-   }
+ auto trajR = TMath::Sqrt(trajX*trajX+trajY*trajY+trajZ*trajZ);
+
+ theta_DCr = TMath::RadToDeg() * TMath::ACos(trajZ/trajR);
+ phi_DCr_raw = TMath::RadToDeg() * TMath::ATan2(trajY, trajX);
 
  double phi_DCr = 5000;
+ auto sector = c12->getSector();
  
- if (c12->getSector() == 1) phi_DCr = phi_DCr_raw;
- if (c12->getSector() == 2) phi_DCr = phi_DCr_raw - 60;
- if (c12->getSector() == 3) phi_DCr = phi_DCr_raw - 120;
- if (c12->getSector() == 4 && phi_DCr_raw > 0) phi_DCr = phi_DCr_raw - 180;
- if (c12->getSector() == 4 && phi_DCr_raw < 0) phi_DCr = phi_DCr_raw + 180;
- if (c12->getSector() == 5) phi_DCr = phi_DCr_raw + 120;
- if (c12->getSector() == 6) phi_DCr = phi_DCr_raw + 60;
+ if (sector == 1) phi_DCr = phi_DCr_raw;
+ else if (sector == 2) phi_DCr = phi_DCr_raw - 60;
+ else if (sector == 3) phi_DCr = phi_DCr_raw - 120;
+ else if (sector == 4 && phi_DCr_raw > 0) phi_DCr = phi_DCr_raw - 180;
+ else if (sector == 4 && phi_DCr_raw < 0) phi_DCr = phi_DCr_raw + 180;
+ else if (sector == 5) phi_DCr = phi_DCr_raw + 120;
+ else if (sector == 6) phi_DCr = phi_DCr_raw + 60;
  
  int pid = 0;
- switch (_partPidVal)
-   {
-   case 11: pid = 0; break;
-   case 2212: pid = 1; break;
-   case 211: pid = 2; break;
-   case -211: pid = 3; break;
-   case 321: pid = 4; break;
-   case -321: pid = 5; break;
-   default: return false; break;
-   }
+ if(_partPidVal == 11) pid=0;
+ else if (_partPidVal==2212) pid=1;
+ else if (_partPidVal==211) pid= 2;
+ else if (_partPidVal==-211) pid = 3;
+ else if (_partPidVal==321) pid=4;
+ else if (_partPidVal==-321) pid=5;
 
  Int_t layer;
  layer = 5;
  if(_regionVal==6){layer = 0;}
- if(_regionVal==18){layer=1;}
- if(_regionVal==36){layer=2;}
+ else if(_regionVal==18){layer=1;}
+ else if(_regionVal==36){layer=2;}
  
- double calc_phi_min = minparams[pid][c12->getSector() - 1][layer][0] + minparams[pid][c12->getSector() - 1][layer][1] * std::log(theta_DCr) 
-   + minparams[pid][c12->getSector() - 1][layer][2] * theta_DCr + minparams[pid][c12->getSector() - 1][layer][3] * theta_DCr * theta_DCr;
+ double calc_phi_min = minparams[pid][sector - 1][layer][0] + minparams[pid][sector - 1][layer][1] * std::log(theta_DCr) 
+   + minparams[pid][sector - 1][layer][2] * theta_DCr + minparams[pid][sector - 1][layer][3] * theta_DCr * theta_DCr;
  
- double calc_phi_max = maxparams[pid][c12->getSector() - 1][layer][0] + maxparams[pid][c12->getSector() - 1][layer][1] * std::log(theta_DCr)
-   + maxparams[pid][c12->getSector() - 1][layer][2] * theta_DCr + maxparams[pid][c12->getSector() - 1][layer][3] * theta_DCr * theta_DCr;
+ double calc_phi_max = maxparams[pid][sector - 1][layer][0] + maxparams[pid][sector - 1][layer][1] * std::log(theta_DCr)
+   + maxparams[pid][sector - 1][layer][2] * theta_DCr + maxparams[pid][sector - 1][layer][3] * theta_DCr * theta_DCr;
  
  return ((phi_DCr > calc_phi_min) && (phi_DCr < calc_phi_max));
     };
@@ -256,6 +252,11 @@ const auto maxparams = ((inbending && !outbending) ? maxparams_in : maxparams_ou
 
   private:
     Int_t _regionVal=chanser::THIS_INT_MAX2;
+    Int_t _fieldVal = chanser::THIS_INT_MAX2;
+    Array4D maxparams_in;
+    Array4D maxparams_out;
+    Array4D minparams_in;
+    Array4D minparams_out;
     
 
 

@@ -11,5 +11,6 @@
 #pragma link C++ class chanser::ZVertexCut+;
 #pragma link C++ class chanser::FiducialCutPCAL_uvw+;
 #pragma link C++ class chanser::DC_FiducialCut_ThetaPhi+;
+#pragma link C++ class chanser::DC_FiducialCut_XY+;
 
 #endif

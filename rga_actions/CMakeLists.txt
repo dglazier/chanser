@@ -11,9 +11,9 @@ include_directories(core)
 include_directories(tmva)
 include_directories(actions)
 
-ROOT_GENERATE_DICTIONARY(G__${CHANZER} ZVertexCut.h FiducialCutPCAL_uvw.h DC_FiducialCut_ThetaPhi.h LINKDEF RgaLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${CHANZER} ZVertexCut.h FiducialCutPCAL_uvw.h DC_FiducialCut_ThetaPhi.h DC_FiducialCut_XY.h LINKDEF RgaLinkDef.h)
 
-add_library(${CHANZER} SHARED ZVertexCut.cpp FiducialCutPCAL_uvw.cpp DC_FiducialCut_ThetaPhi.cpp G__${CHANZER}.cxx)
+add_library(${CHANZER} SHARED ZVertexCut.cpp FiducialCutPCAL_uvw.cpp DC_FiducialCut_ThetaPhi.cpp DC_FiducialCut_XY.cpp G__${CHANZER}.cxx)
 
 target_link_libraries(${CHANZER} -lClas12Banks)
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chanser)

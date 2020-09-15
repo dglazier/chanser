@@ -43,6 +43,14 @@ To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 
 ### DC Fiducial Cut (local X/Y variables): Robert
 
 
+In local XY coords a two parameter linear fit is used to cut the fiducial volume of the DC. The RG-A analysis note recommends using this cut on electrons for the inbending data and on all particles for the outbending data.
+To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 36 in the cut, respectively. The field parameter is called such that outbending == 1, inbending == -1 This cut is instantiated in your 'Create_xxx.C' file with:
+
+    ParticleCutsManager DC_FidCut{"DCFidCutsXY_R3", 0};
+    DC_FidCut.AddParticleCut("e-", new DC_FiducialCut_XY(36, 1));
+    FS->RegisterPostTopoAction(DC_FidCut);
+
+
 ### Quality Assurance: Richard
 
 ### Electron PCAL Min Energy Dep Cut: Adam
