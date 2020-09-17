@@ -17,7 +17,7 @@
   //pcm.AddParticleCut("e-",new EventBuilderCut());
   //pcm.AddParticleCut("proton",new EventBuilderCut());
   //pcm.AddParticleCut("pi+",new EventBuilderCut());
-  //pcm.AddParticleCut("pi-",dtcnew DeltaTimeCut(2));//Apply a Delta Time cut of 2ns
+  //pcm.AddParticleCut("pi-", new DeltaTimeCut(2));//Apply a Delta Time cut of 2ns
   // FS->RegisterPostTopoAction(pcm);
  
   ////Write to file for later processing
