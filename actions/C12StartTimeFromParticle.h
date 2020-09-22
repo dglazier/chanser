@@ -27,7 +27,7 @@ namespace chanser{
     void Reset() final{_timeZero=0;}
     Double_t withParticle(CLAS12Particle* p) const final{
       if(_timeZero==0) _timeZero=TimeZero(_fromTime->DeltaTime());
-      return _timeZero-p->Vertex().Z()/2.99792e+08*1E9;
+      return _timeZero+p->Vertex().Z()/2.99792e+08*1E9;
     }
 
     const TString GetName() const final {return TString("C12StartTimeFromParticle = ")+_timeName;}
