@@ -27,7 +27,6 @@ namespace chanser{
     void Reset() final{_timeZero=0;}
     Double_t withParticle(CLAS12Particle* p) const override{
       if(_timeZero==0) _timeZero=TimeZero(_fromTime->DeltaTime());
-      //return _timeZero;
       return _timeZero+p->Vertex().Z()/2.99792e+08*1E9;
     }
 
