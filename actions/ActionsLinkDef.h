@@ -10,6 +10,8 @@
 #pragma link C++ namespace chanser;
 #pragma link C++ class chanser::ParticleCutsManager+;
 #pragma link C++ class chanser::ParticleCuts+;
+#pragma link C++ class chanser::CLAS12ParticleCut+;
+#pragma link C++ class chanser::TwoParticleVertexCut+;
 #pragma link C++ class chanser::ParticleDataManager+;
 #pragma link C++ class chanser::ParticleData+;
 #pragma link C++ class chanser::ParticleOutEvent+;

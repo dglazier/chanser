@@ -1,5 +1,6 @@
 #include "ParticleCutsManager.h"
 #include "FinalState.h"
+#include "CLAS12ParticleCut.h"
 
 namespace chanser{
     
@@ -41,7 +42,10 @@ namespace chanser{
 	  }
 	  pcuts.AddParticle(_useableDefault.get(),particle);
 	}
-	else{ 
+	else{
+	  if(dynamic_cast<CLAS12ParticleCut*>(_pdgToCut[pdg].get())!=nullptr){
+	    dynamic_cast<CLAS12ParticleCut*>(_pdgToCut[pdg].get())->SetC12(dynamic_cast<CLAS12FinalState*>(fs));
+	  }
 	  pcuts.AddParticle(_pdgToCut[pdg].get(),particle);
 	}
 	  
