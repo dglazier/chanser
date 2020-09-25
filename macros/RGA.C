@@ -49,6 +49,52 @@ void RGA(CLAS12FinalState* FS){
   zVertex.AddParticleCut("e-", new ZVertexCut(-13,12));
   FS->RegisterPostKinAction(zVertex);
 
+  /*
+   * DC Fiducial cuts for inbending hadrons
+   * across three layers of the DC
+   */
+  ParticleCutsManager DCFidHadInbend{"DC_Fiducial_Hadron_Inbend", 0}
+  DCFidHadInbend.AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi(6, -1));
+  DCFidHadInbend.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(6, -1));
+  DCFidHadInbend.AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi(18, -1));
+  DCFidHadInbend.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(18, -1));
+1DC1FidHadInbend.AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi(36, -1));
+  DCFidHadInbend.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(36, -1));
+  FS->RegisterPostKinAction(DCFidHadInbend);
+
+  /*
+   * DC Fiducial cuts for inbending electrons
+   * across three layers of the DC
+   */
+  ParticleCutsManager DCFidElecInbend{"DC_Fiducial_Electron_Inbend", 0}
+  DCFidElecInbend.AddParticleCut("e-", new DC_FiducialCut_XY(6, -1));
+  DCFidElecInbend.AddParticleCut("e-", new DC_FiducialCut_XY(18, -1));
+  DCFidElecInbend.AddParticleCut("e-", new DC_FiducialCut_XY(36, -1));
+  FS->RegisterPostKinAction(DCFidElecInbend);
+
+  /*
+   * DC Fiducial cuts for outbending hadrons
+   * across three layers of the DC
+   */
+  ParticleCutsManager DCFidHadOutbend{"DC_Fiducial_Hadron_Outbend", 0}
+  DCFidHadOutbend.AddParticleCut("pi+", new DC_FiducialCut_XY(6, 1));
+  DCFidHadOutbend.AddParticleCut("pi-", new DC_FiducialCut_XY(6, 1));
+  DCFidHadOutbend.AddParticleCut("pi+", new DC_FiducialCut_XY(18, 1));
+  DCFidHadOutbend.AddParticleCut("pi-", new DC_FiducialCut_XY(18, 1));
+  DC1FidHadOutbend.AddParticleCut("pi+", new DC_FiducialCut_XY(36, 1));
+  DCFidHadOutbend.AddParticleCut("pi-", new DC_FiducialCut_XY(36, 1));
+  FS->RegisterPostKinAction(DCFidHadOutbend);
+
+  /*
+   * DC Fiducial cuts for outbending electrons
+   * across three layers of the DC
+   */
+  ParticleCutsManager DCFidElecOutbend{"DC_Fiducial_Electron_Outbend", 0}
+  DCFidElecOutbend.AddParticleCut("e-", new DC_FiducialCut_XY(6, 1));
+  DCFidElecOutbend.AddParticleCut("e-", new DC_FiducialCut_XY(18, 1));
+  DCFidElecOutbend.AddParticleCut("e-", new DC_FiducialCut_XY(36, 1));
+  FS->RegisterPostKinAction(DCFidElecOutbend);
+
   FS->WriteToFile("eep_config.root");
   FS->Print();
 }
