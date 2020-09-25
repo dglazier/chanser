@@ -23,9 +23,15 @@ namespace chanser{
     
     Bool_t ParticleCut(const BaseParticle* part) const noexcept override{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
-      //auto c12=p->CLAS12(); //if you require other DST data
-      // return /* c12p->XXX <_cutVal*/ ?  kTRUE :  kFALSE;
-      return kTRUE;
+      auto c12=c12p->CLAS12(); //if you require other DST data
+      auto c12p_el = static_cast<const chanser::CLAS12Particle*>(_cutAgainst);
+      auto c12el = c12p_el->CLAS12();
+
+
+      auto Had_Vz = c12->par()->getVz();
+      auto El_Vz = c12el->par()->getVz();
+      return  (TMath::Abs(Had_Vz-El_Vz) < _cutVal) ?  kTRUE :  kFALSE;
+      
     }
       
     
