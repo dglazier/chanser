@@ -95,6 +95,37 @@ void RGA(CLAS12FinalState* FS){
   DCFidElecOutbend.AddParticleCut("e-", new DC_FiducialCut_XY(36, 1));
   FS->RegisterPostKinAction(DCFidElecOutbend);
 
+  /*
+   * Differnce between hadron and electron vertex difference cut
+   */
+  ParticleCutsManager pcmVertexDiff{"ElHadVertexDiff", 0};
+  pcmVertexDiff.AddParticleCut("pi-", new TwoParticleVertexCut("Electron", 20));
+  pcmVertexDiff.AddParticleCut("pi+", new TwoParticleVertexCut("Electron", 20))
+  FS->RegisterPostTopoAction(pcmVertexDiff);
+
+  /*
+   * Hadron chi2Pid cuts (standard)
+   */
+  ParticleCutsManager pcmChi2Pid{"HadronChi2Pid", 0};
+  pcmChi2Pid.AddParticleCut("pi-", new HadronChi2PID(1));
+  pcmChi2Pid.AddParticleCut("pi+", new HadronChi2PID(1));
+  FS->RegisterPostTopoAction(pcmChi2Pid);
+
+  /*
+   * Hadron chi2Pid cuts (standard)
+   */
+  ParticleCutsManager pcmChi2Pid{"HadronChi2Pid", 0};
+  pcmChi2Pid.AddParticleCut("pi-", new HadronChi2PID(2));
+  pcmChi2Pid.AddParticleCut("pi+", new HadronChi2PID(2));
+  FS->RegisterPostTopoAction(pcmChi2Pid);
+
+  /*
+   * Photon identification refinement 
+   */
+  ParticleCutsManager pcmPhotonRef{"PhotonRef", 0};
+  pcmPhotonRef.AddParticleCut("gamma", new PhotonIDRefinementCut(0.1));
+  FS->RegisterPostTopoAction(pcmPhotonRef);
+
   FS->WriteToFile("eep_config.root");
   FS->Print();
 }
