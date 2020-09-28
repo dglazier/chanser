@@ -60,3 +60,5 @@ To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 
 ### Vertex difference between electrons and hadrons cut: Robert
 
 ### chi2PID from event builder cut: Robert
+
+### Cut on the beta value from the calorimeter: Robert
