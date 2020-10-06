@@ -157,7 +157,7 @@ and/or
       #in Pi4.cpp
 
 
-If it anytime you decide that you do not want to keep this event combination you can set _rejectEvent=kTRUE;
+If it anytime you decide that you do not want to keep this event combination you can call RejectEvent(); and return;
 
 #### 2) Define overall reaction kinematics and other general quantities
 
@@ -193,9 +193,9 @@ Here the kinematic calculator is used, it can also be used for resonance decay k
 
      # in Pi4.cpp
      
-Again If it anytime you decide that you do not want to keep this event combination you can set _rejectEvent=kTRUE;
+Again If it anytime you decide that you do not want to keep this event combination you can call RejectEvent(); and exit the function
 
-      if(TD->MesonMass>5) _rejectEvent=kTRUE; //will not save
+      if(TD->MesonMass>5) {RejectEvent(); return;} //will not save
       
      # in Pi4.cpp
 

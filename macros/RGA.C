@@ -58,7 +58,8 @@ void RGA(CLAS12FinalState* FS){
   DCFidHadInbend.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(6, -1));
   DCFidHadInbend.AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi(18, -1));
   DCFidHadInbend.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(18, -1));
-1DC1FidHadInbend.AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi(36, -1));
+  DCFidHadInbend.AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi(36, -1));
+
   DCFidHadInbend.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(36, -1));
   FS->RegisterPostKinAction(DCFidHadInbend);
 

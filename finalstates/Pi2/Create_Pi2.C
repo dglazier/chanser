@@ -8,7 +8,7 @@
   FS->UseOutputRootTree();
   //FS->UseOutputHipoNtuple();
 
-  FS->SetStartTimePeak(43.9);
+  // FS->SetStartTimePeak(43.9);
 
   
   //Truth Matching, before ParticleData so can add to that tree
@@ -17,8 +17,8 @@
   
   //  Make particle trees first in case want to add cut flags
   ParticleDataManager pdm{"particle",1};
-  // pdm.SetParticleOut(new MyParticleOutEvent);
-  pdm.SetParticleOut("e-",new MVA_El_Data);
+  pdm.SetParticleOut(new CLAS12ParticleOutEvent0);
+  //pdm.SetParticleOut("e-",new MVA_El_Data);
   FS->RegisterPostKinAction(pdm);
 
   
@@ -51,6 +51,7 @@
  
  
   ///StartTime
+  //StartTimeAction st("StartTime",new C12StartTimeFromHighMomentum("Electron:Pip:Pim"));
   StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
   FS->RegisterPreTopoAction(st);  //PRETOPO
 
@@ -61,7 +62,7 @@
   FS->RegisterPreTopoAction(pcorrm); //PRETOPO
 
   ////Write to file for later processing
-  FS->WriteToFile("Pi2_Masked.root");
+  FS->WriteToFile("Pi_STElectronpZ.root");
 
   FS->Print();
   //Delete the final state rather than let ROOT try

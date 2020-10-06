@@ -53,7 +53,7 @@ namespace chanser{
     Float_t _startTime{0};
   
     Float_t _bunchTime = 2.0080160*2;
-    Float_t _sTimePeak =   44.125;
+    Float_t _sTimePeak =   44.205;
     
     ClassDefOverride(chanser::CLAS12FinalState,1); 
   };
