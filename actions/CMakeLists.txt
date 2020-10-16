@@ -6,6 +6,7 @@ set (CHANSERBASE $ENV{CHANSER})
 
 
 include_directories(${CLAS12ROOT}/Clas12Banks)
+include_directories(${CLAS12ROOT}/Clas12Root)
 include_directories(${CLAS12ROOT}/hipo4)
 include_directories(core)
 include_directories(tmva)
