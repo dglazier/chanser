@@ -53,6 +53,8 @@ namespace chanser{
     const TString& BaseOutDir(){return _baseOutDir;};
     void SetBaseOutDir(const TString& name){_baseOutDir=name;}
     void MakeBaseOutputDir();
+    //force using truth because of bug with proof
+    void UseTruth(bool useTruth){_useTruthProof=useTruth;};
     
   private :
       
@@ -65,6 +67,8 @@ namespace chanser{
       
       
     TString _baseOutDir;
+
+    bool _useTruthProof{false};
     
     ClassDef(chanser::FinalStateManager,2); //class EventParticles
       

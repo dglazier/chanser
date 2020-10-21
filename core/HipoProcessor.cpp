@@ -52,7 +52,7 @@ namespace chanser{
     //give the hipor data reader to FinalStateManager
     //Data files are opened in Notify (see also HipoSelector)
     _fsm.LoadData(&_hipo);
-  
+
     //now initiliase all final states
     auto listFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
 
@@ -63,7 +63,6 @@ namespace chanser{
       _fsm.LoadFinalState(listFinalStates->At(ifs)->GetName(),listFinalStates->At(ifs)->GetTitle(),workerName);
     }
 
-    
     //Get the output directory
     auto bDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")));
     _fsm.SetBaseOutDir(bDir->GetTitle());
@@ -208,6 +207,14 @@ namespace chanser{
      
       _fsm.GetEventParticles().SetMaxParticles(maxParts);
     }
+
+     /////////////////////////////////////////////////
+    ///Use truth matching
+    opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_TRUTHMATCH"));
+    if(opt!=nullptr){
+      _fsm.UseTruth(true);
+    }
+
     /////////////////////////////////////////////////
     /////////////////////////////////////////////////
     ///Write filtered hipo output file

@@ -24,8 +24,8 @@ namespace chanser{
     fs->SetEventParticles(&_eventParts); //link to data
     fs->SetEventInfo(_data->GetEventInfo());
     if(_data->IsSim()){
-      fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
-      fs->SetHasTruth();
+       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
+       fs->SetHasTruth();
     }
 
     //functions otherwise handled by constructor
@@ -59,6 +59,8 @@ namespace chanser{
     _finalStates.push_back(std::move(fs));//take a copy
     return kTRUE;
   }
+
+
   ///////////////////////////////////////////////////////////////
   ///Process all events in the hipo file
   void  FinalStateManager::ProcessAll(Long64_t Nmax){
@@ -92,6 +94,13 @@ namespace chanser{
   void  FinalStateManager::Init(){
     MakeBaseOutputDir();
     
+    if(_useTruthProof){
+      for(const auto& fs : _finalStates){
+	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
+	fs->SetHasTruth();
+      }
+    }
+
     if(_data->IsLund()){ //if reading LUND events only
       for(const auto& fs:_finalStates)
 	fs->SetGenerated();
