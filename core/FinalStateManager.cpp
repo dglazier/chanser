@@ -23,10 +23,10 @@ namespace chanser{
     cout<<"FinalStateManager::LoadFinalState  "<<_data<<endl;
     fs->SetEventParticles(&_eventParts); //link to data
     fs->SetEventInfo(_data->GetEventInfo());
-    if(_data->IsSim()){
+    /*if(_data->IsSim()){
       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
       fs->SetHasTruth();
-    }
+      }*/
 
     //functions otherwise handled by constructor
     //The ROOT streamer is called after the constructor
@@ -51,10 +51,10 @@ namespace chanser{
   Bool_t  FinalStateManager::LoadFinalState(finalstate_uptr fs){
     fs->SetEventParticles(&_eventParts);
     fs->SetEventInfo(_data->GetEventInfo());
-    if(_data->IsSim()){
+    /*if(_data->IsSim()){
       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
       fs->SetHasTruth();
-    }
+      }*/
     _rawFinalStates.push_back(fs.get());
     _finalStates.push_back(std::move(fs));//take a copy
     return kTRUE;
@@ -93,11 +93,19 @@ namespace chanser{
     MakeBaseOutputDir();
     
     if(_data->IsLund()){ //if reading LUND events only
-      for(const auto& fs:_finalStates)
+      for(const auto& fs : _finalStates)
 	fs->SetGenerated();
     }
     
-    for(const auto& fs:_finalStates){
+    else if(_data->IsSim()){ //if simulated data and reading reconstructed
+      for(const auto& fs : _finalStates){
+	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
+	fs->SetHasTruth();
+      }
+    }
+    
+    
+    for(const auto& fs : _finalStates){
       fs->Init(_baseOutDir);
       fs->Print();
     }
