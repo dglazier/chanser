@@ -20,7 +20,7 @@ namespace chanser{
     
     //current hack for finding if simulated data
     //Only works if run number from gemc ==11  !!!!
-    if(clas12::clas12reader::readQuickRunConfig(filename.Data())==11){
+    if(clas12::clas12reader::readQuickRunConfig(_c12->getFilename())==11){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
     

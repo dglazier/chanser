@@ -63,7 +63,8 @@ namespace chanser{
     std::unique_ptr<TNamed> _baseDir={nullptr};//!
 
     Bool_t _boss{kFALSE};//!
-
+    Bool_t _FSNotInitialsed{kTRUE};//!
+ 
     ClassDefOverride(chanser::HipoProcessor,0);
 
   };

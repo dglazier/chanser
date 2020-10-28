@@ -91,19 +91,26 @@ namespace chanser{
   ///////////////////////////////////////////////////////////////
   void  FinalStateManager::Init(){
     MakeBaseOutputDir();
+    std::cout<<" FinalStateManager::Init()"<<std::endl;
     
+       
     if(_data->IsLund()){ //if reading LUND events only
       for(const auto& fs : _finalStates)
 	fs->SetGenerated();
     }
     
     else if(_data->IsSim()){ //if simulated data and reading reconstructed
+      std::cout<<" FinalStateManager::Init() Simulated data, allow truth"<<std::endl;
       for(const auto& fs : _finalStates){
 	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
 	fs->SetHasTruth();
       }
     }
-    
+    else {
+      for(const auto& fs : _finalStates){
+	fs->SetHasntTruth();
+      }
+    }
     
     for(const auto& fs : _finalStates){
       fs->Init(_baseOutDir);
@@ -111,6 +118,7 @@ namespace chanser{
     }
     
   }
+
   //////////////////////////////////////////////////////////////
   void  FinalStateManager::MakeBaseOutputDir(){
     if(!_baseOutDir.BeginsWith('/'))

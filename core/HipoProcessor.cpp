@@ -71,15 +71,23 @@ namespace chanser{
     //read options 
     ApplyOptions();
     
-    _fsm.Init();
+    //_fsm.Init();
      
   }
   ////////////////////////////////////////////////
   Bool_t HipoProcessor::Notify(){
+    HipoSelector::Notify();
+    
     cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
     
     //This function is called whenever there is a new file
     _hipo.SetReader(_c12.get()); //use it to set the reader ptr
+
+    if(_FSNotInitialsed==kTRUE){
+      _fsm.Init();
+      _FSNotInitialsed=kFALSE;
+    }
+    
     return kTRUE;
   }
 
