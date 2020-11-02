@@ -30,6 +30,7 @@ namespace chanser{
     virtual void End(){}; //end of run
     virtual void  Configure(FinalState* fs){};//run initialisation
     virtual void  PostConfigure(FinalState* fs){}; //post initialisation (access other actions)
+    virtual void  ChangeRun(){}; //for updating run dependent stuff
 
     virtual void PrintAction(){std::cout<<"ActionManager"<<std::endl;} //report exaclty what this class does
       

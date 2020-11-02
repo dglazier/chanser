@@ -35,14 +35,15 @@ namespace chanser{
     void InitDataEvent() override{ _passCut=0; }
     Bool_t Execute(UInt_t ti)  override{
       //check cut for topology number ti
-      _passCut=_particleCuts[ti].PassCuts();
-      return _forReal ? _passCut==_particleCuts[ti].NParticles() : kTRUE;
+      //Pass cut if all particles pass
+      _passCut=_particleCuts[ti].PassCuts()==_particleCuts[ti].NParticles();
+      return _forReal ? _passCut : kTRUE;
     }
       
   
     void Configure(FinalState* fs) override;
     void PostConfigure(FinalState* fs) override;
-      
+    void ChangeRun() override;
    
     void AddParticleCut(TString type,BaseCut* cut){
       if(TDatabasePDG::Instance()->GetParticle(type)){
@@ -53,7 +54,8 @@ namespace chanser{
     void AddParticleCut(Int_t type,BaseCut* cut){
       Int_t pdg=0;
       if(TDatabasePDG::Instance()->GetParticle(type))
-    	pdg=TDatabasePDG::Instance()->GetParticle(type)->PdgCode();
+	//	pdg=TDatabasePDG::Instance()->GetParticle(type)->PdgCode();
+	pdg=type;
       _pdgToCut[type]=basecut_uptr{cut};
       //cut now belongs to me, do not delete it elsewhere
     }

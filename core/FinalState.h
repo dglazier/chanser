@@ -61,6 +61,9 @@ namespace chanser{
       
     virtual void Init(const TString& baseDir); //takes name of output dir
 
+    void ChangeRun();//for run dependent stuff
+
+    
     virtual void Define(){};
       
     void AutoIter();
@@ -275,7 +278,7 @@ namespace chanser{
     Short_t _ownsActions=1;//!
     Short_t _goodEvent=0;//!
     
-    ClassDefOverride(chanser::FinalState,1); //class FinalState
+    ClassDefOverride(chanser::FinalState,2); //class FinalState
   };
 
  

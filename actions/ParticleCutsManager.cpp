@@ -1,6 +1,6 @@
 #include "ParticleCutsManager.h"
 #include "FinalState.h"
-#include "CLAS12ParticleCut.h"
+#include "CLAS12Base.h"
 
 namespace chanser{
     
@@ -42,9 +42,9 @@ namespace chanser{
 	  }
 	  pcuts.AddParticle(_useableDefault.get(),particle);
 	}
-	else{
-	  if(dynamic_cast<CLAS12ParticleCut*>(_pdgToCut[pdg].get())!=nullptr){
-	    dynamic_cast<CLAS12ParticleCut*>(_pdgToCut[pdg].get())->SetC12(dynamic_cast<CLAS12FinalState*>(fs));
+	else{//special case cut might depend on clas12reader information
+	  if(dynamic_cast<CLAS12Base*>(_pdgToCut[pdg].get())!=nullptr){
+	    dynamic_cast<CLAS12Base*>(_pdgToCut[pdg].get())->SetC12(dynamic_cast<CLAS12FinalState*>(fs));
 	  }
 	  pcuts.AddParticle(_pdgToCut[pdg].get(),particle);
 	}
@@ -55,6 +55,15 @@ namespace chanser{
 
     }
    }
+  /////////////////////////////////////////////////////////////////
+  ///update any run dependent parameters
+  void ParticleCutsManager::ChangeRun(){
+    for(auto& cut:_pdgToCut){
+      CLAS12Base* c12Cut=dynamic_cast<CLAS12Base*>(cut.second.get());
+      if(c12Cut!=nullptr)
+	c12Cut->ChangeRun();
+    }
+  }
   /////////////////////////////////////////////////////////////////
   void ParticleCutsManager::PostConfigure(FinalState* fs){
     //can now add branches to particle data trees

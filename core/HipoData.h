@@ -76,7 +76,9 @@ namespace chanser{
 
     RunInfo _runInfo;
     EventInfo _eventInfo;
-
+    
+    clas12::clas12databases _c12db;
+ 
     std::unique_ptr<clas12::clas12writer> _myWriter; //if created here
 
   };

@@ -3,6 +3,7 @@
 #include <TSystem.h>
 #include <TBenchmark.h>
 #include <iostream>
+#include "HipoData.h"
 
 namespace chanser{
 
@@ -64,7 +65,10 @@ namespace chanser{
   void  FinalStateManager::ProcessAll(Long64_t Nmax){
     
     Init();
-
+    // run and final states now initialised
+    // update final states run dependent information
+    Notify();
+    
     gBenchmark->Start("FinalStateManager::ProcessAll");
 
     //read event
@@ -118,7 +122,20 @@ namespace chanser{
     }
     
   }
-
+  ///////////////////////////////////////////////////////////////
+  ///Flag we have a new run
+  ///We do not actually want to do anything until file is opened
+  void  FinalStateManager::Notify(){
+    _changeRun=true;
+  }
+  ///////////////////////////////////////////////////////////////
+  ///For run dependent stuff
+  void  FinalStateManager::ChangeRun(){
+    for(const auto& fs : _finalStates){
+      fs->ChangeRun();
+    }
+    _changeRun=false; //don't call again until anothe Notify
+  }
   //////////////////////////////////////////////////////////////
   void  FinalStateManager::MakeBaseOutputDir(){
     if(!_baseOutDir.BeginsWith('/'))
@@ -131,8 +148,19 @@ namespace chanser{
   ///Process event over all final states
   void   FinalStateManager::ProcessEvent(){
 
+    
     auto eventTopo = _data->eventPids();
     Bool_t doneRead=kFALSE;
+    
+    //If Notify is called when a new file is opened, _changeRun will be true
+    if(_changeRun==true){
+      //normally event is only read if FinalState requires it
+      //in case we have a new run just read the event now
+      _data->ReadEvent();
+      // doneRead=kTRUE;
+      ChangeRun();
+    }
+ 
     //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
@@ -145,7 +173,8 @@ namespace chanser{
       if(!doneRead){ //only read one per event
 	//got a valid event, read all data
 	_data->ReadEvent();
-	//std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
+	doneRead=kTRUE;
+ 	//std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
 	//organise the particle vectors for the event
 	if(!_eventParts.ReadEvent(_data->GetParticles()))
 	  break; //something wrong with event disegard it

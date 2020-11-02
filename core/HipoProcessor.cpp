@@ -87,6 +87,10 @@ namespace chanser{
       _fsm.Init();
       _FSNotInitialsed=kFALSE;
     }
+
+    // run and final states now initialised
+    // update final states run dependent information
+    _fsm.Notify();
     
     return kTRUE;
   }

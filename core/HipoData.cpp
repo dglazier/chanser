@@ -23,10 +23,15 @@ namespace chanser{
     if(clas12::clas12reader::readQuickRunConfig(_c12->getFilename())==11){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
-    
+
+    //On PROOF databases will be set from HipoSelector to HipoChain db
+    if(&(_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
+
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
+    
     if( _myWriter.get()&& (_c12!=nullptr) ) _myWriter->assignReader(*_c12);
+
     return kTRUE;
   }
   /////////////////////////////////////////////////////////////////////

@@ -163,6 +163,25 @@ namespace chanser{
       
   }
   ///////////////////////////////////////////////////////////////
+  void FinalState::ChangeRun(){
+    ///////\\\\\\\\
+    //run dependent state
+    for(auto pt : _preTopoAction) {
+      //Let action manager link to this final state
+      pt->ChangeRun();	
+    }
+   for(auto pt : _postTopoAction) {
+      //Let action manager link to this final state
+      pt->ChangeRun();	
+    }
+    for(auto pt : _postKinAction) {
+      //Let action manager link to this final state
+      pt->ChangeRun();	
+    }
+
+
+  }
+  ///////////////////////////////////////////////////////////////
   void  FinalState::PrepareOutEvent(){
       _outEvent.TakeReal(TreeDataFactory());
       SetOutEvent(_outEvent.GetReal());
