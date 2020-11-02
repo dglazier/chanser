@@ -19,14 +19,25 @@ namespace chanser{
     FiducialCutPCAL_uvw(Float_t cut){_cutVal=cut;}
       
       
+    /* Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override{ */
+    /*   auto c12p = static_cast<const chanser::CLAS12Particle*>(part); */
+    /*   auto c12=c12p->CLAS12(); //if you require other DST data */
+    /*   double PCalLU = c12->cal(clas12::PCAL)->getLu(); */
+    /*   double PCalLV = c12->cal(clas12::PCAL)->getLv(); */
+    /*   double PCalLW = c12->cal(clas12::PCAL)->getLw(); */
+    /*   if(PCalLU>_cutVal && PCalLV>_cutVal && PCalLW>_cutVal) return true; */
+    /*   return false; */
+    /* } */
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12(); //if you require other DST data
-      double PCalLU = c12->cal(1)->getLu();
-      double PCalLV = c12->cal(1)->getLv();
-      double PCalLW = c12->cal(1)->getLw();
-      if(PCalLU>_cutVal && PCalLV>_cutVal && PCalLW>_cutVal) return true;
-      return false;
+      double PCalLU = c12->cal(clas12::PCAL)->getLu();
+      if(PCalLU<_cutVal)return false;
+      double PCalLV = c12->cal(clas12::PCAL)->getLv();
+      if(PCalLV<_cutVal)return false;
+      double PCalLW = c12->cal(clas12::PCAL)->getLw();
+      if(PCalLW<_cutVal)return false;
+      return true;
     }
       
     

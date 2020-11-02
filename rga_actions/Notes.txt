@@ -1,0 +1,30 @@
+Please complete
+//////////////////////////////////////////////////////////////
+///
+///Class:		
+///Description:
+///          Something meaningful, with parameters read from DBs etc
+///Author : 
+
+Standardise naming
+
+FiducialCut_PCAL_uvw
+FiducialCut_DC_XY
+Cut_ZVertex
+Cut_RefinePhotonID
+Cut_PionChi2Pid (HadronChi2PID)
+
+FiducialCut_PCAL_uvw
+	Slight rewrite for efficiency (I don't observe any spped up though)
+
+FiducialCut_DC_XY
+	Significant rewrite to simplify code, but reducing lines
+Cut_RefinePhotonID
+	Where to get beta from ?
+	c12->par()->getBeta() uses EBStartTime
+	c12->par()->getFTBBeta() uses EBFTBStartTime
+	part->Beta() uses whatever StartTime user defined
+	Need to see exactly how EB calculates time/beta
+	Also need to update chanser starttime with CCDB parameters
+Cut_ZVertex
+	Remove if

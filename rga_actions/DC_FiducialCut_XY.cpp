@@ -2,11 +2,62 @@
 
 namespace chanser{
 
-  DC_FiducialCut_XY::DC_FiducialCut_XY(Int_t layer, Int_t field)
+  void DC_FiducialCut_XY::ChangeRun()
   {
-    _regionVal = layer;
-    _fieldVal = field;
-    maxparams_in = 
+    if(GetCLAS12()==nullptr) return;
+    _fieldVal =  GetCLAS12()->runconfig()->getTorus();
+    bool inbending = (_fieldVal==-1);
+
+    //these should come from database
+    //For now copy appropriate values
+    _minparams = (inbending ? _minparams_in : _minparams_out);
+    _maxparams = (inbending ? _maxparams_in : _maxparams_out);
+    std::cout<<"DC_FiducialCut_XY::ChangeRun() "<<_minparams.size()<<" "<<_minparams_in.size()<<" "<<_minparams_out.size()<<std::endl;
+  }
+  
+  DC_FiducialCut_XY::DC_FiducialCut_XY(TString pid,Int_t layer)
+  {
+    //  _regionVal = layer;
+    // _fieldVal = field;
+    auto pdg=TDatabasePDG::Instance()->GetParticle(pid)->PdgCode();
+    if(pdg == 11) _partPidVal=0;
+    else if (pdg==2212) _partPidVal=1;
+    else if (pdg==211) _partPidVal= 2;
+    else if (pdg==-211) _partPidVal = 3;
+    else if (pdg==321) _partPidVal=4;
+    else if (pdg==-321) _partPidVal=5;
+    else{
+      std::cerr<<"DC_FiducialCut_XY, invalid layer PID "<<pid<<" "<<pdg<<std::endl;
+      exit(0);
+    }
+    
+
+    
+    if(layer==1){
+      _regionVal=6;
+      _layer = layer-1;
+    }
+    else if(layer==2){
+      _regionVal=18;
+      _layer=layer-1;
+    }
+    else if(layer==3){
+      _regionVal=36;
+     _layer=layer-1;
+    }
+    else{
+      std::cerr<<"DC_FiducialCut_XY, invalid layer should be 1,2,3 "<<std::endl;
+      exit(0);
+    }
+
+    //Save all the required cos and sin values
+    std::vector<double> phiRotation={0,-60*TMath::DegToRad(),-120*TMath::DegToRad(),-180*TMath::DegToRad(), 120*TMath::DegToRad(), 60*TMath::DegToRad()};
+    for(const auto& phi:phiRotation){
+      _cosPhiRot.push_back(std::cos(phi));
+      _sinPhiRot.push_back(std::sin(phi));
+    }
+    
+    _maxparams_in = 
       {{{{-14.563, 0.60032},{-19.6768, 0.58729},{-22.2531, 0.544896}},
 	{{-12.7486, 0.587631},{-18.8093, 0.571584},{-19.077, 0.519895}},
 	{{-11.3481, 0.536385},{-18.8912, 0.58099},{-18.8584, 0.515956}},
@@ -24,7 +75,7 @@ namespace chanser{
        {{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}},
 	{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}}}};
     
-    minparams_in = 
+    _minparams_in = 
       {{{{12.2692, -0.583057},{17.6233, -0.605722},{19.7018, -0.518429}},
 	{{12.1191, -0.582662},{16.8692, -0.56719},{20.9153, -0.534871}},
 	{{11.4562, -0.53549},{19.3201, -0.590815},{20.1025, -0.511234}},
@@ -42,7 +93,7 @@ namespace chanser{
        {{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}},
 	{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{0, 0}}}};
     
-    maxparams_out = {
+    _maxparams_out = {
       {{{-9.86221, 0.565985},{-16.4397, 0.569087},{-29.7787, 0.586842}},
        {{-10.2065, 0.565541},{-16.5554, 0.571394},{-28.933, 0.582078}},
        {{-8.48034, 0.550706},{-16.4397, 0.569087},{-27.1037, 0.563767}},
@@ -81,7 +132,7 @@ namespace chanser{
        {{-5.14766, 0.53037},{-14.1986, 0.561504},{-31.7548, 0.60233}}}};
     
     
-    minparams_out = {
+    _minparams_out = {
       {{{8.07831, -0.548881},{16.4382, -0.569075},{33.7768, -0.607402}},
        {{8.51057, -0.551773},{16.7782, -0.571381},{32.2613, -0.600686}},
        {{8.5232, -0.552628},{16.4274, -0.56775},{31.1516, -0.584708}},

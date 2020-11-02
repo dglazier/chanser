@@ -7,27 +7,32 @@
 #pragma once
 
 #include "BaseCut.h"
+#include "CLAS12Base.h"
 
 namespace chanser{
 
 
-  class ZVertexCut : public chanser::BaseCut{
+  class ZVertexCut : public BaseCut, public CLAS12Base{
       
   public:
     ZVertexCut()=default; // must have default constructor
     
-    ZVertexCut(Float_t cutLow, Float_t cutHigh){
+    /* ZVertexCut(Float_t cutLow, Float_t cutHigh){
       _cutValLow=cutLow;
       _cutValHigh=cutHigh;
-    }
+      }*/
       
-      
+    void ChangeRun() final;
+  
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12();
+      
+      if(c12->getRegion()!=clas12::FD) return true; //cut only applies to FD
+  
       Float_t vz = c12->par()->getVz();
-      if(vz>_cutValLow && vz<_cutValHigh) return true;
-      return false;
+      
+      return (vz>_cutValLow && vz<_cutValHigh) ? kTRUE : kFALSE;
     }
       
     

@@ -14,5 +14,6 @@
 #pragma link C++ class chanser::DC_FiducialCut_XY+;
 #pragma link C++ class chanser::HadronChi2PID+;
 #pragma link C++ class chanser::PhotonIDRefinementCut+;
+#pragma link C++ class chanser::Cut_RefineElectronID+;
 
 #endif

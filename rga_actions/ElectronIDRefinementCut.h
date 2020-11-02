@@ -2,7 +2,8 @@
 ///
 ///Class:		
 ///Description:
-///     my own derived particle cut
+///Author : 
+   
 
 #pragma once
 
