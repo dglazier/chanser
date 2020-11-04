@@ -3,7 +3,9 @@
 ///Class:		MaskRadPhotons
 ///Description:
 ///    Class responsible for removing photons radiated from electrons
-///
+/// and correcting the electron momentum.
+///Author:
+///     Richard Tyson
 
 #pragma once
 
