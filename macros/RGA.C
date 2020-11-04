@@ -10,22 +10,22 @@ void RGA(CLAS12FinalState* FS){
    * Loose (9cm) cut on PCAL Fiducial region, applied to electrons. 
    */
   auto fc_pcal_loose = new ParticleCutsManager{"RGA_PCALFiducialLoose",0};
-  fc_pcal_loose->AddParticleCut("e-", new FiducialCutPCAL_uvw(9));
-  fc_pcal_loose->AddParticleCut("gamma", new FiducialCutPCAL_uvw(9));
+  fc_pcal_loose->AddParticleCut("e-", new FiducialCut_PCAL_uvw(9));
+  fc_pcal_loose->AddParticleCut("gamma", new FiducialCut_PCAL_uvw(9));
   FS->RegisterPostTopoAction(*fc_pcal_loose);
   /*
    * Medium (14cm) cut on PCAL Fiducial region, applied to electrons. 
    */
   auto fc_pcal_med = new ParticleCutsManager{"RGA_PCALFiducialMedium",0};
-  fc_pcal_med->AddParticleCut("e-", new FiducialCutPCAL_uvw(14));
-  fc_pcal_med->AddParticleCut("gamma", new FiducialCutPCAL_uvw(14));
+  fc_pcal_med->AddParticleCut("e-", new FiducialCut_PCAL_uvw(14));
+  fc_pcal_med->AddParticleCut("gamma", new FiducialCut_PCAL_uvw(14));
   FS->RegisterPostTopoAction(*fc_pcal_med);
   /*
    * Tight (19cm) cut on PCAL Fiducial region, applied to electrons. 
    */
   auto fc_pcal_tight = new ParticleCutsManager{"RGA_PCALFiducialTight",0};
-  fc_pcal_tight->AddParticleCut("e-", new FiducialCutPCAL_uvw(19));
-  fc_pcal_tight->AddParticleCut("gamma", new FiducialCutPCAL_uvw(19));
+  fc_pcal_tight->AddParticleCut("e-", new FiducialCut_PCAL_uvw(19));
+  fc_pcal_tight->AddParticleCut("gamma", new FiducialCut_PCAL_uvw(19));
   FS->RegisterPostTopoAction(*fc_pcal_tight);
 
   /*
@@ -34,7 +34,7 @@ void RGA(CLAS12FinalState* FS){
    * -13, 12 for inbending
    */
   auto zVertex = new ParticleCutsManager {"RGA_elZVertex",0};
-  zVertex->AddParticleCut("e-", new ZVertexCut());
+  zVertex->AddParticleCut("e-", new Cut_ZVertex());
   FS->RegisterPostTopoAction(*zVertex);
   /*
    * Difference between hadron and electron vertex difference cut
