@@ -20,6 +20,7 @@
 #pragma link C++ class chanser::CLAS12ParticleOutEvent0+;
 #pragma link C++ class chanser::CLAS12SimPartOutEvent+;
 #pragma link C++ class chanser::StartTimeAction+;
+#pragma link C++ class chanser::C12StartTimeFromParticle+;
 #pragma link C++ class chanser::ParticleCorrectionManager+;
 #pragma link C++ class chanser::ParticleCorrection+;
 #pragma link C++ class chanser::FTel_pol4_ECorrection+;
