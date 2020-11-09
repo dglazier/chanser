@@ -26,12 +26,6 @@ namespace chanser{
       CLAS12Base::SetC12(c12);
       _fromTime=static_cast<CLAS12Particle*>(c12->GetParticle(_timeName));
     }
-    /*void SetC12(CLAS12FinalState* c12) override{
-      _c12fs=c12;
-      _fromTime=static_cast<CLAS12Particle*>(_c12fs->GetParticle(_timeName));
-      _bunchTime=_c12fs->BunchTime();
-      _sTimePeak=_c12fs->STimePeak();
-      }*/
     void Reset() final{_timeZero=0;}
     Double_t withParticle(CLAS12Particle* p) const override{
      
@@ -104,19 +98,23 @@ namespace chanser{
     void SetC12(CLAS12FinalState* c12) override;
     
     Double_t withParticle(CLAS12Particle* p) const final{
-      //Find the highest momentum particle
-      _fastest.SetXYZT(0,0,0,0);
-      CLAS12Particle* fastptr={nullptr};
-      for(auto* phigh : _possibleParticle){
-	if( phigh->P4().P() > _fastest.P()){
-	  _fastest=phigh->P4();
-	  fastptr=phigh;
+
+      if(_timeZero==0) {
+	//Find the highest momentum particle
+	_fastest.SetXYZT(0,0,0,0);
+	CLAS12Particle* fastptr={nullptr};
+	for(auto* phigh : _possibleParticle){
+	  if( phigh->P4().P() > _fastest.P()){
+	    _fastest=phigh->P4();
+	    fastptr=phigh;
+	  }
 	}
+	//find the start time using the highest momentum particle and p
+	_timeZero=TimeZero(fastptr->DeltaTime());
       }
-      //find the start time using the highest momentum particle and p
-      if(_timeZero==0) _timeZero=TimeZero(fastptr->DeltaTime());
-      return _timeZero - p->Vertex().Z()/2.99792e+08*1E9;
+      return _timeZero;
     }
+    
     const TString GetName() const override {return TString("C12StartTimeFromHighMomentum = ") + TimeParticeName();}
 
   private :
