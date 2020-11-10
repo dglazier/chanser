@@ -99,8 +99,10 @@ namespace chanser{
     
        
     if(_data->IsLund()){ //if reading LUND events only
-      for(const auto& fs : _finalStates)
+      for(const auto& fs : _finalStates){
+	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
 	fs->SetGenerated();
+      }
     }
     
     else if(_data->IsSim()){ //if simulated data and reading reconstructed
