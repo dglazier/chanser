@@ -1,8 +1,8 @@
-#include "ZVertexCut.h"
+#include "Cut_ZVertex.h"
 
 namespace chanser{
 
- void ZVertexCut::ChangeRun()
+ void Cut_ZVertex::ChangeRun()
   {
  /*
    * Recommended cut on the electron z-vertex position.

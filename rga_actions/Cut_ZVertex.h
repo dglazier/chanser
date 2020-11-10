@@ -1,8 +1,11 @@
 //////////////////////////////////////////////////////////////
 ///
-///Class:		
+///Class:      Cut_ZVertex		
 ///Description:
-///     Cuts on the z-vertex position.
+///            Cuts on the z-vertex position of particle within a distance
+/// defined by the rg-a analysis note (recommended use for electrons).
+/// Author:
+///            Richard Tyson
 
 #pragma once
 
@@ -12,15 +15,10 @@
 namespace chanser{
 
 
-  class ZVertexCut : public BaseCut, public CLAS12Base{
+  class Cut_ZVertex : public BaseCut, public CLAS12Base{
       
   public:
-    ZVertexCut()=default; // must have default constructor
-    
-    /* ZVertexCut(Float_t cutLow, Float_t cutHigh){
-      _cutValLow=cutLow;
-      _cutValHigh=cutHigh;
-      }*/
+    Cut_ZVertex()=default; // must have default constructor   
       
     void ChangeRun() final;
   
@@ -44,8 +42,8 @@ namespace chanser{
     Float_t _cutValLow=chanser::THIS_FLT_MAX;
     Float_t _cutValHigh=chanser::THIS_FLT_MAX;
       
-    ClassDefOverride(chanser::ZVertexCut,1);
+    ClassDefOverride(chanser::Cut_ZVertex,1);
 
-  };//class ZVertexCut
+  };//class Cut_ZVertex
 
 }
