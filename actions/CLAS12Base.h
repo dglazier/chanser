@@ -28,6 +28,9 @@ namespace chanser{
     const clas12::rcdb_reader* RCDB()const noexcept {return GetCLAS12()->rcdb();}
     const clas12::qadb_reader* QADB()const noexcept {return GetCLAS12()->qadb();}
 
+    const RunInfo* GetRunInfo()const {return _finalstate->GetRunInfo();}
+    const EventInfo* GetEventInfo()const {return _finalstate->GetEventInfo();}
+    
     virtual void ChangeRun(){};
     
   private :

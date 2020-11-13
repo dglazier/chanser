@@ -24,6 +24,7 @@ namespace chanser{
     cout<<"FinalStateManager::LoadFinalState  "<<_data<<endl;
     fs->SetEventParticles(&_eventParts); //link to data
     fs->SetEventInfo(_data->GetEventInfo());
+    fs->SetRunInfo(_data->GetRunInfo());
     /*if(_data->IsSim()){
       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
       fs->SetHasTruth();
@@ -52,6 +53,7 @@ namespace chanser{
   Bool_t  FinalStateManager::LoadFinalState(finalstate_uptr fs){
     fs->SetEventParticles(&_eventParts);
     fs->SetEventInfo(_data->GetEventInfo());
+    fs->SetRunInfo(_data->GetRunInfo());
     /*if(_data->IsSim()){
       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
       fs->SetHasTruth();
@@ -133,6 +135,10 @@ namespace chanser{
   ///////////////////////////////////////////////////////////////
   ///For run dependent stuff
   void  FinalStateManager::ChangeRun(){
+    //now we have a file opened update run info in data
+    _data->FillRunInfo();
+
+    //update final states
     for(const auto& fs : _finalStates){
       fs->ChangeRun();
     }

@@ -49,6 +49,9 @@ namespace chanser{
     Bool_t IsSim() const noexcept{return (_dataType==static_cast<Short_t>(chanser::DataType::Sim))||(_dataType==static_cast<Short_t>(chanser::DataType::Lund));}
     Bool_t IsLund() const noexcept{return _dataType==static_cast<Short_t>(chanser::DataType::Lund);}
 
+    virtual void FillRunInfo(){};
+    virtual void FillEventInfo(){};
+    
   protected :
         
     Long64_t _entry=0;

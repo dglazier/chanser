@@ -62,6 +62,7 @@ namespace chanser{
     virtual void Init(const TString& baseDir); //takes name of output dir
 
     void ChangeRun();//for run dependent stuff
+    virtual void DerivedChangeRun() {}//for run dependent stuff in derived class
 
     
     virtual void Define(){};
@@ -80,7 +81,7 @@ namespace chanser{
 
     
     virtual void SetEventInfo(const BaseEventInfo* evi){};
-    void SetRunInfo(const BaseRunInfo* rui){};
+    virtual void SetRunInfo(const BaseRunInfo* rui){};
       
     void ProcessEvent();
       

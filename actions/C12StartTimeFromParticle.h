@@ -28,8 +28,16 @@ namespace chanser{
     }
     void Reset() final{_timeZero=0;}
     Double_t withParticle(CLAS12Particle* p) const override{
-     
-      if(_timeZero==0) _timeZero=TimeZero(_fromTime->DeltaTime(),_fromTime->Vertex().Z());
+      //returns start time at (0,0,0) relative to EB particle Vertex
+      //So to get correct time for each particle must use its
+      //vertex position to correct for offset from (0,0,0)
+      if(_timeZero==0){
+	if(_fromTime->CLAS12()->getRegion()==1000)
+	  _timeZero=TimeZero(_fromTime->DeltaTime(),_targetPosition);
+	else 	_timeZero=TimeZero(_fromTime->DeltaTime(),_fromTime->Vertex().Z());
+
+
+      }
       return _timeZero;
     }
     
@@ -76,14 +84,22 @@ namespace chanser{
   inline Double_t C12StartTimeFromParticle::TimeZero(Float_t ptime,Float_t vz) const{
     //supply chosen (e-) particle vertex time
     Float_t rftime=GetFinalState()->GetEventInfo()->_RFTime;
+    //double  vzCorr = (vz)/TMath::C()*1E9; //ns/cm
+    //double  vzCorr =0;
 
-    // double  vzCorr = (_targetPosition-vz)/TMath::C()*1E9;//DSTS already shifted!
-    double  vzCorr = (vz)/TMath::C()*1E9;
-    //double deltatr = - ptime - vzCorr + rftime + _rfOffset + (_RF_LARGE_INTEGER+0.5)*_rfBucketLength; //DSTs rftime already shifted by rfOffset
-    double deltatr = - ptime - vzCorr + rftime + (_RF_LARGE_INTEGER+0.5)*_rfBucketLength;
-  
+    /*
+     double  vzCorr = (_targetPosition-vz)/TMath::C()*1E9;//DSTS already shifted!
+     double deltatr = - ptime - vzCorr + rftime + _rfOffset + (_RF_LARGE_INTEGER+0.5)*_rfBucketLength; //DSTs rftime already shifted by rfOffset
+     double rfCorr = std::fmod(deltatr , _rfBucketLength) - _rfBucketLength/2;
+     auto stime=ptime + rfCorr;
+    */
+    
+    double deltatr = - ptime + rftime + (_RF_LARGE_INTEGER+0.5)*_rfBucketLength;
     double rfCorr = std::fmod(deltatr , _rfBucketLength) - _rfBucketLength/2;
-    auto stime=ptime + rfCorr;
+    auto stime=ptime + rfCorr - _targetPosition/TMath::C()*1E9;
+    
+
+    
     return stime;
   }
 
@@ -132,7 +148,7 @@ namespace chanser{
     
     auto choices = TimeParticeName().Tokenize(":");
     for(auto* particleName : *choices){
-      auto particle=static_cast<CLAS12Particle*>(_c12fs->GetParticle(particleName->GetName()));
+      auto particle=static_cast<CLAS12Particle*>(c12->GetParticle(particleName->GetName()));
       if(particle==nullptr){
 	std::cerr<<"WARNING C12StartTimeFromHighMomentum no such particle "<<particleName->GetName()<<std::endl;
       }

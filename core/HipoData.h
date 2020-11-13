@@ -33,9 +33,13 @@ namespace chanser{
     //HipoData
     void FillParticles();
     void FillTruth();
-    void FillEventInfo();
-    void FillRunInfo();
-      
+    
+    void FillEventInfo() override;
+
+    void FillRunInfo() override;
+    void FillRunInfoExp();
+    void FillRunInfoSim();
+    
     clas12::clas12reader* Reader() const {return _c12;}
     clas12::clas12writer* Writer() const {return _myWriter.get();}
     

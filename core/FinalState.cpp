@@ -179,7 +179,7 @@ namespace chanser{
       pt->ChangeRun();	
     }
 
-
+    DerivedChangeRun(); //for users code
   }
   ///////////////////////////////////////////////////////////////
   void  FinalState::PrepareOutEvent(){

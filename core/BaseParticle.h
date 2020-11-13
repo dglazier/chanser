@@ -148,10 +148,12 @@ namespace chanser{
 
  
     Double_t Beta() const {return _path/_time/2.99792e+08*1E9;}//time ns, path m
+    Double_t BetaVer() const {return _path/TimeVer()/2.99792e+08*1E9;}//time ns, path m
     Double_t HypBeta() const {Double_t pp=_p4.P();return pp/sqrt(pp*pp+_pdgMass*_pdgMass);}
     Double_t HypTime() const {return _path/HypBeta()/2.99792e+08*1E9  ;} //in ns
     Double_t DeltaTime() const {return _time-HypTime();};
     Double_t DeltaTimeVer()const {return DeltaTime()-_vertex.Z()/2.99792e+08*1E9;}
+    Double_t TimeVer()const {return _time - _vertex.Z()/2.99792e+08*1E9;}
 
     //Add 4-vectors, doca vertices, fix pdg(optional)
     void Add(const BaseParticle *hsp1, const BaseParticle *hsp2,Int_t pdg=0);

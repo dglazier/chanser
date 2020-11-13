@@ -141,6 +141,46 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfo(){
+    if(IsSim()){
+      FillRunInfoSim();
+    }
+    else{
+      //Normal experimental data, use databases
+      FillRunInfoExp();
+    }
+  }
+  ///////////////////////////////////////////////////////////////
+  void HipoData::FillRunInfoSim(){
+
+  }
+  ///////////////////////////////////////////////////////////////
+  void HipoData::FillRunInfoExp(){
+    //cache data from rcdb
+    auto rcdb=_c12->rcdb();
+    if(rcdb){
+    _runInfo._BeamEnergy  = rcdb->current().beam_energy/1000;//to GeV
+    }
+    //cache data from ccdb
+    auto ccdb=_c12->ccdb();
+    if(ccdb){
+      /////////////////////////////////////////////////
+      //target
+      _runInfo._TargetCentre=ccdb->requestTableValueFor(0,"position","/geometry/target")/100;
+      _runInfo._TargetCentre=-0.03;
+      /////////////////////////////////////////////////
+      //rf
+      int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
+      int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
+
+      // There are two rows in rf/config here we find the one with status=1
+      // if (rfStat1<=0 && rfStat2<=0)
+      // throw new RuntimeException("Couldn't find non-positive RF status in CCDB");
+      int rfId = rfStat2>rfStat1 ? 1 : 0;
+      _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
+ 
+    }
+  
+    
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillEventInfo(){

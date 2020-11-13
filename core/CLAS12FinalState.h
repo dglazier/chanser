@@ -28,7 +28,8 @@ namespace chanser{
     const EventInfo* GetEventInfo() const noexcept{return _eventInfo;} 
     const RunInfo* GetRunInfo() const noexcept{return _runInfo;} 
       
-    void SetEventInfo(const BaseEventInfo* evi) final {_eventInfo=dynamic_cast<const EventInfo*>(evi);std::cout<<"**************** SETEVENTINFO "<<_eventInfo<<std::endl;};
+    void SetEventInfo(const BaseEventInfo* evi) final {_eventInfo=dynamic_cast<const EventInfo*>(evi);};
+    void SetRunInfo(const BaseRunInfo* evi) final {_runInfo=dynamic_cast<const RunInfo*>(evi);};
 
     void HalveBunchTime(){_bunchTime/=2;}
     void SetStartTimePeak(Float_t st){_sTimePeak=st;}
