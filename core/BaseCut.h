@@ -61,6 +61,34 @@ namespace chanser{
     ClassDefOverride(chanser::DeltaTimeCut,1);
 
   };//class DeltaTimeCut
+  ////////////////////////////////////////////////////////
+  ///A simple derived cuts class based on Deltatime
+    
+  class DeltaTimeVerCut : public BaseCut{
+      
+  public:
+    DeltaTimeVerCut()=default;
+    DeltaTimeVerCut(Float_t cut){_timeCut=cut;}
+      
+      
+      
+    Bool_t ParticleCut(const BaseParticle* part) const noexcept override{
+      return TMath::Abs(part->DeltaTimeVer())<_timeCut ?  kTRUE :  kFALSE;
+    }
+      
+    void SetTimeCut(Double_t val){_timeCut=val;}
+
+    
+    void Print(Option_t* option = "")const final{
+      std::cout<<"\t\t"<<ClassName()<<" with width "<<_timeCut<<std::endl;
+    }
+
+  private:
+    Float_t _timeCut=THIS_FLT_MAX;
+      
+    ClassDefOverride(chanser::DeltaTimeVerCut,1);
+
+  };//class DeltaTimeCut
 
   ////////////////////////////////////////////////////////
     ///A simple derived cuts class based on REC::Particle::pid
