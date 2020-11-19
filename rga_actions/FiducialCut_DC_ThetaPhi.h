@@ -21,13 +21,35 @@ namespace chanser{
     
   public:
     FiducialCut_DC_ThetaPhi()=default; // must have default constructor
-    FiducialCut_DC_ThetaPhi(TString pid,Int_t layer);
+    FiducialCut_DC_ThetaPhi(TString pid);
     
     void ChangeRun() final;
 
     
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override
     {
+      if(_fieldVal==1 || _partPidVal ==0)
+      	{return kTRUE;}
+
+      Int_t layersPassed = 0;
+
+      for (int _layer=0; _layer<3; _layer++)
+	{
+	  Int_t _regionVal=0;
+	  if(_layer==0){
+	    _regionVal=6;
+	  }
+	  else if(_layer==1){
+	    _regionVal=18;
+	  }
+	  else if(_layer==2){
+	    _regionVal=36;
+	  }
+	  else{
+	    std::cerr<<"FiducialCut_DC_ThetaPhi, invalid layer should be 1,2,3 "<<std::endl;
+	    exit(0);
+	  }
+
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12(); //if you require other DST data
       
@@ -63,16 +85,21 @@ namespace chanser{
 	+ _maxparams[_partPidVal][sector][_layer][2] * theta_DCr
 	+ _maxparams[_partPidVal][sector][_layer][3] * theta_DCr * theta_DCr;
       
-      return ((phi_DCr > calc_phi_min) && (phi_DCr < calc_phi_max))? kTRUE : kFALSE;
-    };
+      if ((phi_DCr > calc_phi_min) && (phi_DCr < calc_phi_max)) 
+	{layersPassed++;}
+	}
+      
+	return (layersPassed ==3)? kTRUE : kFALSE;
+
+    }
     
     void Print(Option_t* option = "")const final{
-      std::cout<<"\t\t"<<ClassName()<<" applied to "<<_partPidVal<<" for layer "<<_layer<<std::endl;
+      std::cout<<"\t\t"<<ClassName()<<" applied to "<<_partPidVal<<std::endl;
     }
 
   private:
-    Short_t _regionVal={0};
-    Short_t _layer={0};
+    //  Short_t _regionVal={0};
+    //Short_t _layer={0};
     Short_t _fieldVal = {0};
 
     Short_t _partPidVal= {0};

@@ -76,82 +76,21 @@ void RGA(CLAS12FinalState* FS){
 
 
   /*
-   * DC Fiducial cuts,with ThetaPhi for e-
-   * For layer 1,  of the DC (layer1 = 1 = DST bank 6 )
+   * DC Fiducial cuts
    */
-
-  auto DCFidL1_ThPh=new ParticleCutsManager {"RGA_DC_Fiducial_ThPhL1", 0};
-  DCFidL1_ThPh->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",1));
-  DCFidL1_ThPh->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",1));
-  DCFidL1_ThPh->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",1));
-  DCFidL1_ThPh->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",1));
-  DCFidL1_ThPh->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-", 1));
-  FS->RegisterPostTopoAction(*DCFidL1_ThPh);
-
-  /*
-   * DC Fiducial cuts,  with ThetaPhi for e-
-   * For layer 2,  of the DC (layer = 2 = DST bank 18 )
-   */
-
-  auto DCFidL2_ThPh=new ParticleCutsManager {"RGA_DC_Fiducial_ThPhL2", 0};
-  DCFidL2_ThPh->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",2));
-  DCFidL2_ThPh->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",2));
-  DCFidL2_ThPh->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",2));
-  DCFidL2_ThPh->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",2));
-  DCFidL2_ThPh->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-", 2));
-  FS->RegisterPostTopoAction(*DCFidL2_ThPh);
-
-  /*
-   * DC Fiducial cuts, with ThetaPhi for e-
-   * For layer 3,  of the DC (layer = 3 = DST bank 36 )
-   */
-
-  auto DCFidL3_ThPh=new ParticleCutsManager {"RGA_DC_Fiducial_ThPhL3", 0};
-  DCFidL3_ThPh->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",3));
-  DCFidL3_ThPh->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",3));
-  DCFidL3_ThPh->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",3));
-  DCFidL3_ThPh->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",3));
-  DCFidL3_ThPh->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-", 3));
-  FS->RegisterPostTopoAction(*DCFidL3_ThPh);
-
-  /*
-   * DC Fiducial cuts, including XY for e-
-   * For layer 1,  of the DC (layer1 = 1 = DST bank 6 )
-   */
-
-  auto DCFidL1_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XYL1", 0};
-  DCFidL1_XY->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",1));
-  DCFidL1_XY->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",1));
-  DCFidL1_XY->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",1));
-  DCFidL1_XY->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",1));
-  DCFidL1_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-", 1));
-  FS->RegisterPostTopoAction(*DCFidL1_XY);
-
-  /*
-   * DC Fiducial cuts, including XY for e-
-   * For layer 2,  of the DC (layer = 2 = DST bank 18 )
-   */
-
-  auto DCFidL2_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XYL2", 0};
-  DCFidL2_XY->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",2));
-  DCFidL2_XY->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",2));
-  DCFidL2_XY->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",2));
-  DCFidL2_XY->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",2));
-  DCFidL2_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-", 2));
-  FS->RegisterPostTopoAction(*DCFidL2_XY);
-
-  /*
-   * DC Fiducial cuts, including XY for e-
-   * For layer 3,  of the DC (layer = 3 = DST bank 36 )
-   */
-
-  auto DCFidL3_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XYL3", 0};
-  DCFidL3_XY->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",3));
-  DCFidL3_XY->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",3));
-  DCFidL3_XY->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",3));
-  DCFidL3_XY->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",3));
-  DCFidL3_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-", 3));
-  FS->RegisterPostTopoAction(*DCFidL3_XY);
-
+ 
+  auto DC_Fiducial=new ParticleCutsManager {"RGA_DC_Fiducial", 0};
+  DC_Fiducial->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+"));
+  DC_Fiducial->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-"));
+  DC_Fiducial->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+"));
+  DC_Fiducial->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-"));
+  DC_Fiducial->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-"));
+  DC_Fiducial->AddParticleCut("pi+", new FiducialCut_DC_XY("pi+"));
+  DC_Fiducial->AddParticleCut("pi-", new FiducialCut_DC_XY("pi-"));
+  DC_Fiducial->AddParticleCut("K+", new FiducialCut_DC_XY("K+"));
+  DC_Fiducial->AddParticleCut("K-", new FiducialCut_DC_XY("K-"));
+  DC_Fiducial->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial);
+  
 
 }

@@ -15,8 +15,9 @@ namespace chanser{
     std::cout<<"DC_FiducialCut_XY::ChangeRun() "<<_minparams.size()<<" "<<_minparams_in.size()<<" "<<_minparams_out.size()<<std::endl;
   }
   
-  FiducialCut_DC_XY::FiducialCut_DC_XY(TString pid,Int_t layer)
+  FiducialCut_DC_XY::FiducialCut_DC_XY(TString pid) 
   {
+
     //  _regionVal = layer;
     // _fieldVal = field;
     auto pdg=TDatabasePDG::Instance()->GetParticle(pid)->PdgCode();
@@ -31,24 +32,6 @@ namespace chanser{
       exit(0);
     }
     
-
-    
-    if(layer==1){
-      _regionVal=6;
-      _layer = layer-1;
-    }
-    else if(layer==2){
-      _regionVal=18;
-      _layer=layer-1;
-    }
-    else if(layer==3){
-      _regionVal=36;
-     _layer=layer-1;
-    }
-    else{
-      std::cerr<<"FiducialCut_DC_XY, invalid layer should be 1,2,3 "<<std::endl;
-      exit(0);
-    }
 
     //Save all the required cos and sin values
     std::vector<double> phiRotation={0,-60*TMath::DegToRad(),-120*TMath::DegToRad(),-180*TMath::DegToRad(), 120*TMath::DegToRad(), 60*TMath::DegToRad()};
@@ -169,6 +152,6 @@ namespace chanser{
        {{7.15338, -0.565067},{16.9387, -0.595922},{37.2398, -0.624177}},
        {{6.06995, -0.550001},{15.7376, -0.577755},{32.6004, -0.601595}},
        {{6.20459, -0.543148},{14.6326, -0.561623},{39.2154, -0.631762}}}};
-    
+      
   }
 }

@@ -13,7 +13,7 @@ namespace chanser{
      _minparams = (inbending ? _minparams_in : _minparams_out);
      _maxparams = (inbending ? _maxparams_in : _maxparams_out);
   }
-  FiducialCut_DC_ThetaPhi::FiducialCut_DC_ThetaPhi(TString pid,Int_t layer)
+  FiducialCut_DC_ThetaPhi::FiducialCut_DC_ThetaPhi(TString pid)
   {
 
     auto pdg=TDatabasePDG::Instance()->GetParticle(pid)->PdgCode();
@@ -26,25 +26,7 @@ namespace chanser{
     else{
       std::cerr<<"FiducialCut_DC_ThetaPhi, invalid layer PID "<<pid<<" "<<pdg<<std::endl;
       exit(0);
-    }
-    
-    if(layer==1){
-      _regionVal=6;
-      _layer = layer-1;
-    }
-    else if(layer==2){
-      _regionVal=18;
-      _layer=layer-1;
-    }
-    else if(layer==3){
-      _regionVal=36;
-     _layer=layer-1;
-    }
-    else{
-      std::cerr<<"FiducialCut_DC_ThetaPhi, invalid layer should be 1,2,3 "<<std::endl;
-      exit(0);
-    }
-   
+    }          
 
     
     _maxparams_in = {
