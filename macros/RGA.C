@@ -48,7 +48,7 @@ void RGA(CLAS12FinalState* FS){
    * Photon identification refinement 
    */
   auto pcmPhotonRef = new ParticleCutsManager {"RGA_PhotonBetaCut", 0};
-  pcmPhotonRef->AddParticleCut("gamma", new PhotonIDRefinementCut(0.9,1.1));
+  pcmPhotonRef->AddParticleCut("gamma", new Cut_RefinePhotonID(0.9,1.1));
   FS->RegisterPostTopoAction(*pcmPhotonRef);
 
   /*
@@ -62,16 +62,16 @@ void RGA(CLAS12FinalState* FS){
    * Pion chi2Pid cuts (standard)
    */
   auto pcmChi2Pid=new ParticleCutsManager {"RGA_PionChi2Pid", 0};
-  pcmChi2Pid->AddParticleCut("pi-", new HadronChi2PID(1,0.93));
-  pcmChi2Pid->AddParticleCut("pi+", new HadronChi2PID(1,0.88));
+  pcmChi2Pid->AddParticleCut("pi-", new Cut_PionChi2Pid(1,0.93));
+  pcmChi2Pid->AddParticleCut("pi+", new Cut_PionChi2Pid(1,0.88));
   FS->RegisterPostTopoAction(*pcmChi2Pid);
 
   /*
    * Pion chi2Pid cuts (strict)
    */
   auto pcmChi2PidStrict= new ParticleCutsManager {"RGA_PionChi2PidStrict", 0};
-  pcmChi2PidStrict->AddParticleCut("pi-", new HadronChi2PID(2,0.93));
-  pcmChi2PidStrict->AddParticleCut("pi+", new HadronChi2PID(2,0.88));
+  pcmChi2PidStrict->AddParticleCut("pi-", new Cut_PionChi2Pid(2,0.93));
+  pcmChi2PidStrict->AddParticleCut("pi+", new Cut_PionChi2Pid(2,0.88));
   FS->RegisterPostTopoAction(*pcmChi2PidStrict);
 
 
@@ -81,11 +81,11 @@ void RGA(CLAS12FinalState* FS){
    */
 
   auto DCFidL1_ThPh=new ParticleCutsManager {"RGA_DC_Fiducial_ThPhL1", 0};
-  DCFidL1_ThPh->AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi("pi+",1));
-  DCFidL1_ThPh->AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi("pi-",1));
-  DCFidL1_ThPh->AddParticleCut("K+", new DC_FiducialCut_ThetaPhi("K+",1));
-  DCFidL1_ThPh->AddParticleCut("K-", new DC_FiducialCut_ThetaPhi("K-",1));
-  DCFidL1_ThPh->AddParticleCut("e-", new DC_FiducialCut_ThetaPhi("e-", 1));
+  DCFidL1_ThPh->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",1));
+  DCFidL1_ThPh->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",1));
+  DCFidL1_ThPh->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",1));
+  DCFidL1_ThPh->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",1));
+  DCFidL1_ThPh->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-", 1));
   FS->RegisterPostTopoAction(*DCFidL1_ThPh);
 
   /*
@@ -94,11 +94,11 @@ void RGA(CLAS12FinalState* FS){
    */
 
   auto DCFidL2_ThPh=new ParticleCutsManager {"RGA_DC_Fiducial_ThPhL2", 0};
-  DCFidL2_ThPh->AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi("pi+",2));
-  DCFidL2_ThPh->AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi("pi-",2));
-  DCFidL2_ThPh->AddParticleCut("K+", new DC_FiducialCut_ThetaPhi("K+",2));
-  DCFidL2_ThPh->AddParticleCut("K-", new DC_FiducialCut_ThetaPhi("K-",2));
-  DCFidL2_ThPh->AddParticleCut("e-", new DC_FiducialCut_ThetaPhi("e-", 2));
+  DCFidL2_ThPh->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",2));
+  DCFidL2_ThPh->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",2));
+  DCFidL2_ThPh->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",2));
+  DCFidL2_ThPh->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",2));
+  DCFidL2_ThPh->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-", 2));
   FS->RegisterPostTopoAction(*DCFidL2_ThPh);
 
   /*
@@ -107,11 +107,11 @@ void RGA(CLAS12FinalState* FS){
    */
 
   auto DCFidL3_ThPh=new ParticleCutsManager {"RGA_DC_Fiducial_ThPhL3", 0};
-  DCFidL3_ThPh->AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi("pi+",3));
-  DCFidL3_ThPh->AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi("pi-",3));
-  DCFidL3_ThPh->AddParticleCut("K+", new DC_FiducialCut_ThetaPhi("K+",3));
-  DCFidL3_ThPh->AddParticleCut("K-", new DC_FiducialCut_ThetaPhi("K-",3));
-  DCFidL3_ThPh->AddParticleCut("e-", new DC_FiducialCut_ThetaPhi("e-", 3));
+  DCFidL3_ThPh->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",3));
+  DCFidL3_ThPh->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",3));
+  DCFidL3_ThPh->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",3));
+  DCFidL3_ThPh->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",3));
+  DCFidL3_ThPh->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-", 3));
   FS->RegisterPostTopoAction(*DCFidL3_ThPh);
 
   /*
@@ -120,11 +120,11 @@ void RGA(CLAS12FinalState* FS){
    */
 
   auto DCFidL1_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XYL1", 0};
-  DCFidL1_XY->AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi("pi+",1));
-  DCFidL1_XY->AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi("pi-",1));
-  DCFidL1_XY->AddParticleCut("K+", new DC_FiducialCut_ThetaPhi("K+",1));
-  DCFidL1_XY->AddParticleCut("K-", new DC_FiducialCut_ThetaPhi("K-",1));
-  DCFidL1_XY->AddParticleCut("e-", new DC_FiducialCut_XY("e-", 1));
+  DCFidL1_XY->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",1));
+  DCFidL1_XY->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",1));
+  DCFidL1_XY->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",1));
+  DCFidL1_XY->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",1));
+  DCFidL1_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-", 1));
   FS->RegisterPostTopoAction(*DCFidL1_XY);
 
   /*
@@ -133,11 +133,11 @@ void RGA(CLAS12FinalState* FS){
    */
 
   auto DCFidL2_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XYL2", 0};
-  DCFidL2_XY->AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi("pi+",2));
-  DCFidL2_XY->AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi("pi-",2));
-  DCFidL2_XY->AddParticleCut("K+", new DC_FiducialCut_ThetaPhi("K+",2));
-  DCFidL2_XY->AddParticleCut("K-", new DC_FiducialCut_ThetaPhi("K-",2));
-  DCFidL2_XY->AddParticleCut("e-", new DC_FiducialCut_XY("e-", 2));
+  DCFidL2_XY->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",2));
+  DCFidL2_XY->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",2));
+  DCFidL2_XY->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",2));
+  DCFidL2_XY->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",2));
+  DCFidL2_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-", 2));
   FS->RegisterPostTopoAction(*DCFidL2_XY);
 
   /*
@@ -146,11 +146,11 @@ void RGA(CLAS12FinalState* FS){
    */
 
   auto DCFidL3_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XYL3", 0};
-  DCFidL3_XY->AddParticleCut("pi+", new DC_FiducialCut_ThetaPhi("pi+",3));
-  DCFidL3_XY->AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi("pi-",3));
-  DCFidL3_XY->AddParticleCut("K+", new DC_FiducialCut_ThetaPhi("K+",3));
-  DCFidL3_XY->AddParticleCut("K-", new DC_FiducialCut_ThetaPhi("K-",3));
-  DCFidL3_XY->AddParticleCut("e-", new DC_FiducialCut_XY("e-", 3));
+  DCFidL3_XY->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+",3));
+  DCFidL3_XY->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-",3));
+  DCFidL3_XY->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+",3));
+  DCFidL3_XY->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-",3));
+  DCFidL3_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-", 3));
   FS->RegisterPostTopoAction(*DCFidL3_XY);
 
 

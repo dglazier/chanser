@@ -37,7 +37,7 @@ In local theta/phi variables a four parameter fit is used to determine a cut on 
 To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 36 in the cut, respectively. This cut is instantiated in your 'Create_xxx.C' file with:
 
     ParticleCutsManager DC_FidCut{"DCFidCutsTP_R3", 0};
-    DC_FidCut.AddParticleCut("pi-", new DC_FiducialCut_ThetaPhi(36));
+    DC_FidCut.AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi(36));
     FS->RegisterPostTopoAction(DC_FidCut);
 
 ### DC Fiducial Cut (local X/Y variables): Robert
@@ -47,7 +47,7 @@ In local XY coords a two parameter linear fit is used to cut the fiducial volume
 To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 36 in the cut, respectively. The field parameter is called such that outbending == 1, inbending == -1 This cut is instantiated in your 'Create_xxx.C' file with:
 
     ParticleCutsManager DC_FidCut{"DCFidCutsXY_R3", 0};
-    DC_FidCut.AddParticleCut("e-", new DC_FiducialCut_XY(36, 1));
+    DC_FidCut.AddParticleCut("e-", new FiducialCut_DC_XY(36, 1));
     FS->RegisterPostTopoAction(DC_FidCut);
 
 
@@ -61,24 +61,24 @@ To apply this cut to region R1, R2, R3 of the DC, one uses the parameter 6, 18, 
 
 A cut on the difference in vertex position between the electron and a hadron. The RG-A analysis note recommends a maximum difference of 20cm. This cut is instantiated in your 'Create_xxx.C' file with:
 
-  ParticleCutsManager pcmVertexDiff{"ElHadVertexDiff", 0};
-  pcmVertexDiff.AddParticleCut("pi-", new TwoParticleVertexCut	("Electron", 20));
-  FS->RegisterPostTopoAction(pcmVertexDiff);
+       ParticleCutsManager pcmVertexDiff{"ElHadVertexDiff", 0};
+       pcmVertexDiff.AddParticleCut("pi-", new TwoParticleVertexCut("Electron", 20));
+       FS->RegisterPostTopoAction(pcmVertexDiff);
 
 
 ### chi2PID from event builder cut: Robert
 
 The event builder assigns each charged hadron a Chi2Pid value. The RG-A analysis note suggests (for pions) a 3-sigma cut for negative sigma and a momentum-dependent sigma cut for positive sigma. A standard cut and a stricter cut are detailed in the analysis note. The standard cut is called with parameter '1' and the stricter with '2'. This cut is instantiated in your 'Create_xxx.C' file with:
 
-  ParticleCutsManager pcmChi2Pid{"HadronChi2Pid", 0};
-  pcmChi2Pid.AddParticleCut("pi-", new HadronChi2PID(1));
-  FS->RegisterPostTopoAction(pcmChi2Pid);
+      ParticleCutsManager pcmChi2Pid{"Cut_PionChi2Pid", 0};
+      pcmChi2Pid.AddParticleCut("pi-", new Cut_PionChi2Pid(1));
+      FS->RegisterPostTopoAction(pcmChi2Pid);
 
 
 ### Cut on the beta value from the calorimeter: Robert
 
 To reject uncorrelated photons from the beam bunch a cut is placed on the maximum beta value from the calorimeter. The following beam bunch is expected to arrive at beta = 1.2 so a cut is placed at a value of 0.1 above and below the beta value. This cut is instantiated in your 'Create_xxx.C' file with:
 
-  ParticleCutsManager pcmPhotonRef{"PhotonRef", 0};
-  pcmPhotonRef.AddParticleCut("gamma", new PhotonIDRefinementCut(0.1));
-  FS->RegisterPostTopoAction(pcmPhotonRef);
+      ParticleCutsManager pcmPhotonRef{"Cut_RefinePhotonID", 0};
+      pcmPhotonRef.AddParticleCut("gamma", new Cut_RefinePhotonID(0.1));
+      FS->RegisterPostTopoAction(pcmPhotonRef);

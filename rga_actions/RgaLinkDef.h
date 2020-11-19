@@ -10,10 +10,10 @@
 #pragma link C++ namespace chanser;
 #pragma link C++ class chanser::Cut_ZVertex+;
 #pragma link C++ class chanser::FiducialCut_PCAL_uvw+;
-#pragma link C++ class chanser::DC_FiducialCut_ThetaPhi+;
-#pragma link C++ class chanser::DC_FiducialCut_XY+;
-#pragma link C++ class chanser::HadronChi2PID+;
-#pragma link C++ class chanser::PhotonIDRefinementCut+;
+#pragma link C++ class chanser::FiducialCut_DC_ThetaPhi+;
+#pragma link C++ class chanser::FiducialCut_DC_XY+;
+#pragma link C++ class chanser::Cut_PionChi2Pid+;
+#pragma link C++ class chanser::Cut_RefinePhotonID+;
 #pragma link C++ class chanser::Cut_RefineElectronID+;
 
 #endif
