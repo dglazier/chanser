@@ -9,9 +9,11 @@
 
 #pragma once
 
+#include "TLorentzVector.h"
 #include "MaskedEventParticles.h"
 #include "CLAS12Particle.h"
 #include "clas12defs.h" //from clas12root
+//#include "CLAS12Base.h" when have dbs code
 
 #include <TH1F.h>
 #include <TH2F.h>
@@ -19,7 +21,7 @@
 
 namespace chanser{
 
-   
+  //inherit from public CLAS12Base when have dbs code
   class MaskRadPhotons : public MaskedEventParticles{
       
   public :
@@ -39,21 +41,44 @@ namespace chanser{
     Bool_t ReReadEvent() override;
     
   private:
+
+    void doCorrection(std::vector<chanser::BaseParticle*> radParts, bool neutrons);
+    void FillSamplingFractionParams();
+    Float_t GetMeanSF(Float_t  Edep);
     
     //keep a link to EventParticles vector I will replace
     particles_ptrs* _originalGams{nullptr}; //!
+    particles_ptrs* _originalNeutrons{nullptr}; //!
 
 
     Float_t _ecalR={0};
     Float_t _dTheta={0.1};
+
+    // Photon Sampling Fraction Parameters
+    Float_t _sfPa={0};
+    Float_t _sfPb={0};
+    Float_t _sfPc={0};
+    Float_t _sfPd={0};
     
     TH1F _hR={"R","Distance to photon in PCAL",500,0,500};//!
     TH1F _hdTheta={"dT","dTheta",400,-30,10};//!
     TH1F _hdPhi={"dP","dPhi",180,-12,4};//!
 
-    TH2F _hdThetaR={"dT0","dTheta vs distance to photon in PCAL",500,0,500,400,-30,10};//!
+    TH2F _hdThetaR={"dTR","dTheta vs distance to photon in PCAL",500,0,500,400,-30,10};//!
     TH2F _hdThetadPhi={"dTdP","dTheta vs dPhi",180,-12,4,400,-30,10};//!
     TH2F _hdPhiR={"dPR","dPhi vs distance to photon in PCAL",500,0,500,180,-12,4};//!
+    TH1F _hP={"P","Momenta of photons",100,0,10};//!
+
+    TH1F _hRN={"RN","Distance to photon in PCAL (neutrons)",500,0,500};//!
+    TH1F _hdThetaN={"dTN","dTheta (neutrons)",400,-30,10};//!
+    TH1F _hdPhiN={"dPN","dPhi (neutrons)",180,-12,4};//!
+
+    TH2F _hdThetaRN={"dTRN","dTheta vs distance to photon in PCAL (neutrons)",500,0,500,400,-30,10};//!
+    TH2F _hdThetadPhiN={"dTdPN","dTheta vs dPhi (neutrons)",180,-12,4,400,-30,10};//!
+    TH2F _hdPhiRN={"dPRN","dPhi vs distance to photon in PCAL (neutrons)",500,0,500,180,-12,4};//!
+
+    TH1F _hPN={"PN","reconstructed Momenta of mis-IDed photons (neutrons)",100,0,10};//!
+    
 
 
     Short_t _addSplits={1}; //Combine clusters?
