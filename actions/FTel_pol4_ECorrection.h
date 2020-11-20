@@ -1,10 +1,11 @@
 #pragma once
 #include "BaseCorrection.h"
+#include "CLAS12Base.h"
 #include "clas12defs.h"
 
 namespace chanser{
 
-  class FTel_pol4_ECorrection : public BaseCorrection{
+  class FTel_pol4_ECorrection : public BaseCorrection, public CLAS12Base{
       
   public:
     FTel_pol4_ECorrection()=default;
@@ -12,7 +13,26 @@ namespace chanser{
     _a0{a0},_a1{a1},_a2{a2},_a3{a3},_a4{a4}{};
       
 
-   
+    void ChangeRun() final{
+
+      std::cout<<" FTel_pol4_ECorrection "<<std::endl;
+
+      auto period = GetRunInfo()->_runPeriod+"_" + GetRunInfo()->_fieldSetting;
+ 
+      //Get maximum parameters
+      auto table = GetAnaDB().GetTable(period,"FTEL_POL4_ECORRECTION",{5});
+      if(table.IsValid()){
+	tablevals_t val(5);
+	table.Fill(val);
+	_a0=val[0];
+ 	_a1=val[1];
+	_a2=val[2];
+	_a3=val[3];
+	_a4=val[4];
+      }
+    }
+ 
+
     void ParticleCorrect(BaseParticle* part) const noexcept override{
       if(static_cast<CLAS12Particle*>(part)->CLAS12()->getRegion()!=clas12::FT)
 	return; //only FT e-
@@ -31,7 +51,7 @@ namespace chanser{
 
     Double_t _a0{-0.03689};
     Double_t _a1{1.1412};
-    Double_t _a2{- 0.04316};
+    Double_t _a2{-0.04316};
     Double_t _a3{0.007046};
     Double_t _a4{-0.0004055};
    

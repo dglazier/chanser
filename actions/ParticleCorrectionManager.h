@@ -39,7 +39,8 @@ namespace chanser{
       
   
     void Configure(FinalState* fs) override;
-  
+    void ChangeRun() override;
+ 
     void AddParticle(TString type,BaseCorrection* cor){
       if(TDatabasePDG::Instance()->GetParticle(type)){
 	//cut.SetName(type);

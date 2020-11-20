@@ -62,6 +62,8 @@ namespace chanser{
     const BaseEventInfo* GetEventInfo() const noexcept final{return &_eventInfo;};
       
 
+    void LoadAnaDB(const string& name){ _runInfo.LoadAnaDB(name );}
+
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
 

@@ -148,9 +148,41 @@ namespace chanser{
       //Normal experimental data, use databases
       FillRunInfoExp();
     }
+
+    if(_c12->runconfig()->getTorus()>0)
+      _runInfo._fieldSetting="INBEND";
+    else if(_c12->runconfig()->getTorus()<0)
+      _runInfo._fieldSetting="OUTBEND";
+    else  _runInfo._fieldSetting="NOBEND";
+
+
+ 
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfoSim(){
+    
+    _runInfo._runPeriod="fall_2018_SIM";
+
+    _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
+    
+    //target position in simulation
+    auto table = _runInfo.
+      GetAnaDB().GetTable(_runInfo._runPeriod,
+			  "TARGET_POSITION"
+			  ,{3}); //x,y,z pos
+    std::vector<double> tarPos(3);
+    table.Fill(tarPos);
+    _runInfo._TargetCentre=tarPos[2];
+
+
+    //Beam bucket
+    table = _runInfo.
+      GetAnaDB().GetTable(_runInfo._runPeriod,
+			  "RF_BUCKET_LENGTH"
+			  ,{1}); //1 time
+    std::vector<double> bucket(1);
+    table.Fill(bucket);
+    _runInfo._rfBucketLength=bucket[0];
 
   }
   ///////////////////////////////////////////////////////////////
@@ -179,7 +211,8 @@ namespace chanser{
       _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
  
     }
-  
+     _runInfo._runPeriod="fall_2018_EXP";
+
     
   }
   ///////////////////////////////////////////////////////////////

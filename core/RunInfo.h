@@ -13,7 +13,7 @@ namespace chanser{
 
   class RunInfo : public BaseRunInfo{
 
-  public :
+   public :
     
     void SetCLAS12(clas12::clas12reader* c12){_c12=c12;}
     clas12::clas12reader* CLAS12(){return _c12;}
@@ -21,6 +21,10 @@ namespace chanser{
     Double_t _TargetCentre={0};
     Double_t _BeamEnergy={0};
     Double_t _rfBucketLength={0};
+
+    std::string _runPeriod;
+    std::string  _fieldSetting;
+     
             
   private :
     

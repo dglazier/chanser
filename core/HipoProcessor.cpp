@@ -231,6 +231,15 @@ namespace chanser{
       cout<<"Writing hipo filtered to "<<_fsm.BaseOutDir()+opt->GetTitle()<<endl;
       _hipo.SetWriteToFile(_fsm.BaseOutDir()+"worker_"+workerName+opt->GetTitle());
     }
+    /////////////////////////////////////////////////
+    ///Write filtered hipo output file
+    opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_ANADB"));
+    if(opt!=nullptr){
+      TString pathsStr=opt->GetTitle();
+      auto paths = pathsStr.Tokenize(":");
+      for(auto* path:*paths)
+	_hipo.LoadAnaDB(path->GetName());
+    }
   }
 
 }

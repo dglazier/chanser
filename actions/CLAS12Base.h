@@ -30,6 +30,7 @@ namespace chanser{
 
     const RunInfo* GetRunInfo()const {return _finalstate->GetRunInfo();}
     const EventInfo* GetEventInfo()const {return _finalstate->GetEventInfo();}
+    const AnaDB& GetAnaDB() const {return GetRunInfo()->GetAnaDB();}
     
     virtual void ChangeRun(){};
     
