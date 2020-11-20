@@ -76,21 +76,29 @@ void RGA(CLAS12FinalState* FS){
 
 
   /*
-   * DC Fiducial cuts
+   * DC Fiducial cuts in local XY co-ordinates
    */
  
-  auto DC_Fiducial=new ParticleCutsManager {"RGA_DC_Fiducial", 0};
-  DC_Fiducial->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+"));
-  DC_Fiducial->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-"));
-  DC_Fiducial->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+"));
-  DC_Fiducial->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-"));
-  DC_Fiducial->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-"));
-  DC_Fiducial->AddParticleCut("pi+", new FiducialCut_DC_XY("pi+"));
-  DC_Fiducial->AddParticleCut("pi-", new FiducialCut_DC_XY("pi-"));
-  DC_Fiducial->AddParticleCut("K+", new FiducialCut_DC_XY("K+"));
-  DC_Fiducial->AddParticleCut("K-", new FiducialCut_DC_XY("K-"));
-  DC_Fiducial->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
-  FS->RegisterPostTopoAction(*DC_Fiducial);
+  auto DC_Fiducial_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XY", 0};
+  DC_Fiducial_XY->AddParticleCut("pi+", new FiducialCut_DC_XY("pi+"));
+  DC_Fiducial_XY->AddParticleCut("pi-", new FiducialCut_DC_XY("pi-"));
+  DC_Fiducial_XY->AddParticleCut("K+", new FiducialCut_DC_XY("K+"));
+  DC_Fiducial_XY->AddParticleCut("K-", new FiducialCut_DC_XY("K-"));
+  DC_Fiducial_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial_XY);
+
+
+  /*
+   * DC Fiducial cuts in local Theta,Phi co-ordinates
+   */
+
+  auto DC_Fiducial_TP=new ParticleCutsManager {"RGA_DC_Fiducial_TP", 0};
+  DC_Fiducial_TP->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+"));
+  DC_Fiducial_TP->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-"));
+  DC_Fiducial_TP->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+"));
+  DC_Fiducial_TP->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-"));
+  DC_Fiducial_TP->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial_TP);
   
 
 }
