@@ -34,7 +34,7 @@ namespace chanser{
       auto c12=c12p->CLAS12(); //if you require other DST data
       
       if(c12->getRegion()!=clas12::FD) return true; //cut only appies to FD
-
+ 
       short sector = c12->getSector() -1; //start at zero from here on
 
       Short_t regionVal[3]={6,18,36};

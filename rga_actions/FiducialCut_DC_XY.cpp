@@ -11,7 +11,7 @@ namespace chanser{
     
     //parameters depend on run period and torus field setting
     auto period = GetRunInfo()->_runPeriod+"_" + GetRunInfo()->_fieldSetting;
-
+    std::cout<<"FiducialCut_DC_XY::ChangeRun() will not be applied to   "<<_pname<<" for run period "<<period<<endl;
     //Get maximum parameters
     auto table = GetAnaDB().GetTable(period,
 				     "DC_FIDUCIALCUT_XY=MAX_"
