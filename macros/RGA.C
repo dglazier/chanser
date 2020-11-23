@@ -76,29 +76,31 @@ void RGA(CLAS12FinalState* FS){
 
 
   /*
-   * DC Fiducial cuts in local XY co-ordinates
+   * DC Fiducial cuts (inbending)
    */
  
-  auto DC_Fiducial_XY=new ParticleCutsManager {"RGA_DC_Fiducial_XY", 0};
-  DC_Fiducial_XY->AddParticleCut("pi+", new FiducialCut_DC_XY("pi+"));
-  DC_Fiducial_XY->AddParticleCut("pi-", new FiducialCut_DC_XY("pi-"));
-  DC_Fiducial_XY->AddParticleCut("K+", new FiducialCut_DC_XY("K+"));
-  DC_Fiducial_XY->AddParticleCut("K-", new FiducialCut_DC_XY("K-"));
-  DC_Fiducial_XY->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
-  FS->RegisterPostTopoAction(*DC_Fiducial_XY);
+  auto DC_Fiducial_Inbend=new ParticleCutsManager {"RGA_DC_Fiducial_Inbend", 0};
+  DC_Fiducial_Inbend->AddParticleCut("proton", new FiducialCut_DC_ThetaPhi("proton"));
+  DC_Fiducial_Inbend->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+"));
+  DC_Fiducial_Inbend->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-"));
+  DC_Fiducial_Inbend->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+"));
+  DC_Fiducial_Inbend->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-"));
+  DC_Fiducial_Inbend->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial_Inbend);
 
 
   /*
-   * DC Fiducial cuts in local Theta,Phi co-ordinates
+   * DC Fiducial cuts (outbending)
    */
 
-  auto DC_Fiducial_TP=new ParticleCutsManager {"RGA_DC_Fiducial_TP", 0};
-  DC_Fiducial_TP->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+"));
-  DC_Fiducial_TP->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-"));
-  DC_Fiducial_TP->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+"));
-  DC_Fiducial_TP->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-"));
-  DC_Fiducial_TP->AddParticleCut("e-", new FiducialCut_DC_ThetaPhi("e-"));
-  FS->RegisterPostTopoAction(*DC_Fiducial_TP);
+  auto DC_Fiducial_Outbend=new ParticleCutsManager {"RGA_DC_Fiducial_Outbend", 0};
+  DC_Fiducial_Outbend->AddParticleCut("proton", new FiducialCut_DC_XY("proton"));
+  DC_Fiducial_Outbend->AddParticleCut("pi+", new FiducialCut_DC_XY("pi+"));
+  DC_Fiducial_Outbend->AddParticleCut("pi-", new FiducialCut_DC_XY("pi-"));
+  DC_Fiducial_Outbend->AddParticleCut("K+", new FiducialCut_DC_XY("K+"));
+  DC_Fiducial_Outbend->AddParticleCut("K-", new FiducialCut_DC_XY("K-"));
+  DC_Fiducial_Outbend->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial_Outbend);
   
 
 }
