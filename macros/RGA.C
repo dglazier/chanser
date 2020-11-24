@@ -30,8 +30,8 @@ void RGA(CLAS12FinalState* FS){
 
   /*
    * Recommended cut on the electron z-vertex position.
-   * -18, 10 for outbending 
-   * -13, 12 for inbending
+   * -18cm, 10cm for outbending 
+   * -13cm, 12cm for inbending
    */
   auto zVertex = new ParticleCutsManager {"RGA_elZVertex",0};
   zVertex->AddParticleCut("e-", new Cut_ZVertex());
