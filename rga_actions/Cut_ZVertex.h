@@ -35,7 +35,7 @@ namespace chanser{
       
     
     void Print(Option_t* option = "")const final{
-      std::cout<<"\t\t"<<ClassName()<<" with cut on z-vertex position between "<<_cutValLow<<" and "<<_cutValHigh<<"cm."<<std::endl;
+      std::cout<<"\t\t"<<ClassName()<<" with cut on z-vertex position as recommended in the RGA analysis note."<<std::endl;
     }
 
   private:
