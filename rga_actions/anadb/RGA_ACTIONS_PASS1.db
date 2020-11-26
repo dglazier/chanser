@@ -3,3 +3,4 @@ include $CHANSER/rga_actions/anadb/FIDUCIALCUT_DC_THETAPHI.db
 include $CHANSER/rga_actions/anadb/FTEL_VZCORRECTION.db
 include $CHANSER/rga_actions/anadb/FTEL_POL4_ECORRECTION.db
 include $CHANSER/rga_actions/anadb/CUT_ZVERTEX.db
+include $CHANSER/rga_actions/anadb/CUT_ELECTRON_SFRAC.db

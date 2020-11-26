@@ -19,7 +19,8 @@ namespace chanser{
   class Cut_RefineElectronID : public BaseCut, public CLAS12Base{
       
   public:
-    Cut_RefineElectronID()=default; // must have default constructor
+    Cut_RefineElectronID();
+    void ChangeRun() final;
 
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
@@ -51,7 +52,9 @@ namespace chanser{
       double ECOUT_en = c12->cal(clas12::ECOUT)->getEnergy();
       double EC_en_total = ECIN_en + ECOUT_en;      
       double PCAL_en = c12->cal(clas12::PCAL)->getEnergy();
-      int PCAL_sec = c12->cal(clas12::PCAL)->getSector();
+      short PCAL_sec = c12->cal(clas12::PCAL)->getSector();
+
+      std::cout<<_fitparams_mean[0][PCAL_sec]<<" "<<ecal_e_sampl_mu[0][PCAL_sec]<<std::endl;
 
       //calc the mean and sigma, for specific sector -> method from S. Dhiel
       mean = ecal_e_sampl_mu[0][PCAL_sec] + 
@@ -78,6 +81,10 @@ namespace chanser{
     }
 
   private:
+
+    tablevals2D_t _fitparams_mean;
+    tablevals2D_t _fitparams_sigma;
+    Bool_t _applicable={true};    
     
     ClassDefOverride(chanser::Cut_RefineElectronID,1);
 
