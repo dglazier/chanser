@@ -15,10 +15,9 @@ namespace chanser{
 
     void ChangeRun() final{
 
-      std::cout<<" FTel_pol4_ECorrection "<<std::endl;
-
-      auto period = GetRunInfo()->_runPeriod+"_" + GetRunInfo()->_fieldSetting;
  
+      auto period = RunPeriodTypeField();
+
       //Get maximum parameters
       auto table = GetAnaDB().GetTable(period,"FTEL_POL4_ECORRECTION",{5});
       if(table.IsValid()){
@@ -30,6 +29,7 @@ namespace chanser{
 	_a3=val[3];
 	_a4=val[4];
       }
+      Print();
     }
  
 

@@ -34,6 +34,25 @@ namespace chanser{
     
     virtual void ChangeRun(){};
     
+ 
+    string RunPeriod()const {
+      if(GetRunInfo())  return  GetRunInfo()->_runPeriod ;
+      return "";
+    }
+    string RunPeriodType()const {
+      if(GetRunInfo())  return  RunPeriod()+"_"+ GetRunInfo()->_dataType ;
+      return "";
+    }
+    string RunPeriodField()const {
+      if(GetRunInfo())  return  RunPeriod()+"_"+ GetRunInfo()->_fieldSetting;
+      return "";
+    }
+    string RunPeriodTypeField()const {
+      if(GetRunInfo())  return  RunPeriodType()+"_"+ GetRunInfo()->_fieldSetting;
+      return "";
+    }
+   
+    
   private :
 
     CLAS12FinalState* _finalstate={nullptr};

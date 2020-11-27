@@ -166,8 +166,10 @@ namespace chanser{
     void AddMergeList(TString name, TString filename);
 
     //sink function mask no longer valid after calling this outside of this
-    void MaskParticles(MaskedEventParticles* mask){_maskedParticles.reset(mask);}
-
+    void MaskParticles(MaskedEventParticles* mask){
+      _maskedParticles.push_back(std::unique_ptr<MaskedEventParticles>{mask});
+    }
+  
     Short_t WasGoodEvent(){return _goodEvent;}
     
   protected :
@@ -227,8 +229,8 @@ namespace chanser{
       
     EventParticles* _eventParts={nullptr};//!
     const truth_ptrs* _truth={nullptr}; //!
-    std::unique_ptr<MaskedEventParticles> _maskedParticles={nullptr};//want to save this and so have moved class version to 2
- 
+    // std::unique_ptr<MaskedEventParticles> _maskedParticles={nullptr};//want to save this and so have moved class version to 2
+    std::vector<std::unique_ptr<MaskedEventParticles>> _maskedParticles;
  
    	
     Topology *_currTopo={nullptr};//!
@@ -279,7 +281,7 @@ namespace chanser{
     Short_t _ownsActions=1;//!
     Short_t _goodEvent=0;//!
     
-    ClassDefOverride(chanser::FinalState,2); //class FinalState
+    ClassDefOverride(chanser::FinalState,1); //class FinalState
   };
 
  

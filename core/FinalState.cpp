@@ -84,12 +84,29 @@ namespace chanser{
   void FinalState::SetEventParticles(EventParticles *eventp){
     //if I want to apply a mask to the particle vectors
     //I must set it with MaskParticles(MaskedEventParticles*)
+    /*
     if(_maskedParticles.get()){
       _maskedParticles->AssignVectors(eventp);
       _maskedParticles->ReadyFile(_outputDir);
       _eventParts=_maskedParticles.get();
     }
     else  _eventParts=eventp;
+    */
+    //particle masks
+
+    EventParticles *currEventP=eventp;
+
+    //if we have masks apply them...
+    for(auto&  mask : _maskedParticles) {
+      //Let action manager link to this final state
+      mask->AssignVectors(currEventP);	
+      mask->ReadyFile(_outputDir);
+      currEventP=mask.get();
+    }
+
+    //finally set the local pointer to the
+    //EventParicles for this final state
+    _eventParts=currEventP;
     
   }
   
@@ -178,7 +195,12 @@ namespace chanser{
       //Let action manager link to this final state
       pt->ChangeRun();	
     }
-
+    //particle masks
+    for(auto& mask : _maskedParticles) {
+      //Let action manager link to this final state
+       mask->ChangeRun(this);	
+    }
+ 
     DerivedChangeRun(); //for users code
   }
   ///////////////////////////////////////////////////////////////
@@ -257,11 +279,21 @@ namespace chanser{
     }
 
     //check if this final state has a particle mask
-    if(_maskedParticles){
+    /* if(_maskedParticles){
       _maskedParticles->ReReadEvent();
       _maskedParticles->PidCounter();
       //if so recheck if event still valid when mask applied
       if(CheckForValidTopos(_maskedParticles->Pids())==kFALSE)
+	return kFALSE;//going to ignore event
+	}*/
+    if(_maskedParticles.empty()==false){
+      for(auto& mask : _maskedParticles) {
+	mask->ReReadEvent();
+	mask->PidCounter();
+      }
+      //if so recheck if event still valid when mask applied
+      //only use last mask wich has cummulative effect of others
+      if(CheckForValidTopos( _maskedParticles.back()->Pids() )==kFALSE)
 	return kFALSE;//going to ignore event
     }
     
@@ -579,12 +611,10 @@ namespace chanser{
     }
 
     //open maseked particle root files
-    if(_maskedParticles.get()){
-        _maskedParticles->ReadyFile(_outputDir);
-	_maskedParticles.reset(); //write to file and close/delete
-	//_maskedParticles is now deleted
+    for(auto&  mask : _maskedParticles) {
+      mask->ReadyFile(_outputDir);
+      mask.reset(); //write to file and close/delete
     }
-  
   }
   /////////////////////////////////////////////////////////////
   ///Call this if you have an output file which will need
@@ -621,8 +651,8 @@ namespace chanser{
        pt->PrintAction();	
      }
 
-     if(_maskedParticles.get())
-       _maskedParticles->PrintMask();
+     for(auto&  mask : _maskedParticles)
+       mask->PrintMask();
    }
   
 }

@@ -22,6 +22,7 @@ namespace chanser{
     Double_t _BeamEnergy={0};
     Double_t _rfBucketLength={0};
 
+    std::string _dataType;
     std::string _runPeriod;
     std::string  _fieldSetting;
      

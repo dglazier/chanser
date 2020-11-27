@@ -6,21 +6,36 @@ namespace chanser{
 
   void MaskedEventParticles::AssignVectors(EventParticles* ep){
     //Link to all  EventParticle vectors
-    SetMapVector(2212,(&ep->_vecProtons));
-    SetMapVector(-2212,(&ep->_vecAntiProtons));
-    SetMapVector(2112,(&ep->_vecNeutrons));
-    SetMapVector(211,(&ep->_vecPiPs));
-    SetMapVector(-211,(&ep->_vecPiMs));
-    SetMapVector(111,(&ep->_vecPi0s));
-    SetMapVector(321,(&ep->_vecKPs));
-    SetMapVector(-321,(&ep->_vecKMs));
-    SetMapVector(11,(&ep->_vecEls));
-    SetMapVector(-11,(&ep->_vecPos));
-    SetMapVector(22,(&ep->_vecGams));
-    SetMapVector(PosID(),(&ep->_vecPlus));
-    SetMapVector(NegID(),(&ep->_vecMinus));
-    SetMapVector(0,(&ep->_vec0));
-    SetMapVector(45,(&ep->_vec45));
+    // SetMapVector(2212,(&ep->_vecProtons));
+    // SetMapVector(-2212,(&ep->_vecAntiProtons));
+    // SetMapVector(2112,(&ep->_vecNeutrons));
+    // SetMapVector(211,(&ep->_vecPiPs));
+    // SetMapVector(-211,(&ep->_vecPiMs));
+    // SetMapVector(111,(&ep->_vecPi0s));
+    // SetMapVector(321,(&ep->_vecKPs));
+    // SetMapVector(-321,(&ep->_vecKMs));
+    // SetMapVector(11,(&ep->_vecEls));
+    // SetMapVector(-11,(&ep->_vecPos));
+    // SetMapVector(22,(&ep->_vecGams));
+    // SetMapVector(PosID(),(&ep->_vecPlus));
+    // SetMapVector(NegID(),(&ep->_vecMinus));
+    // SetMapVector(0,(&ep->_vec0));
+    // SetMapVector(45,(&ep->_vec45));
+    SetMapVector(2212,ep->GetParticleVector(2212));
+    SetMapVector(-2212,ep->GetParticleVector(-2212));
+    SetMapVector(2112,ep->GetParticleVector(2112));
+    SetMapVector(211,ep->GetParticleVector(211));
+    SetMapVector(-211,ep->GetParticleVector(-211));
+    SetMapVector(111,ep->GetParticleVector(111));
+    SetMapVector(321,ep->GetParticleVector(321));
+    SetMapVector(-321,ep->GetParticleVector(-321));
+    SetMapVector(11,ep->GetParticleVector(11));
+    SetMapVector(-11,ep->GetParticleVector(-11));
+    SetMapVector(22,ep->GetParticleVector(22));
+    SetMapVector(PosID(),ep->GetParticleVector(PosID()));
+    SetMapVector(NegID(),ep->GetParticleVector(NegID()));
+    SetMapVector(0,ep->GetParticleVector(0));
+    SetMapVector(45,ep->GetParticleVector(45));
 
     //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors

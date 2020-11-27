@@ -3,7 +3,8 @@
   auto FS = dglazier::Pi2::Make("NONE","ALL");
   FS->AddTopology("Electron:Proton:Pip:Pim");
   
-  //  FS->MaskParticles(new MaskCalorSplitOffs(50,50,50,1) );//currently only works with inclusive =="ALL"
+  FS->MaskParticles(new MaskRadPhotons(50,10,1) );//currently only works with inclusive =="ALL"
+  FS->MaskParticles(new MaskCalorSplitOffs(50,50,50,1) );//currently only works with inclusive =="ALL"
   
   ////Save TreeDataK2
   FS->UseOutputRootTree();

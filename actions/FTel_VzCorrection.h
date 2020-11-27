@@ -15,8 +15,8 @@ namespace chanser{
       
     void ChangeRun() final{
 
-      auto period = GetRunInfo()->_runPeriod+"_" + GetRunInfo()->_fieldSetting;
- 
+      auto period = RunPeriodTypeField();
+
       //Get maximum parameters
       auto table = GetAnaDB().GetTable(period,"FTEL_VZCORRECTION",{1});
       tablevals_t val(1);
@@ -24,7 +24,7 @@ namespace chanser{
 	table.Fill(val);
 	_zpos=val[0];
       }
-      std::cout<<"FTel_VzCorrection set z position to "<<_zpos<<std::endl;
+      Print();
     }
  
    

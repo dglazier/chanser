@@ -9,8 +9,7 @@ namespace chanser{
     * -18, 10 for outbending -ve torus
     * -13, 12 for inbending +ve torus
     */
-   auto period = GetRunInfo()->_runPeriod+"_" +GetRunInfo()->_fieldSetting;
-   //std::cout<<period<<std::endl;
+   auto period = RunPeriodTypeField();
 
    //Get maximum parameters
    auto table=GetAnaDB().GetTable(period,"CUT_ZVERTEX",{2});

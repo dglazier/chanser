@@ -10,7 +10,7 @@ namespace chanser{
     _applicable = kTRUE;
     
     //parameters depend on run period and torus field setting
-    auto period = GetRunInfo()->_runPeriod+"_" + GetRunInfo()->_fieldSetting;
+    auto period = RunPeriodTypeField();
  
     //Get maximum parameters
     auto table = GetAnaDB().GetTable(period,

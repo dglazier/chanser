@@ -1,5 +1,7 @@
 #include "MaskRadPhotons.h"
 #include "VectorUtility.h"
+#include "CLAS12FinalState.h"
+  
 
 
 namespace chanser{
@@ -106,16 +108,13 @@ namespace chanser{
     SetMapVector(2112,&_vecNeutrons);
 
     //which I am going to make from
-    _originalGams=&ep->_vecGams;
-    _originalNeutrons=&ep->_vecNeutrons;
+    _originalGams=ep->GetParticleVector(22);
+    _originalNeutrons=ep->GetParticleVector(2112);
 
      //so we don't have to use the map in the event loop
      //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
     
-    //load the sampling fraction parameters from ccdb
-    FillSamplingFractionParams();
-
   }
   Bool_t MaskRadPhotons::ReReadEvent(){
     using  Position= ROOT::Math::XYZPointF; //floating point position 
@@ -123,11 +122,11 @@ namespace chanser{
     
     _vecGams.clear();
     _vecNeutrons.clear();
-
+   
     //remove photons with no PCAL hit
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
     auto pcalNeutrons=ranges::filter(*_originalNeutrons,CheckForPCAL);
-
+ 
     doCorrection(pcalGams,false);
     doCorrection(pcalNeutrons,true);
 
@@ -235,6 +234,25 @@ namespace chanser{
   }
 
   //Load sampling fraction parameters from ccdb
+  void  MaskRadPhotons::ChangeRun(FinalState* fs) {
+    auto c12fs=dynamic_cast<CLAS12FinalState*>(fs);
+    if(c12fs!=nullptr){
+      auto c12reader = c12fs->GetEventInfo()->CLAS12();
+      auto& ccdbPhSF = c12reader->ccdb()->requestTableDoubles("/calibration/eb/photon_sf");
+
+      _sfPa=ccdbPhSF[0][3]; //0.250 
+      _sfPb=ccdbPhSF[0][4]; //1.029
+      _sfPc=ccdbPhSF[0][5]; //-0.015
+      _sfPd=ccdbPhSF[0][6]; // 0.00012
+    std:cout<<"MaskRadPhotons::ChangeRun "<<_sfPa<<" "<<_sfPb<<" "<<_sfPc<<" "<<_sfPd<<std::endl;
+
+    }
+    else{
+      std::cerr<< " MaskRadPhotons::ChangeRun final state is not a CLAS12FinalState  "<<std::endl;
+      exit(0);
+    }
+  }
+
   void MaskRadPhotons::FillSamplingFractionParams(){
 
     if(_sfPa==0){_sfPa=0.250;} 

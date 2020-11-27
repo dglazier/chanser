@@ -40,6 +40,8 @@ namespace chanser{
     void PrintMask() const override;
     Bool_t ReReadEvent() override;
     
+    void ChangeRun(FinalState* fs) override;
+ 
   private:
 
     void doCorrection(std::vector<chanser::BaseParticle*> radParts, bool neutrons);

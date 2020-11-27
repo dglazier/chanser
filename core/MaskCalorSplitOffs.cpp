@@ -16,13 +16,12 @@ namespace chanser{
     // return;
     //use my own gamma
     SetMapVector(22,&_vecGams);
-    //SetMapVector(211,&_vecPiPs);
+    
     //which I am going to make from
-    _originalGams=&ep->_vecGams;
-    //_originalPiPs=&ep->_vecPiPs;
-    // std::cout<<"   MaskCalorSplitOffs::AssignVectors "<<_vecPiPs.size()<<std::endl;
-     //so we don't have to use the map in the event loop
-     //Must call this at the end of any derived class AssignVectors
+    _originalGams=ep->GetParticleVector(22);
+
+    //so we don't have to use the map in the event loop
+    //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
  
   }
@@ -31,11 +30,9 @@ namespace chanser{
 
     
     _vecGams.clear();
-    //_vecGams.insert(_vecGams.begin(),_originalGams->begin(),_originalGams->end());
-    // std::cout<<"MaskCalorSplitOffs::ReReadEvent() "<<_originalGams->size()<<std::endl;
+
     //remove photons with no PCAL hit
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
-    // std::cout<<"MaskCalorSplitOffs::ReReadEvent() do loop "<< pcalGams.size()<<std::endl;
     
     //Loop over remaining gammas 
     for(auto const& gam:pcalGams){

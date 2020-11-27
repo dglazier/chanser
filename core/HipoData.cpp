@@ -149,9 +149,9 @@ namespace chanser{
       FillRunInfoExp();
     }
 
-    if(_c12->runconfig()->getTorus()>0)
+    if(_c12->runconfig()->getTorus()<0)
       _runInfo._fieldSetting="INBEND";
-    else if(_c12->runconfig()->getTorus()<0)
+    else if(_c12->runconfig()->getTorus()>0)
       _runInfo._fieldSetting="OUTBEND";
     else  _runInfo._fieldSetting="NOBEND";
 
@@ -161,7 +161,8 @@ namespace chanser{
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfoSim(){
     
-    _runInfo._runPeriod="fall_2018_SIM";
+    _runInfo._runPeriod="fall_2018";
+    _runInfo._dataType="SIM";
 
     _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
     
@@ -211,7 +212,8 @@ namespace chanser{
       _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
  
     }
-     _runInfo._runPeriod="fall_2018_EXP";
+    _runInfo._runPeriod="fall_2018";
+    _runInfo._dataType="EXP";
 
     
   }

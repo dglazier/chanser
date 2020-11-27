@@ -36,6 +36,8 @@ namespace chanser{
 
     void ReadyFile(TString outDir);
 
+    virtual void ChangeRun(FinalState* fs) {};
+    
   protected:
     
     particle_ptr NextParticle(Short_t pid,UInt_t& entry);
