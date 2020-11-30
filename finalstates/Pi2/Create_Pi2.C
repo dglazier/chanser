@@ -65,7 +65,7 @@
   ParticleCorrectionManager pcorrm{"FTelEnergyCorrection"};
   pcorrm.AddParticle("e-",new FTel_pol4_ECorrection());
   FS->RegisterPreTopoAction(pcorrm); //PRETOPO
-  ParticleCorrectionManager pVz{"FTelVz",1};//1=> for simulation too
+  ParticleCorrectionManager pVz{"FTelVz"};//1=> for simulation too
   pVz.AddParticle("e-",new FTel_VzCorrection(-0.05));//5cm shift
   FS->RegisterPreTopoAction(pVz); //PRETOPO
 

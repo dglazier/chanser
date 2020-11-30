@@ -163,12 +163,14 @@ namespace chanser{
     
     _runInfo._runPeriod="fall_2018";
     _runInfo._dataType="SIM";
+    
+    auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
 
-    _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
+  _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
     
     //target position in simulation
     auto table = _runInfo.
-      GetAnaDB().GetTable(_runInfo._runPeriod,
+      GetAnaDB().GetTable(period,
 			  "TARGET_POSITION"
 			  ,{3}); //x,y,z pos
     std::vector<double> tarPos(3);
@@ -178,7 +180,7 @@ namespace chanser{
 
     //Beam bucket
     table = _runInfo.
-      GetAnaDB().GetTable(_runInfo._runPeriod,
+      GetAnaDB().GetTable(period,
 			  "RF_BUCKET_LENGTH"
 			  ,{1}); //1 time
     std::vector<double> bucket(1);
