@@ -36,7 +36,7 @@ namespace chanser{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12(); //if you require other DST data
       
-      if(c12->getRegion()!=clas12::FD) return true; //cut only applies to FD
+      if(c12->getRegion()!=clas12::FD){return true;} //cut only applies to FD
 
       Short_t regionVal[3]={6,18,36};
 
