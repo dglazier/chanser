@@ -38,8 +38,8 @@ namespace chanser{
       double part_p = part->P4().P();
       double ECIN_en = c12->cal(clas12::ECIN)->getEnergy();
       double ECOUT_en = c12->cal(clas12::ECOUT)->getEnergy();
-      double EC_en_total = ECIN_en + ECOUT_en;      
       double PCAL_en = c12->cal(clas12::PCAL)->getEnergy();
+      double EC_en_total = ECIN_en + ECOUT_en + PCAL_en;
       short PCAL_sec = c12->cal(clas12::PCAL)->getSector()-1;
 
       //calc the mean and sigma, for specific sector -> method from S. Dhiel
