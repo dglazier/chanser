@@ -226,6 +226,7 @@ namespace chanser{
   
     _time=part->Time();
     _path=part->Path();
+    _detector=part->Detector();
     NotTruth();
   }
   inline void chanser::BaseParticle::Add(const BaseParticle* hsp1, const BaseParticle* hsp2,Int_t pdg){
