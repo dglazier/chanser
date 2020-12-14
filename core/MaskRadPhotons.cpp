@@ -190,14 +190,12 @@ namespace chanser{
 		Float_t reP = EdepTot/GetMeanSF(EdepTot);
 		HSLorentzVector newNP4(reP*sin(partTheta)*cos(partPhi),reP*sin(partTheta)*sin(partPhi),reP*cos(partPhi), reP*reP);
 		other->SetP4(newNP4+other->P4());
-		other->SetDetector(3);
 		hP.Fill(reP); //hist momentum
 		hPx.Fill(newNP4.Px()); //hist momentum x
 		hPy.Fill(newNP4.Py()); //hist momentum y
 		hPz.Fill(newNP4.Pz()); //hist momentum z
 	      } else{
 		other->SetP4(radPart->P4()+other->P4());
-		other->SetDetector(2);
 		hP.Fill(c12RadPart->getP()); //hist momentum
 		hPx.Fill(c12RadPart->par()->getPx()); //hist momentum x
 		hPy.Fill(c12RadPart->par()->getPy()); //hist momentum y
@@ -253,6 +251,25 @@ namespace chanser{
       std::cerr<< " MaskRadPhotons::ChangeRun final state is not a CLAS12FinalState  "<<std::endl;
       exit(0);
     }
+  }
+
+  void MaskRadPhotons::FillSamplingFractionParams(){
+
+    if(_sfPa==0){_sfPa=0.250;} 
+    if(_sfPb==0){_sfPb=1.029;}
+    if(_sfPc==0){_sfPc=-0.015;}
+    if(_sfPd==0){_sfPd=0.00012;}
+
+    /*
+      Wait to have database code!!
+
+    auto& ccdbPhSF = GetCLAS12().ccdb()->requestTableDoubles("/calibration/eb/photon_sf");
+
+    _sfPa=ccdbPhSF[0][3]; //0.250 
+    _sfPb=ccdbPhSF[0][4]; //1.029
+    _sfPc=ccdbPhSF[0][5]; //-0.015
+    _sfPd=ccdbPhSF[0][6]; // 0.00012
+    */
   }
 
   /*
