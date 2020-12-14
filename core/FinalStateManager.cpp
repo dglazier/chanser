@@ -172,13 +172,13 @@ namespace chanser{
     //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
-      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<std::endl;
+      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<" "<<fs->FinalDirectory()<<" "<<&_eventParts<<std::endl;
       //See if this final state had any topologies
       //fulfilled by this event
       if(!fs->CheckForValidTopos(eventTopo))
 	continue;
 
-      if(!doneRead){ //only read one per event
+      if(!doneRead){ //only read once per event
 	//got a valid event, read all data
 	_data->ReadEvent();
 	doneRead=kTRUE;
@@ -186,8 +186,6 @@ namespace chanser{
 	//organise the particle vectors for the event
 	if(!_eventParts.ReadEvent(_data->GetParticles()))
 	  break; //something wrong with event disegard it
-
-	//	_data->IsSim() ? fs->SetHasTruth() : fs->SetHasntTruth();
       }
 
       //process this final state

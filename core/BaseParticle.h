@@ -138,7 +138,7 @@ namespace chanser{
     Short_t Status(){return 0;}
     void Clear();
     virtual void MinorClear();
-    virtual void CopyParticle(const BaseParticle* part,Bool_t andPDG);
+    virtual void CopyParticle(const BaseParticle* part,Bool_t andPDG=true);
     virtual void CopyTransient(const BaseParticle* part);
     virtual void Print(Option_t *option="") const;
 
@@ -216,10 +216,14 @@ namespace chanser{
     NotTruth();
   }
   inline void chanser::BaseParticle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
-     SetP4(part->P4());
-     SetVertex(part->Vertex());
-     NotTruth();
-    }
+
+    //non transient members
+    SetPDGcode(part->PDG());
+    _charge=part->Charge();
+    
+    CopyTransient(part);
+  }
+  
   inline void chanser::BaseParticle::CopyTransient(const BaseParticle* part){
     SetP4(part->P4());
     SetVertex(part->Vertex());

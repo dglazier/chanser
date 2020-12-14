@@ -215,6 +215,7 @@ namespace chanser{
     //Copy the event data for this combo of this particle
     for(UInt_t isel=0;isel<_evParts.size();isel++){
       if(isel<_selected.size()){
+	// std::cout<<"sort "<< _selected[isel]->PDG()<<" "<<_selected[isel] <<"   "<<_selected[isel]->P4p()->E()<<" "<<_evParts[isel]<<std::endl;
 	_evParts[isel]->CopyTransient(_selected[isel]);
 	_evParts[isel]->SetVectPDG();
       }

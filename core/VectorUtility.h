@@ -13,7 +13,12 @@ namespace chanser{
       return std::find(begin(range), end(range), t) != end(range);
     }
 
-
+    ////////////////////////////////////////////////////
+    template<typename Range>
+      void copy(const Range& from,Range& to ){
+      to.clear();
+      copy(from.begin(), from.end(), back_inserter(to));
+    }
     ///////////////////////////////////////////////////
     ////////////////////////////////////////////////////
     template<typename Range, typename Function>

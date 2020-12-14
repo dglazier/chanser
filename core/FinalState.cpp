@@ -107,7 +107,6 @@ namespace chanser{
     //finally set the local pointer to the
     //EventParicles for this final state
     _eventParts=currEventP;
-    
   }
   
   ///////////////////////////////////////////////////
