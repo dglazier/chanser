@@ -45,7 +45,7 @@ namespace chanser{
   private:
 
     void doCorrection(std::vector<chanser::BaseParticle*> radParts, bool neutrons);
-    void FillSamplingFractionParams();
+
     Float_t GetMeanSF(Float_t  Edep);
     
     //keep a link to EventParticles vector I will replace
