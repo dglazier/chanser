@@ -76,6 +76,7 @@ namespace chanser{
  
 	      //give my energy to the other
 	      other->SetP4(gam->P4()+other->P4());
+	      other->SetDetector(1);
 	    }
 	  }
 	  hR.Fill(diff.R()); //histogram distance between neutral clusters

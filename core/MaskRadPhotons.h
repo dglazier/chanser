@@ -13,7 +13,6 @@
 #include "MaskedEventParticles.h"
 #include "CLAS12Particle.h"
 #include "clas12defs.h" //from clas12root
-//#include "CLAS12Base.h" when have dbs code
 
 #include <TH1F.h>
 #include <TH2F.h>
@@ -51,7 +50,6 @@ namespace chanser{
   private:
 
     void doCorrection(std::vector<chanser::BaseParticle*> radParts, bool neutrons);
-    void FillSamplingFractionParams();
     Float_t GetMeanSF(Float_t  Edep);
 
     
