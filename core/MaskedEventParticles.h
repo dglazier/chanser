@@ -14,7 +14,8 @@
 
 namespace chanser{
 
- 
+  class TopologyManager;
+  
   class MaskedEventParticles : public EventParticles{
       
   public :
@@ -39,6 +40,8 @@ namespace chanser{
     const std::vector<short>& Pids()const noexcept{return _pidCounts;}
 
     void ReadyFile(TString outDir);
+
+    virtual void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo){};
 
     virtual void ChangeRun(FinalState* fs) {};
 

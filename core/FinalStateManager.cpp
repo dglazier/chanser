@@ -22,6 +22,13 @@ namespace chanser{
     fs->SetInputFileName(filename); //for making unique output dir
     
     cout<<"FinalStateManager::LoadFinalState  "<<_data<<endl;
+
+    //functions otherwise handled by constructor
+    //The ROOT streamer is called after the constructor
+    //so we have to wait to call some initialisations in PostRead
+    fs->PostRead();
+
+    
     fs->SetEventParticles(&_eventParts); //link to data
     fs->SetEventInfo(_data->GetEventInfo());
     fs->SetRunInfo(_data->GetRunInfo());
@@ -30,10 +37,6 @@ namespace chanser{
       fs->SetHasTruth();
       }*/
 
-    //functions otherwise handled by constructor
-    //The ROOT streamer is called after the constructor
-    //so we have to wait to call some initialisations in PostRead
-    fs->PostRead();
         
     if(!fs){
       std::cerr<<"FinalStateManager::LoadFinalState(TString fsname,TString filename)"<<std::endl<<"\t\t"<<fsname<<" in file "<<filename<<std::endl;

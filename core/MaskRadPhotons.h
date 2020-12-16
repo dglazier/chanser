@@ -26,11 +26,7 @@ namespace chanser{
   public :
     MaskRadPhotons()=default;
 
-  MaskRadPhotons(Float_t ecalR,Float_t dTheta,Short_t add,Bool_t useCharge=kFALSE):_ecalR{ecalR},_dTheta{dTheta},_addSplits{add}{
-      if(useCharge==kTRUE){
-	_elID=NegID();
-	_posID=PosID();
-      }
+  MaskRadPhotons(Float_t ecalR,Float_t dTheta,Short_t add):_ecalR{ecalR},_dTheta{dTheta},_addSplits{add}{
     };
     
     virtual ~MaskRadPhotons();//=default;
@@ -46,7 +42,8 @@ namespace chanser{
     
     void ChangeRun(FinalState* fs) override;
 
-   
+    void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
+
   private:
 
     void doCorrection(std::vector<chanser::BaseParticle*> radParts, bool neutrons);

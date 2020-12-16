@@ -311,4 +311,13 @@ namespace chanser{
     return _sfPa*(_sfPb+(_sfPc/Edep)+(_sfPd/(Edep*Edep)));
   }
 
+
+  /* Get particle ID info from topology manager
+   */
+  void MaskRadPhotons::UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo){
+
+    _elID=topoInfo.ParticleID(11);
+    _posID=topoInfo.ParticleID(-11);
+ 
+  }
 }

@@ -1,4 +1,6 @@
 #include "MaskedEventParticles.h"
+#include "Topology.h"
+#include "TopologyManager.h"
 
 
 namespace chanser{
