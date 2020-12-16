@@ -112,11 +112,25 @@ namespace chanser{
     _originalNeutrons=ep->GetParticleVector(2112);
     
     //particle 4-vectors that might change
-    SetMapVector(11,&_vecEls);
+    /*SetMapVector(11,&_vecEls);
     _originalEls=ep->GetParticleVector(11);
     SetMapVector(-11,&_vecPos);
     _originalPos=ep->GetParticleVector(-11);
- 
+    */
+    if(_elID==11){
+      SetMapVector(_elID,&_vecEls);
+      _originalEls=ep->GetParticleVector(_elID);
+      SetMapVector(_posID,&_vecPos);
+      _originalPos=ep->GetParticleVector(_posID);
+    }
+    else{
+      SetMapVector(_elID,&_vecMinus);
+      _originalEls=ep->GetParticleVector(_elID);
+      SetMapVector(_posID,&_vecPlus);
+      _originalPos=ep->GetParticleVector(_posID);
+      
+    }
+      
     //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
@@ -131,9 +145,14 @@ namespace chanser{
     _vecNeutrons.clear();
 
     //copy els and pos as we may modify those
-    ranges::copy(*_originalEls,_vecEls);
-    ranges::copy(*_originalPos,_vecPos);
- 
+    if(_elID==11){
+      ranges::copy(*_originalEls,_vecEls);
+      ranges::copy(*_originalPos,_vecPos);
+    }
+    else{
+      ranges::copy(*_originalEls,_vecMinus);
+      ranges::copy(*_originalPos,_vecPlus);     
+    }
     //remove photons with no PCAL hit
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
     auto pcalNeutrons=ranges::filter(*_originalNeutrons,CheckForPCAL);
@@ -260,6 +279,7 @@ namespace chanser{
   void MaskRadPhotons::PrintMask() const{
     Info("MaskRadPhotons::PrintMask() ",Form("Masking EventParticles with  = %s",Class_Name()),"");
     Info("MaskRadPhotons::PrintMask() ",Form("   cutting neutral candidates at dTheta<%f degrees r>%f cm.\n Will I combine radiated neutrals?  %d",_dTheta,_ecalR,(Int_t)_addSplits),"");
+    Info("MaskRadPhotons::PrintMask() ",Form("   using PID values -ve %d and +ve %d",_elID,_posID),"");
   }
 
   //Load sampling fraction parameters from ccdb
