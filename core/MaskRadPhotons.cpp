@@ -230,7 +230,13 @@ namespace chanser{
 
 		//reassign e lorentzvector
 		lepton->SetP4(newNP4+lepton->P4());
-		lepton->SetDetector(3);
+		if(abs(diffPhi)<1.5){
+		  lepton->SetDetector(30);
+		} else if((_fieldSign*diffPhi)>1.5 && (_fieldSign*diffPhi)<10){
+		  lepton->SetDetector(31);
+		} else {
+		  lepton->SetDetector(32);
+		}
 		//histogram
 		hP.Fill(reP); //hist momentum
 		hPx.Fill(newNP4.Px()); //hist momentum x
@@ -239,7 +245,13 @@ namespace chanser{
 	      } else{
 		//reassign e lorentzvector
 		lepton->SetP4(radPart->P4()+lepton->P4());
-		lepton->SetDetector(2);
+	        if(abs(diffPhi)<1.5){
+		  lepton->SetDetector(20);
+		} else if((_fieldSign*diffPhi)>1.5 && (_fieldSign*diffPhi)<10){
+		  lepton->SetDetector(21);
+		} else {
+		  lepton->SetDetector(22);
+		}
 		//histogram
 		hP.Fill(c12RadPart->getP()); //hist momentum
 		hPx.Fill(c12RadPart->par()->getPx()); //hist momentum x
@@ -293,7 +305,13 @@ namespace chanser{
       _sfPb=ccdbPhSF[0][4]; //1.029
       _sfPc=ccdbPhSF[0][5]; //-0.015
       _sfPd=ccdbPhSF[0][6]; // 0.00012
-    std:cout<<"MaskRadPhotons::ChangeRun "<<_sfPa<<" "<<_sfPb<<" "<<_sfPc<<" "<<_sfPd<<std::endl;
+
+      std::string fieldSetting = c12fs->GetRunInfo()->_fieldSetting;
+      if(fieldSetting=="INBEND"){
+        _fieldSign=-1;
+      }
+
+    std:cout<<"MaskRadPhotons::ChangeRun "<<_sfPa<<" "<<_sfPb<<" "<<_sfPc<<" "<<_sfPd<<" field: "<<fieldSetting<<std::endl;
 
     }
     else{

@@ -95,6 +95,8 @@ namespace chanser{
 
     Short_t _elID={11};
     Short_t _posID={-11};
+
+    Short_t  _fieldSign={1};
     
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;

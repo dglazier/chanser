@@ -47,6 +47,11 @@ namespace chanser{
   
   void HipoProcessor::SlaveBegin(TTree * /*tree*/)
   {
+
+    TDatabasePDG *pdgDB = TDatabasePDG::Instance();
+   //name,title,mass,stable,width,charge,type.code
+   pdgDB->AddParticle("deuteron","deuteron", 1.875612, kTRUE,0, 1, "Baryon", 45);  
+
     HipoSelector::SlaveBegin(0); //Do not remove this line!
 
     //give the hipor data reader to FinalStateManager
