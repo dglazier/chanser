@@ -170,15 +170,8 @@ namespace chanser{
   };
   
   inline Double_t Kinematics::t0(HSLorentzVector p0,HSLorentzVector p1){
-    //THIS FUNCTION IS PROBABLY NOT CORRECT AND NEEDS CHECKED
-    HSLorentzVector cm0=boost(p0,fCMBoost);
-    HSLorentzVector cm1=boost(p1,fCMBoost);
-    
-    Double_t P0CM=cm0.P();
-    Double_t P1CM=cm1.P();
-    
-    Double_t t0=(p1.M2()/2/fCM.M())*(p1.M2()/2/fCM.M())-(P0CM-P1CM)*(P0CM-P1CM);
-    return t(p0,p1) - t0;
+    Double_t t0 = 2 * fGamma.E() * (fMes.E()-fMes.P()) - fMes.M()*fMes.M();
+    return t(p0,p1) + t0;
   }
   
   inline void Kinematics::ElectroCMDecay(){
