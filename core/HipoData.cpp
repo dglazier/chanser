@@ -25,7 +25,7 @@ namespace chanser{
     }
 
     //On PROOF databases will be set from HipoSelector to HipoChain db
-    if(&(_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
+    if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
 
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
