@@ -51,13 +51,13 @@ namespace chanser{
     Double_t CosTheta(){return fCosTh;}
     Double_t Phi(){return fPhi;}
     
-    void SetTarget(HSLorentzVector tar){fTar=tar;};
+    void SetTarget(const HSLorentzVector& tar){fTar=tar;};
     void SetTarget(TLorentzVector tar){fTar=HSLorentzVector(tar.X(),tar.Y(),tar.Z(),tar.T());}
     
     /////////////////////////////////////////////////////////////
     /// Set electron scattering and target 4-vectors \n
     /// Use them to calculate cm 4-vector
-    void SetElecsTarget(HSLorentzVector in,HSLorentzVector sc,HSLorentzVector tar){
+    void SetElecsTarget(const HSLorentzVector& in,const HSLorentzVector& sc,const HSLorentzVector& tar){
       fElin=in;
       fElsc=sc;
       fGamma=fElin-fElsc;
@@ -76,7 +76,7 @@ namespace chanser{
     /////////////////////////////////////////////////////////////
     /// Set incoming photon and target 4-vectors \n
     /// Use them to calculate cm 4-vector
-    void SetGammaTarget(HSLorentzVector gamma,HSLorentzVector tar){
+    void SetGammaTarget(const HSLorentzVector& gamma,const HSLorentzVector& tar){
       fGamma=gamma;
       fTar=tar;
       fCM=gamma+tar;
@@ -90,7 +90,7 @@ namespace chanser{
     }
     ///////////////////////////////////////////////////////////
     /// Set primary decay products of the CM system. 
-    void SetMesonBaryon(HSLorentzVector mes,HSLorentzVector bar){
+    void SetMesonBaryon(const HSLorentzVector& mes,const HSLorentzVector& bar){
       fMes=mes;
       fBar=bar;
     }
@@ -101,7 +101,7 @@ namespace chanser{
     ///////////////////////////////////////////////////////////
     /// Set decay products of the meson. \n
     /// d1 will be used to calculate angles in GJ and helicity frame.
-    void SetMesonDecay(HSLorentzVector d1,HSLorentzVector d2){
+    void SetMesonDecay(const HSLorentzVector& d1,const HSLorentzVector& d2){
       fMes_d1=d1;
       fMes_d2=d2;
     }
@@ -112,7 +112,7 @@ namespace chanser{
     ///////////////////////////////////////////////////////////
     /// Set decay products of the baryon. \n
     /// d1 will be used to calculate angles in GJ and helicity frame.
-    void SetBaryonDecay(HSLorentzVector d1,HSLorentzVector d2){
+    void SetBaryonDecay(const HSLorentzVector& d1,const HSLorentzVector& d2){
       fBar_d1=d1;
       fBar_d2=d2;
     }
@@ -124,7 +124,7 @@ namespace chanser{
     HSLorentzVector ParticleXYZM(Double_t X,Double_t Y,Double_t Z,Double_t M){HSLorentzVector p4;p4.SetXYZT(X,Y,Z,sqrt(M*M+X*X+Y*Y+Z*Z)); return p4;}
     
     
-    HSLorentzVector Gamma(){return fGamma;}
+    HSLorentzVector Photon(){return fGamma;}
     HSMomentum BoostToCM(){return fCMBoost;}
     Double_t W(){ return fCM.M();}
     Double_t Q2() {return -fGamma.M2();}
@@ -136,7 +136,7 @@ namespace chanser{
     
     
     Double_t t(){return t(fGamma,fMes);}//default gamma-meson
-    Double_t t(HSLorentzVector p0,HSLorentzVector p1){
+    Double_t t(const HSLorentzVector& p0,const HSLorentzVector& p1){
       // HSLorentzVector transfer=p0-p1;
       //return transfer.M2();
       return (p0-p1).M2();
@@ -147,7 +147,7 @@ namespace chanser{
       return (p0-p1).M2();
     }
     Double_t t0(){return t0(fGamma,fMes);}//default gamma-meson
-    Double_t t0(HSLorentzVector p0,HSLorentzVector p1);
+    Double_t t0(const HSLorentzVector& p0,const HSLorentzVector& p1);
     Double_t t0(TLorentzVector p0,TLorentzVector p1){return t0(HSLorentzVector(p0.X(),p0.Y(),p0.Z(),p0.T()),HSLorentzVector(p1.X(),p1.Y(),p1.Z(),p1.T()));};
     
     Double_t Cosx(){return fCosx;}  
@@ -169,7 +169,7 @@ namespace chanser{
     void PolPhotoCMDecay();
   };
   
-  inline Double_t Kinematics::t0(HSLorentzVector p0,HSLorentzVector p1){
+  inline Double_t Kinematics::t0(const HSLorentzVector& p0,const HSLorentzVector& p1){
     Double_t t0 = 2 * fGamma.E() * (fMes.E()-fMes.P()) - fMes.M()*fMes.M();
     return t(p0,p1) + t0;
   }
