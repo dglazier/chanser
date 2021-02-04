@@ -13,7 +13,6 @@
 #include "MaskedEventParticles.h"
 #include "CLAS12Particle.h"
 #include "clas12defs.h" //from clas12root
-//#include "CLAS12Base.h" when have dbs code
 
 #include <TH1F.h>
 #include <TH2F.h>
@@ -27,7 +26,8 @@ namespace chanser{
   public :
     MaskRadPhotons()=default;
 
-  MaskRadPhotons(Float_t ecalR,Float_t dTheta,Short_t add):_ecalR{ecalR},_dTheta{dTheta},_addSplits{add}{};
+  MaskRadPhotons(Float_t ecalR,Float_t dTheta,Short_t add):_ecalR{ecalR},_dTheta{dTheta},_addSplits{add}{
+    };
     
     virtual ~MaskRadPhotons();//=default;
     MaskRadPhotons(const MaskRadPhotons& other) = default; //Copy Constructor
@@ -41,16 +41,20 @@ namespace chanser{
     Bool_t ReReadEvent() override;
     
     void ChangeRun(FinalState* fs) override;
- 
+
+    void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
+
   private:
 
     void doCorrection(std::vector<chanser::BaseParticle*> radParts, bool neutrons);
-    void FillSamplingFractionParams();
     Float_t GetMeanSF(Float_t  Edep);
+
     
     //keep a link to EventParticles vector I will replace
     particles_ptrs* _originalGams{nullptr}; //!
     particles_ptrs* _originalNeutrons{nullptr}; //!
+    particles_ptrs* _originalEls{nullptr}; //!
+    particles_ptrs* _originalPos{nullptr}; //!
 
 
     Float_t _ecalR={0};
@@ -87,8 +91,12 @@ namespace chanser{
     TH1F _hPyN={"PyN","mis-IDed photons (neutrons) reconstructed y Momentum component",100,-2,2};//!
     TH1F _hPzN={"PzN","mis-IDed photons (neutrons) reconstructed z Momentum component",100,0,5};//!
 
-
     Short_t _addSplits={1}; //Combine clusters?
+
+    Short_t _elID={11};
+    Short_t _posID={-11};
+
+    Short_t  _fieldSign={1};
     
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;

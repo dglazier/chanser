@@ -101,13 +101,13 @@ namespace chanser{
       //Let action manager link to this final state
       mask->AssignVectors(currEventP);	
       mask->ReadyFile(_outputDir);
+      mask->UseTopoInfo(_topoMan,_optPid,_optIncl);
       currEventP=mask.get();
     }
 
     //finally set the local pointer to the
     //EventParicles for this final state
     _eventParts=currEventP;
-    
   }
   
   ///////////////////////////////////////////////////

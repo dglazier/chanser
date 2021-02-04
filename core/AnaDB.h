@@ -29,19 +29,7 @@ namespace chanser{
     
   public:
 
-    AnaDBTable(const tablevals_t& vals,const  std::vector<size_t> shape){
-      //make sure total number of entries defined
-      //by shape is same as size of value vector
-      auto shape_entries=1;
-      for(const auto& s:shape)
-	shape_entries*=s;
-
-      if(shape_entries!=vals.size()){
-	std::cerr<<"ERROR AnaDBTable shape does not fit value vector "<<shape_entries<<" asked for but we  have "<<_vals.size()<<std::endl;
-      }
-      _vals = vals;
-      _shape=shape;
-    }
+    AnaDBTable(const tablevals_t& vals,const  std::vector<size_t> shape);
     
     float GetEntry(const std::vector<size_t>& entry) const;
 

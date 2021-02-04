@@ -19,8 +19,7 @@ namespace chanser{
     
     //which I am going to make from
     _originalGams=ep->GetParticleVector(22);
-
-    //so we don't have to use the map in the event loop
+     //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
  
@@ -28,6 +27,7 @@ namespace chanser{
   Bool_t MaskCalorSplitOffs::ReReadEvent(){
     using  Position= ROOT::Math::XYZPointF; //floating point position 
 
+    MaskedEventParticles::ReReadEvent(); //set counters to 0
     
     _vecGams.clear();
 
@@ -67,8 +67,16 @@ namespace chanser{
 	    maskedParticles.push_back(gam); //so don't remove both
 
 	    if(charge==0&&_addSplits){
+
+	      //modifying vector, so create new one so other finalstates not effected
+	      if(ranges::contains(maskedParticles,other) == false){
+		other =  ReplaceParticlePtr(22,other,NextFromPool()); 		
+		maskedParticles.push_back(other); 
+	      }
+ 
 	      //give my energy to the other
 	      other->SetP4(gam->P4()+other->P4());
+	      other->SetDetector(1);
 	    }
 	  }
 	  hR.Fill(diff.R()); //histogram distance between neutral clusters

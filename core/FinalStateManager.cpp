@@ -22,6 +22,13 @@ namespace chanser{
     fs->SetInputFileName(filename); //for making unique output dir
     
     cout<<"FinalStateManager::LoadFinalState  "<<_data<<endl;
+
+    //functions otherwise handled by constructor
+    //The ROOT streamer is called after the constructor
+    //so we have to wait to call some initialisations in PostRead
+    fs->PostRead();
+
+    
     fs->SetEventParticles(&_eventParts); //link to data
     fs->SetEventInfo(_data->GetEventInfo());
     fs->SetRunInfo(_data->GetRunInfo());
@@ -30,10 +37,6 @@ namespace chanser{
       fs->SetHasTruth();
       }*/
 
-    //functions otherwise handled by constructor
-    //The ROOT streamer is called after the constructor
-    //so we have to wait to call some initialisations in PostRead
-    fs->PostRead();
         
     if(!fs){
       std::cerr<<"FinalStateManager::LoadFinalState(TString fsname,TString filename)"<<std::endl<<"\t\t"<<fsname<<" in file "<<filename<<std::endl;
@@ -172,13 +175,13 @@ namespace chanser{
     //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
-      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<std::endl;
+      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<" "<<fs->FinalDirectory()<<" "<<&_eventParts<<std::endl;
       //See if this final state had any topologies
       //fulfilled by this event
       if(!fs->CheckForValidTopos(eventTopo))
 	continue;
 
-      if(!doneRead){ //only read one per event
+      if(!doneRead){ //only read once per event
 	//got a valid event, read all data
 	_data->ReadEvent();
 	doneRead=kTRUE;
@@ -186,8 +189,6 @@ namespace chanser{
 	//organise the particle vectors for the event
 	if(!_eventParts.ReadEvent(_data->GetParticles()))
 	  break; //something wrong with event disegard it
-
-	//	_data->IsSim() ? fs->SetHasTruth() : fs->SetHasntTruth();
       }
 
       //process this final state

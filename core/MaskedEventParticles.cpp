@@ -1,4 +1,6 @@
 #include "MaskedEventParticles.h"
+#include "Topology.h"
+#include "TopologyManager.h"
 
 
 namespace chanser{
@@ -47,7 +49,7 @@ namespace chanser{
  
   }
   void MaskedEventParticles::SetPidVectors(){
-    // std::cout<<"MaskedEventParticles::SetPidVectors() "<<_pids.size()<<" "<<_pidParticles.size()<<std::endl;
+    // synchronise particle vectors with _pid number entries (faster than map)
     _pidParticles.clear();
     for (auto const& pid: _pids)
       _pidParticles.push_back(GetParticleVector(pid));

@@ -41,7 +41,16 @@ namespace USERNAME{
     void Define() final;
       
     BaseOutEvent* GetOutEvent() noexcept final{return TD;}
-      
+    
+    void DerivedChangeRun() final {
+      //If databases are implemented you can
+      //set the beam energy here
+      /*      auto ebeam=GetRunInfo()->_BeamEnergy;
+      auto mele = 0.00051099891;
+      std::cout<<"Change beam energy to :"<<ebeam<<std::endl;
+      _beam.SetXYZT(0,0,ebeam,TMath::Sqrt(ebeam*ebeam + mele*mele));
+      */    
+    }  
   protected :
     void Kinematics() final;
     void UserProcess() final;
