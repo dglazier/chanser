@@ -1,5 +1,6 @@
 #include "ParticleCutsManager.h"
 #include "FinalState.h"
+#include "CLAS12Base.h"
 
 namespace chanser{
     
@@ -36,12 +37,20 @@ namespace chanser{
 	//check if cut assigned for particular particle species
 	if(_pdgToCut.find(pdg)==_pdgToCut.end()){//if not use default
 	  if(_useableDefault==nullptr){
-	    Warning("ParticleCutsManager::Configure(FinalState* fs)","No default or cut defined for all particles");
+	    // Warning("ParticleCutsManager::Configure(FinalState* fs)","No default or cut defined for all particles");
 	    continue;//don't add a cut for this particle
+	  }
+	  //special case cut might depend on clas12reader information
+	  if(dynamic_cast<CLAS12Base*>(_useableDefault.get())!=nullptr){
+	    dynamic_cast<CLAS12Base*>(_useableDefault.get())->SetC12(dynamic_cast<CLAS12FinalState*>(fs));
 	  }
 	  pcuts.AddParticle(_useableDefault.get(),particle);
 	}
-	else{ 
+	else{
+	  //special case cut might depend on clas12reader information
+	  if(dynamic_cast<CLAS12Base*>(_pdgToCut[pdg].get())!=nullptr){
+	    dynamic_cast<CLAS12Base*>(_pdgToCut[pdg].get())->SetC12(dynamic_cast<CLAS12FinalState*>(fs));
+	  }
 	  pcuts.AddParticle(_pdgToCut[pdg].get(),particle);
 	}
 	  
@@ -51,6 +60,15 @@ namespace chanser{
 
     }
    }
+  /////////////////////////////////////////////////////////////////
+  ///update any run dependent parameters
+  void ParticleCutsManager::ChangeRun(){
+    for(auto& cut:_pdgToCut){
+      CLAS12Base* c12Cut=dynamic_cast<CLAS12Base*>(cut.second.get());
+      if(c12Cut!=nullptr)
+	c12Cut->ChangeRun();
+    }
+  }
   /////////////////////////////////////////////////////////////////
   void ParticleCutsManager::PostConfigure(FinalState* fs){
     //can now add branches to particle data trees

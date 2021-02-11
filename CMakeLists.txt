@@ -17,9 +17,28 @@ find_package(ROOT REQUIRED COMPONENTS Proof)  ###########USEROOTSYS
 include(${ROOT_USE_FILE}) ##########USEROOTSYS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS}")
 
-#give clas12root include dir
-set(CLAS12ROOT_DIR $ENV{CLAS12ROOT}/Clas12Root)
-include_directories(${CLAS12ROOT_DIR})
+IF (DEFINED ENV{RCDB_HOME})
+  include_directories($ENV{RCDB_HOME}/cpp/include)
+    #find path to mysql include directory
+  FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
+    /usr/local/include/mysql
+    /usr/include/mysql
+    )
+  include_directories(${MYSQL_INCLUDE_DIR})
+ENDIF (DEFINED ENV{RCDB_HOME})
+
+IF (DEFINED ENV{CCDB_HOME})
+  # CCDB related
+  include_directories($ENV{CCDB_HOME}/include)
+ENDIF (DEFINED ENV{CCDB_HOME})
+IF (DEFINED ENV{CLASQADB_HOME})
+ENDIF (DEFINED ENV{CLASQADB_HOME})
+IF (DEFINED ENV{CLASQADB_HOME})
+  include_directories($ENV{CLASQADB_HOME}/srcC/include)
+  #clasqaDB header contains function definitions which are not inlined
+  #including this header causes multiple definitions of these functions
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,--allow-multiple-definition")
+ENDIF (DEFINED ENV{CLASQADB_HOME})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/core)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/core)

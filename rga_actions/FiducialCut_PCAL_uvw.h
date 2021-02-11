@@ -1,8 +1,11 @@
 //////////////////////////////////////////////////////////////
 ///
-///Class:		
+///Class:      FiducialCut_PCAL_uvw		
 ///Description:
 ///            Implements cuts on the PCAL Fiducial region
+/// within a distance _cutVal (cm) in u, v, w passed by the user.
+///Author: 
+///             Richard Tyson
 
 #pragma once
 
@@ -11,22 +14,26 @@
 namespace chanser{
 
 
-  class FiducialCutPCAL_uvw : public chanser::BaseCut{
+  class FiducialCut_PCAL_uvw : public chanser::BaseCut{
       
   public:
-    FiducialCutPCAL_uvw()=default; // must have default constructor
+    FiducialCut_PCAL_uvw()=default; // must have default constructor
     
-    FiducialCutPCAL_uvw(Float_t cut){_cutVal=cut;}
-      
+    FiducialCut_PCAL_uvw(Float_t cut){_cutVal=cut;}
       
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12(); //if you require other DST data
-      double PCalLU = c12->cal(1)->getLu();
-      double PCalLV = c12->cal(1)->getLv();
-      double PCalLW = c12->cal(1)->getLw();
-      if(PCalLU>_cutVal && PCalLV>_cutVal && PCalLW>_cutVal) return true;
-      return false;
+      
+      if(c12->getRegion()!=clas12::FD) return true; //cut only applies to FD
+
+      double PCalLU = c12->cal(clas12::PCAL)->getLu();
+      if(PCalLU<_cutVal)return false;
+      double PCalLV = c12->cal(clas12::PCAL)->getLv();
+      if(PCalLV<_cutVal)return false;
+      double PCalLW = c12->cal(clas12::PCAL)->getLw();
+      if(PCalLW<_cutVal)return false;
+      return true;
     }
       
     
@@ -41,8 +48,8 @@ namespace chanser{
      */
     Float_t _cutVal=chanser::THIS_FLT_MAX;
       
-    ClassDefOverride(chanser::FiducialCutPCAL_uvw,1);
+    ClassDefOverride(chanser::FiducialCut_PCAL_uvw,1);
 
-  };//class FiducialCutPCAL_uvw
+  };//class FiducialCut_PCAL_uvw
 
 }

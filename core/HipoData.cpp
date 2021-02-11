@@ -6,13 +6,7 @@ namespace chanser{
   ///Initialise clas12reader from hipo filename
   Bool_t HipoData::SetFile(const TString filename){
     _c12=nullptr;
-
-    //current hack for finding if simulated data
-    //Only works if run number from gemc ==11  !!!!
-    if(clas12::clas12reader::readQuickRunConfig(filename.Data())==11){
-      _dataType=static_cast<Short_t> (chanser::DataType::Sim);
-    }
-
+    
     _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
     _c12=_myC12.get(); //for using
     if(!_c12) return kFALSE; 
@@ -21,11 +15,23 @@ namespace chanser{
   }
   ////////////////////////////////////////////////////////////////////////
   ///Initialise clas12reader from hipo filename
+  ///this gets called in HipoProcessor, unlike SetFile
   Bool_t HipoData::Init(){
     
+    //current hack for finding if simulated data
+    //Only works if run number from gemc ==11  !!!!
+    if(clas12::clas12reader::readQuickRunConfig(_c12->getFilename())==11){
+      _dataType=static_cast<Short_t> (chanser::DataType::Sim);
+    }
+
+    //On PROOF databases will be set from HipoSelector to HipoChain db
+    if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
+
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
+    
     if( _myWriter.get()&& (_c12!=nullptr) ) _myWriter->assignReader(*_c12);
+
     return kTRUE;
   }
   /////////////////////////////////////////////////////////////////////
@@ -135,6 +141,83 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfo(){
+    if(IsSim()){
+      FillRunInfoSim();
+    }
+    else{
+      //Normal experimental data, use databases
+      FillRunInfoExp();
+    }
+
+    if(_c12->runconfig()->getTorus()<0)
+      _runInfo._fieldSetting="INBEND";
+    else if(_c12->runconfig()->getTorus()>0)
+      _runInfo._fieldSetting="OUTBEND";
+    else  _runInfo._fieldSetting="NOBEND";
+
+
+ 
+  }
+  ///////////////////////////////////////////////////////////////
+  void HipoData::FillRunInfoSim(){
+    
+    _runInfo._runPeriod="fall_2018";
+    _runInfo._dataType="SIM";
+    
+    auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
+
+  _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
+    
+    //target position in simulation
+    auto table = _runInfo.
+      GetAnaDB().GetTable(period,
+			  "TARGET_POSITION"
+			  ,{3}); //x,y,z pos
+    std::vector<double> tarPos(3);
+    table.Fill(tarPos);
+    _runInfo._TargetCentre=tarPos[2];
+
+
+    //Beam bucket
+    table = _runInfo.
+      GetAnaDB().GetTable(period,
+			  "RF_BUCKET_LENGTH"
+			  ,{1}); //1 time
+    std::vector<double> bucket(1);
+    table.Fill(bucket);
+    _runInfo._rfBucketLength=bucket[0];
+
+  }
+  ///////////////////////////////////////////////////////////////
+  void HipoData::FillRunInfoExp(){
+    //cache data from rcdb
+    auto rcdb=_c12->rcdb();
+    if(rcdb){
+    _runInfo._BeamEnergy  = rcdb->current().beam_energy/1000;//to GeV
+    }
+    //cache data from ccdb
+    auto ccdb=_c12->ccdb();
+    if(ccdb){
+      /////////////////////////////////////////////////
+      //target
+      _runInfo._TargetCentre=ccdb->requestTableValueFor(0,"position","/geometry/target")/100;
+      _runInfo._TargetCentre=-0.03;
+      /////////////////////////////////////////////////
+      //rf
+      int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
+      int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
+
+      // There are two rows in rf/config here we find the one with status=1
+      // if (rfStat1<=0 && rfStat2<=0)
+      // throw new RuntimeException("Couldn't find non-positive RF status in CCDB");
+      int rfId = rfStat2>rfStat1 ? 1 : 0;
+      _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
+ 
+    }
+    _runInfo._runPeriod="fall_2018";
+    _runInfo._dataType="EXP";
+
+    
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillEventInfo(){

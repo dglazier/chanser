@@ -10,6 +10,7 @@
 #include "VectorUtility.h"
 #include "BaseParticle.h"
 #include "CLAS12FinalState.h"
+#include "CLAS12Base.h"
 
 namespace chanser{
 
@@ -25,7 +26,7 @@ namespace chanser{
     
     C12StartTime( )  = default;
      
-    virtual void SetC12(CLAS12FinalState* c12){_c12fs=c12;}
+    virtual void SetC12fs(CLAS12FinalState* c12){_c12fs=c12;}
     virtual void Reset(){};
     virtual Double_t withParticle(CLAS12Particle* p) const { 
       return _c12fs->GetEventInfo()->_StartTime;
@@ -100,6 +101,14 @@ namespace chanser{
     StartTimeAction& operator=(StartTimeAction&& other)=default;
 
     void PrintAction() override;
+    
+    void ChangeRun() override{
+      auto c12base=dynamic_cast<CLAS12Base*>(_stu.get());
+     
+      if(c12base!=nullptr)
+	c12base->ChangeRun();
+    }
+ 
     Bool_t Execute(UInt_t ti)  override{
       //subtract start time from each particle
       auto c12st=_stu.get();

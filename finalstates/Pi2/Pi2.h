@@ -41,7 +41,14 @@ namespace dglazier{
     void Define() final;
       
     BaseOutEvent* GetOutEvent() noexcept final{return TD;}
-      
+
+
+    void DerivedChangeRun() final {
+      auto ebeam=GetRunInfo()->_BeamEnergy;
+      auto mele = 0.00051099891;
+      _beam.SetXYZT(0,0,ebeam,TMath::Sqrt(ebeam*ebeam + mele*mele));
+    }
+
   protected :
     void Kinematics() final;
     void UserProcess() final;

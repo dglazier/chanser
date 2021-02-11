@@ -40,6 +40,8 @@ namespace chanser{
     void LoadData(DataManager* data){_data=data;}
 
     void Init();
+    void Notify();
+    void ChangeRun();
       
     void   ProcessEvent();
     void   ProcessAll(Long64_t Nmax=9223372036854775807);
@@ -63,7 +65,8 @@ namespace chanser{
     finalstate_uptrs _finalStates;//!
     finalstate_ptrs _rawFinalStates;//! for sharing
       
-      
+    bool _changeRun={true};//! always new run to start
+    
     TString _baseOutDir;
     
     ClassDef(chanser::FinalStateManager,2); //class EventParticles

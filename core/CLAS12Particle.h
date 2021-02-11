@@ -22,7 +22,7 @@ namespace chanser{
     void SetCLAS12Particle(clas12::region_particle *p);
     clas12::region_particle* CLAS12() const {return _c12Particle;}
     void MinorClear() override;
-    void CopyParticle(const BaseParticle* part,Bool_t andPDG) override;
+    void CopyParticle(const BaseParticle* part,Bool_t andPDG=true) override;
     void CopyTransient(const BaseParticle* part) override;
 
   private :
@@ -39,12 +39,14 @@ namespace chanser{
      BaseParticle::CopyParticle(part,andPDG);
       
     }
+
   inline void chanser::CLAS12Particle::CopyTransient(const BaseParticle* part){
     // std::cout<<"chanser::CLAS12Particle::CopyParticle("<<std::endl;
     _c12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
     BaseParticle::CopyTransient(part);
   }
-    inline void chanser::CLAS12Particle::SetCLAS12Particle(clas12::region_particle *p){
+  
+  inline void chanser::CLAS12Particle::SetCLAS12Particle(clas12::region_particle *p){
     _c12Particle=p;
     SetPDGcode(p->getPid());//must take region_particle in case useFTbased
 

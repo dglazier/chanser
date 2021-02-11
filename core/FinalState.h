@@ -61,6 +61,10 @@ namespace chanser{
       
     virtual void Init(const TString& baseDir); //takes name of output dir
 
+    void ChangeRun();//for run dependent stuff
+    virtual void DerivedChangeRun() {}//for run dependent stuff in derived class
+
+    
     virtual void Define(){};
       
     void AutoIter();
@@ -77,7 +81,7 @@ namespace chanser{
 
     
     virtual void SetEventInfo(const BaseEventInfo* evi){};
-    void SetRunInfo(const BaseRunInfo* rui){};
+    virtual void SetRunInfo(const BaseRunInfo* rui){};
       
     void ProcessEvent();
       
@@ -162,8 +166,10 @@ namespace chanser{
     void AddMergeList(TString name, TString filename);
 
     //sink function mask no longer valid after calling this outside of this
-    void MaskParticles(MaskedEventParticles* mask){_maskedParticles.reset(mask);}
-
+    void MaskParticles(MaskedEventParticles* mask){
+      _maskedParticles.push_back(std::unique_ptr<MaskedEventParticles>{mask});
+    }
+  
     Short_t WasGoodEvent(){return _goodEvent;}
     
   protected :
@@ -223,8 +229,8 @@ namespace chanser{
       
     EventParticles* _eventParts={nullptr};//!
     const truth_ptrs* _truth={nullptr}; //!
-    std::unique_ptr<MaskedEventParticles> _maskedParticles={nullptr};//want to save this and so have moved class version to 2
- 
+    // std::unique_ptr<MaskedEventParticles> _maskedParticles={nullptr};//want to save this and so have moved class version to 2
+    std::vector<std::unique_ptr<MaskedEventParticles>> _maskedParticles;
  
    	
     Topology *_currTopo={nullptr};//!

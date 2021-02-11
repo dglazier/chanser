@@ -1,5 +1,6 @@
 #include "ParticleCorrectionManager.h"
 #include "FinalState.h"
+#include "CLAS12Base.h"
 
 namespace chanser{
     
@@ -35,15 +36,28 @@ namespace chanser{
 	Int_t pdg = particle->PDG();
 	  
 	//check if correction assigned for particular particle species
-	if(_pdgToCorr.find(pdg)!=_pdgToCorr.end())
-	  topoCorrection.AddParticle(_pdgToCorr[pdg].get(),particle);
-	//no default
+	if(_pdgToCorr.find(pdg)!=_pdgToCorr.end()){
+	  if(dynamic_cast<CLAS12Base*>(_pdgToCorr[pdg].get())!=nullptr){
+	    dynamic_cast<CLAS12Base*>(_pdgToCorr[pdg].get())->SetC12(dynamic_cast<CLAS12FinalState*>(fs));
+	  }
 	  
+	  topoCorrection.AddParticle(_pdgToCorr[pdg].get(),particle);
+	  //no default
+	}
 	    
       }
       _particleCorrs.push_back(topoCorrection);
 
+     }
+  }
+  /////////////////////////////////////////////////////////////////
+  ///update any run dependent parameters
+  void ParticleCorrectionManager::ChangeRun(){
+    for(auto& cor:_pdgToCorr){
+      CLAS12Base* c12Cor=dynamic_cast<CLAS12Base*>(cor.second.get());
+      if(c12Cor!=nullptr)
+	c12Cor->ChangeRun();
     }
   }
-
+  
 }

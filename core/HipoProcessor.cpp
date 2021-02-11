@@ -47,6 +47,11 @@ namespace chanser{
   
   void HipoProcessor::SlaveBegin(TTree * /*tree*/)
   {
+
+    TDatabasePDG *pdgDB = TDatabasePDG::Instance();
+   //name,title,mass,stable,width,charge,type.code
+   pdgDB->AddParticle("deuteron","deuteron", 1.875612, kTRUE,0, 1, "Baryon", 45);  
+
     HipoSelector::SlaveBegin(0); //Do not remove this line!
 
     //give the hipor data reader to FinalStateManager
@@ -71,15 +76,27 @@ namespace chanser{
     //read options 
     ApplyOptions();
     
-    _fsm.Init();
+    //_fsm.Init();
      
   }
   ////////////////////////////////////////////////
   Bool_t HipoProcessor::Notify(){
+    HipoSelector::Notify();
+    
     cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
     
     //This function is called whenever there is a new file
     _hipo.SetReader(_c12.get()); //use it to set the reader ptr
+
+    if(_FSNotInitialsed==kTRUE){
+      _fsm.Init();
+      _FSNotInitialsed=kFALSE;
+    }
+
+    // run and final states now initialised
+    // update final states run dependent information
+    _fsm.Notify();
+    
     return kTRUE;
   }
 
@@ -218,6 +235,15 @@ namespace chanser{
       
       cout<<"Writing hipo filtered to "<<_fsm.BaseOutDir()+opt->GetTitle()<<endl;
       _hipo.SetWriteToFile(_fsm.BaseOutDir()+"worker_"+workerName+opt->GetTitle());
+    }
+    /////////////////////////////////////////////////
+    ///Write filtered hipo output file
+    opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_ANADB"));
+    if(opt!=nullptr){
+      TString pathsStr=opt->GetTitle();
+      auto paths = pathsStr.Tokenize(":");
+      for(auto* path:*paths)
+	_hipo.LoadAnaDB(path->GetName());
     }
   }
 

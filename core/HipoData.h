@@ -33,9 +33,13 @@ namespace chanser{
     //HipoData
     void FillParticles();
     void FillTruth();
-    void FillEventInfo();
-    void FillRunInfo();
-      
+    
+    void FillEventInfo() override;
+
+    void FillRunInfo() override;
+    void FillRunInfoExp();
+    void FillRunInfoSim();
+    
     clas12::clas12reader* Reader() const {return _c12;}
     clas12::clas12writer* Writer() const {return _myWriter.get();}
     
@@ -58,6 +62,8 @@ namespace chanser{
     const BaseEventInfo* GetEventInfo() const noexcept final{return &_eventInfo;};
       
 
+    void LoadAnaDB(const string& name){ _runInfo.LoadAnaDB(name );}
+
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
 
@@ -76,7 +82,9 @@ namespace chanser{
 
     RunInfo _runInfo;
     EventInfo _eventInfo;
-
+    
+    clas12::clas12databases _c12db;
+ 
     std::unique_ptr<clas12::clas12writer> _myWriter; //if created here
 
   };

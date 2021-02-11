@@ -3,6 +3,7 @@
 #include <TSystem.h>
 #include <TBenchmark.h>
 #include <iostream>
+#include "HipoData.h"
 
 namespace chanser{
 
@@ -21,17 +22,21 @@ namespace chanser{
     fs->SetInputFileName(filename); //for making unique output dir
     
     cout<<"FinalStateManager::LoadFinalState  "<<_data<<endl;
-    fs->SetEventParticles(&_eventParts); //link to data
-    fs->SetEventInfo(_data->GetEventInfo());
-    if(_data->IsSim()){
-      fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
-      fs->SetHasTruth();
-    }
 
     //functions otherwise handled by constructor
     //The ROOT streamer is called after the constructor
     //so we have to wait to call some initialisations in PostRead
     fs->PostRead();
+
+    
+    fs->SetEventParticles(&_eventParts); //link to data
+    fs->SetEventInfo(_data->GetEventInfo());
+    fs->SetRunInfo(_data->GetRunInfo());
+    /*if(_data->IsSim()){
+      fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
+      fs->SetHasTruth();
+      }*/
+
         
     if(!fs){
       std::cerr<<"FinalStateManager::LoadFinalState(TString fsname,TString filename)"<<std::endl<<"\t\t"<<fsname<<" in file "<<filename<<std::endl;
@@ -51,10 +56,11 @@ namespace chanser{
   Bool_t  FinalStateManager::LoadFinalState(finalstate_uptr fs){
     fs->SetEventParticles(&_eventParts);
     fs->SetEventInfo(_data->GetEventInfo());
-    if(_data->IsSim()){
+    fs->SetRunInfo(_data->GetRunInfo());
+    /*if(_data->IsSim()){
       fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
       fs->SetHasTruth();
-    }
+      }*/
     _rawFinalStates.push_back(fs.get());
     _finalStates.push_back(std::move(fs));//take a copy
     return kTRUE;
@@ -64,7 +70,10 @@ namespace chanser{
   void  FinalStateManager::ProcessAll(Long64_t Nmax){
     
     Init();
-
+    // run and final states now initialised
+    // update final states run dependent information
+    Notify();
+    
     gBenchmark->Start("FinalStateManager::ProcessAll");
 
     //read event
@@ -91,17 +100,52 @@ namespace chanser{
   ///////////////////////////////////////////////////////////////
   void  FinalStateManager::Init(){
     MakeBaseOutputDir();
+    std::cout<<" FinalStateManager::Init()"<<std::endl;
     
+       
     if(_data->IsLund()){ //if reading LUND events only
-      for(const auto& fs:_finalStates)
+      for(const auto& fs : _finalStates){
+	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
 	fs->SetGenerated();
+      }
     }
     
-    for(const auto& fs:_finalStates){
+    else if(_data->IsSim()){ //if simulated data and reading reconstructed
+      std::cout<<" FinalStateManager::Init() Simulated data, allow truth"<<std::endl;
+      for(const auto& fs : _finalStates){
+	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
+	fs->SetHasTruth();
+      }
+    }
+    else {
+      for(const auto& fs : _finalStates){
+	fs->SetHasntTruth();
+      }
+    }
+    
+    for(const auto& fs : _finalStates){
       fs->Init(_baseOutDir);
       fs->Print();
     }
     
+  }
+  ///////////////////////////////////////////////////////////////
+  ///Flag we have a new run
+  ///We do not actually want to do anything until file is opened
+  void  FinalStateManager::Notify(){
+    _changeRun=true;
+  }
+  ///////////////////////////////////////////////////////////////
+  ///For run dependent stuff
+  void  FinalStateManager::ChangeRun(){
+    //now we have a file opened update run info in data
+    _data->FillRunInfo();
+
+    //update final states
+    for(const auto& fs : _finalStates){
+      fs->ChangeRun();
+    }
+    _changeRun=false; //don't call again until anothe Notify
   }
   //////////////////////////////////////////////////////////////
   void  FinalStateManager::MakeBaseOutputDir(){
@@ -115,26 +159,36 @@ namespace chanser{
   ///Process event over all final states
   void   FinalStateManager::ProcessEvent(){
 
+    
     auto eventTopo = _data->eventPids();
     Bool_t doneRead=kFALSE;
+    
+    //If Notify is called when a new file is opened, _changeRun will be true
+    if(_changeRun==true){
+      //normally event is only read if FinalState requires it
+      //in case we have a new run just read the event now
+      _data->ReadEvent();
+      // doneRead=kTRUE;
+      ChangeRun();
+    }
+ 
     //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
-      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<std::endl;
+      //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<" "<<fs->FinalDirectory()<<" "<<&_eventParts<<std::endl;
       //See if this final state had any topologies
       //fulfilled by this event
       if(!fs->CheckForValidTopos(eventTopo))
 	continue;
 
-      if(!doneRead){ //only read one per event
+      if(!doneRead){ //only read once per event
 	//got a valid event, read all data
 	_data->ReadEvent();
-	//std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
+	doneRead=kTRUE;
+ 	//std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
 	//organise the particle vectors for the event
 	if(!_eventParts.ReadEvent(_data->GetParticles()))
 	  break; //something wrong with event disegard it
-
-	//	_data->IsSim() ? fs->SetHasTruth() : fs->SetHasntTruth();
       }
 
       //process this final state

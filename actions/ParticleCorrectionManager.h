@@ -20,7 +20,7 @@ namespace chanser{
   public:
     ParticleCorrectionManager()=default;
     ///Must give an output directory for saving trees to
-   ParticleCorrectionManager(TString name,Short_t forsim=0):ActionManager(name),_forSim{forsim}{};
+   ParticleCorrectionManager(TString name,Short_t forsim=1):ActionManager(name),_forSim{forsim}{};
     
     virtual ~ParticleCorrectionManager()=default;
     ParticleCorrectionManager(const ParticleCorrectionManager& other) = default; //Copy Constructor
@@ -39,7 +39,8 @@ namespace chanser{
       
   
     void Configure(FinalState* fs) override;
-  
+    void ChangeRun() override;
+ 
     void AddParticle(TString type,BaseCorrection* cor){
       if(TDatabasePDG::Instance()->GetParticle(type)){
 	//cut.SetName(type);

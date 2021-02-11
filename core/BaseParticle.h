@@ -138,7 +138,7 @@ namespace chanser{
     Short_t Status(){return 0;}
     void Clear();
     virtual void MinorClear();
-    virtual void CopyParticle(const BaseParticle* part,Bool_t andPDG);
+    virtual void CopyParticle(const BaseParticle* part,Bool_t andPDG=true);
     virtual void CopyTransient(const BaseParticle* part);
     virtual void Print(Option_t *option="") const;
 
@@ -148,10 +148,12 @@ namespace chanser{
 
  
     Double_t Beta() const {return _path/_time/2.99792e+08*1E9;}//time ns, path m
+    Double_t BetaVer() const {return _path/TimeVer()/2.99792e+08*1E9;}//time ns, path m
     Double_t HypBeta() const {Double_t pp=_p4.P();return pp/sqrt(pp*pp+_pdgMass*_pdgMass);}
     Double_t HypTime() const {return _path/HypBeta()/2.99792e+08*1E9  ;} //in ns
     Double_t DeltaTime() const {return _time-HypTime();};
-    Double_t DeltaTimeVer()const {return DeltaTime()+_vertex.Z()/2.99792e+08*1E9;}
+    Double_t DeltaTimeVer()const {return DeltaTime()-_vertex.Z()/2.99792e+08*1E9;}
+    Double_t TimeVer()const {return _time - _vertex.Z()/2.99792e+08*1E9;}
 
     //Add 4-vectors, doca vertices, fix pdg(optional)
     void Add(const BaseParticle *hsp1, const BaseParticle *hsp2,Int_t pdg=0);
@@ -214,16 +216,21 @@ namespace chanser{
     NotTruth();
   }
   inline void chanser::BaseParticle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
-     SetP4(part->P4());
-     SetVertex(part->Vertex());
-     NotTruth();
-    }
+
+    //non transient members
+    SetPDGcode(part->PDG());
+    _charge=part->Charge();
+    
+    CopyTransient(part);
+  }
+  
   inline void chanser::BaseParticle::CopyTransient(const BaseParticle* part){
     SetP4(part->P4());
     SetVertex(part->Vertex());
   
     _time=part->Time();
     _path=part->Path();
+    _detector=part->Detector();
     NotTruth();
   }
   inline void chanser::BaseParticle::Add(const BaseParticle* hsp1, const BaseParticle* hsp2,Int_t pdg){

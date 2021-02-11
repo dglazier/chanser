@@ -1,54 +1,106 @@
 void RGA(CLAS12FinalState* FS){
-  
+  /* in this convention we break c++11 protocols and use "new" to
+     create objects on the heap, so they do not go out of scope
+     at the end of this function and the finalstate can be written
+     to file.
+  */
+
+
   /*
    * Loose (9cm) cut on PCAL Fiducial region, applied to electrons. 
    */
-  ParticleCutsManager epfcl{"ePCALFiducialLoose",0};
-  epfcl.AddParticleCut("e-", new FiducialCutPCAL_uvw(9));
-  FS->RegisterPostKinAction(epfcl);
-
+  auto fc_pcal_loose = new ParticleCutsManager{"RGA_PCALFiducialLoose",0};
+  fc_pcal_loose->AddParticleCut("e-", new FiducialCut_PCAL_uvw(9));
+  fc_pcal_loose->AddParticleCut("gamma", new FiducialCut_PCAL_uvw(9));
+  FS->RegisterPostTopoAction(*fc_pcal_loose);
   /*
    * Medium (14cm) cut on PCAL Fiducial region, applied to electrons. 
    */
-  ParticleCutsManager epfcm{"ePCALFiducialMedium",0};
-  epfcm.AddParticleCut("e-", new FiducialCutPCAL_uvw(14));
-  FS->RegisterPostKinAction(epfcm);
-
+  auto fc_pcal_med = new ParticleCutsManager{"RGA_PCALFiducialMedium",0};
+  fc_pcal_med->AddParticleCut("e-", new FiducialCut_PCAL_uvw(14));
+  fc_pcal_med->AddParticleCut("gamma", new FiducialCut_PCAL_uvw(14));
+  FS->RegisterPostTopoAction(*fc_pcal_med);
   /*
    * Tight (19cm) cut on PCAL Fiducial region, applied to electrons. 
    */
-  ParticleCutsManager epfct{"ePCALFiducialTight",0};
-  epfct.AddParticleCut("e-", new FiducialCutPCAL_uvw(19));
-  FS->RegisterPostKinAction(epfct);
-
-  /*
-   * Loose (9cm) cut on PCAL Fiducial region, applied to photons. 
-   */
-  ParticleCutsManager gpfcl{"gammaPCALFiducialLoose",0};
-  gpfcl.AddParticleCut("gamma", new FiducialCutPCAL_uvw(9));
-  FS->RegisterPostKinAction(gpfcl);
-
-  /*
-   * Medium (14cm) cut on PCAL Fiducial region, applied to photons. 
-   */
-  ParticleCutsManager gpfcm{"gammaPCALFiducialMedium",0};
-  gpfcm.AddParticleCut("gamma", new FiducialCutPCAL_uvw(14));
-  FS->RegisterPostKinAction(gpfcm);
-
-  /*
-   * Tight (19cm) cut on PCAL Fiducial region, applied to photons. 
-   */
-  ParticleCutsManager gpfct{"gammaPCALFiducialTight",0};
-  gpfct.AddParticleCut("gamma", new FiducialCutPCAL_uvw(19));
-  FS->RegisterPostKinAction(gpfct);
+  auto fc_pcal_tight = new ParticleCutsManager{"RGA_PCALFiducialTight",0};
+  fc_pcal_tight->AddParticleCut("e-", new FiducialCut_PCAL_uvw(19));
+  fc_pcal_tight->AddParticleCut("gamma", new FiducialCut_PCAL_uvw(19));
+  FS->RegisterPostTopoAction(*fc_pcal_tight);
 
   /*
    * Recommended cut on the electron z-vertex position.
+   * -18cm, 10cm for outbending 
+   * -13cm, 12cm for inbending
    */
-  ParticleCutsManager zVertex{"ZVertex",0};
-  zVertex.AddParticleCut("e-", new ZVertexCut(-13,12));
-  FS->RegisterPostKinAction(zVertex);
+  auto zVertex = new ParticleCutsManager {"RGA_elZVertex",0};
+  zVertex->AddParticleCut("e-", new Cut_ZVertex());
+  FS->RegisterPostTopoAction(*zVertex);
+  /*
+   * Difference between hadron and electron vertex difference cut
+   */
+  auto pcmVertexDiff = new ParticleCutsManager{"RGA_ElHadVertexDiff", 0};
+  pcmVertexDiff->AddParticleCut("pi-", new TwoParticleVertexCut("Electron", 20));
+  pcmVertexDiff->AddParticleCut("pi+", new TwoParticleVertexCut("Electron", 20));
+  FS->RegisterPostTopoAction(*pcmVertexDiff);
 
-  FS->WriteToFile("eep_config.root");
-  FS->Print();
+  /*
+   * Photon identification refinement 
+   */
+  auto pcmPhotonRef = new ParticleCutsManager {"RGA_PhotonBetaCut", 0};
+  pcmPhotonRef->AddParticleCut("gamma", new Cut_RefinePhotonID(0.9,1.1));
+  FS->RegisterPostTopoAction(*pcmPhotonRef);
+
+  /*
+   * Electron identification refinement 
+   */
+  auto pcmElRef = new ParticleCutsManager{"RGA_ElectronCut", 0};
+  pcmElRef->AddParticleCut("e-", new Cut_RefineElectronID());
+  FS->RegisterPostTopoAction(*pcmElRef);
+
+  /*
+   * Pion chi2Pid cuts (standard)
+   */
+  auto pcmChi2Pid=new ParticleCutsManager {"RGA_PionChi2Pid", 0};
+  pcmChi2Pid->AddParticleCut("pi-", new Cut_PionChi2Pid(1,0.93));
+  pcmChi2Pid->AddParticleCut("pi+", new Cut_PionChi2Pid(1,0.88));
+  FS->RegisterPostTopoAction(*pcmChi2Pid);
+
+  /*
+   * Pion chi2Pid cuts (strict)
+   */
+  auto pcmChi2PidStrict= new ParticleCutsManager {"RGA_PionChi2PidStrict", 0};
+  pcmChi2PidStrict->AddParticleCut("pi-", new Cut_PionChi2Pid(2,0.93));
+  pcmChi2PidStrict->AddParticleCut("pi+", new Cut_PionChi2Pid(2,0.88));
+  FS->RegisterPostTopoAction(*pcmChi2PidStrict);
+
+
+  /*
+   * DC Fiducial cuts (inbending)
+   */
+ 
+  auto DC_Fiducial_Inbend=new ParticleCutsManager {"RGA_DC_Fiducial_Inbend", 0};
+  DC_Fiducial_Inbend->AddParticleCut("proton", new FiducialCut_DC_ThetaPhi("proton"));
+  DC_Fiducial_Inbend->AddParticleCut("pi+", new FiducialCut_DC_ThetaPhi("pi+"));
+  DC_Fiducial_Inbend->AddParticleCut("pi-", new FiducialCut_DC_ThetaPhi("pi-"));
+  DC_Fiducial_Inbend->AddParticleCut("K+", new FiducialCut_DC_ThetaPhi("K+"));
+  DC_Fiducial_Inbend->AddParticleCut("K-", new FiducialCut_DC_ThetaPhi("K-"));
+  DC_Fiducial_Inbend->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial_Inbend);
+
+
+  /*
+   * DC Fiducial cuts (outbending)
+   */
+
+  auto DC_Fiducial_Outbend=new ParticleCutsManager {"RGA_DC_Fiducial_Outbend", 0};
+  DC_Fiducial_Outbend->AddParticleCut("proton", new FiducialCut_DC_XY("proton"));
+  DC_Fiducial_Outbend->AddParticleCut("pi+", new FiducialCut_DC_XY("pi+"));
+  DC_Fiducial_Outbend->AddParticleCut("pi-", new FiducialCut_DC_XY("pi-"));
+  DC_Fiducial_Outbend->AddParticleCut("K+", new FiducialCut_DC_XY("K+"));
+  DC_Fiducial_Outbend->AddParticleCut("K-", new FiducialCut_DC_XY("K-"));
+  DC_Fiducial_Outbend->AddParticleCut("e-", new FiducialCut_DC_XY("e-"));
+  FS->RegisterPostTopoAction(*DC_Fiducial_Outbend);
+  
+
 }
