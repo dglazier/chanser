@@ -62,6 +62,8 @@ namespace chanser{
     std::unique_ptr<TList> _options={nullptr};//!
     std::unique_ptr<TNamed> _baseDir={nullptr};//!
 
+
+    TString _codeDir; //!
     Bool_t _boss{kFALSE};//!
     Bool_t _FSNotInitialsed{kTRUE};//!
  

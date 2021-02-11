@@ -20,7 +20,8 @@ namespace chanser{
     
     //current hack for finding if simulated data
     //Only works if run number from gemc ==11  !!!!
-    if(clas12::clas12reader::readQuickRunConfig(_c12->getFilename())==11){
+    auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
+    if(runN==11||runN==10){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
 
@@ -149,6 +150,9 @@ namespace chanser{
       FillRunInfoExp();
     }
 
+
+    if(IsLund()) return; //don't have runconfig
+
     if(_c12->runconfig()->getTorus()<0)
       _runInfo._fieldSetting="INBEND";
     else if(_c12->runconfig()->getTorus()>0)
@@ -165,8 +169,7 @@ namespace chanser{
     _runInfo._dataType="SIM";
     
     auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
-
-  _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
+    _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
     
     //target position in simulation
     auto table = _runInfo.
@@ -176,7 +179,6 @@ namespace chanser{
     std::vector<double> tarPos(3);
     table.Fill(tarPos);
     _runInfo._TargetCentre=tarPos[2];
-
 
     //Beam bucket
     table = _runInfo.

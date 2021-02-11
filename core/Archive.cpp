@@ -120,11 +120,13 @@ namespace chanser{
     m.Write();
   }
 
-  void Archive::ExtractFinalState(const TString& afile,const TString& fsname){
+  void Archive::ExtractFinalState(const TString& afile,const TString& fsname,const TString& intoDir){
 
     //returns 0 if new dir -1 if exists
     //filesystem top level directory for all final states processed here
-    gSystem->MakeDirectory(Form("chanser_FinalStates/"));
+    //  gSystem->MakeDirectory(Form("chanser_FinalStates/"));
+    //gSystem->MakeDirectory(intoDir);
+    gSystem->Exec(Form("mkdir -p %s",intoDir.Data()));
     
     //open the root file with this finalstate
     auto arxiv=std::unique_ptr<TFile>{TFile::Open(afile)};
@@ -145,7 +147,7 @@ namespace chanser{
     
      
     //filesystem directory for this specific final state
-    TString topFinalState = Form("chanser_FinalStates/%s/",classname.Data());
+    TString topFinalState = Form("%s/%s/",intoDir.Data(),classname.Data());
     if(gSystem->MakeDirectory(topFinalState)==0){ 
       //Only allow one instance of this class from this USER
       
@@ -168,14 +170,14 @@ namespace chanser{
       //Compile this final state into a library with $USER namespace
       //included in lib name and put in chanser_FinalStates
       //Loader::CompileTo(Form("chanser_FinalStates/%s/%s.cpp",chclassname,chfsname),Form("chanser_FinalStates/%s",chclassname));
-      insertInCompileThese(Form("%s/%s.cpp",topFinalState.Data(),chfsname),Form("chanser_FinalStates/%s",chclassname));
+      insertInCompileThese(Form("%s/%s.cpp",topFinalState.Data(),chfsname),Form("%s/%s",intoDir.Data(),chclassname));
     }
     //This instance of the Final state class may use additional other
     //classes so extract them if required
     auto otherDir=dynamic_cast<TDirectoryFile*>(finalStateDir->Get("Other"));
  
     if(otherDir){
-      gSystem->MakeDirectory(Form("chanser_FinalStates/%s/Other",classname.Data()));
+      gSystem->MakeDirectory(Form("%s/%s/Other",intoDir.Data(),classname.Data()));
       //loop over all files in Other and save source if not already  present
       auto otherKeys=otherDir->GetListOfKeys();
      
@@ -203,7 +205,7 @@ namespace chanser{
 	TString tempName=gSystem->BaseName(otherMacro->GetName());
 	tempName=userNamespace+"_"+tempName(0,tempName.Last('.'));
 	
-	auto libname = Form("chanser_FinalStates/%s",tempName.Data());
+	auto libname = Form("%s/%s",intoDir.Data(),tempName.Data());
 
 	insertInCompileThese(extractedOtherName,libname);
       }
