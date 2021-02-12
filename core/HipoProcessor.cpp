@@ -152,6 +152,7 @@ namespace chanser{
     
     //Tidy up
     gSystem->Exec(Form("rm -rf %s",_codeDir.Data()));
+    gSystem->Exec(Form("rm -rf chanser_FinalStates"));
 
   }
   /////////////////////////////////////////////////////////
