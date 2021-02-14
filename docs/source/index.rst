@@ -18,3 +18,16 @@ Indices and tables
 * :ref:`Getting Started`
 * :ref:`Combitorials`
 * :ref:`Actions`
+
+  
+Docs
+====
+
+.. doxygenclass:: chanser::ActionManager
+   :members:
+   :protected-members:
+   :private-members:
+.. doxygenclass:: chanser::FinalStateManager
+   :members:
+   :protected-members:
+   :private-members:

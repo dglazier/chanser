@@ -15,6 +15,40 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+# -- Path setup --------------------------------------------------------------
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
+#
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
+
+import subprocess, os
+
+def configureDoxyfile(input_dir, output_dir):
+
+	with open('Doxyfile.in', 'r') as file :
+		filedata = file.read()
+
+	filedata = filedata.replace('@DOXYGEN_INPUT_DIR@', input_dir)
+	filedata = filedata.replace('@DOXYGEN_OUTPUT_DIR@', output_dir)
+	
+	with open('Doxyfile', 'w') as file:
+		file.write(filedata)
+
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+breathe_projects = {}
+if read_the_docs_build:
+	input_dir = '../core'
+	output_dir = 'build'
+	configureDoxyfile(input_dir, output_dir)
+	subprocess.call('doxygen', shell=True)
+	breathe_projects['chanser'] = output_dir + '/xml'
+
 
 
 # -- Project information -----------------------------------------------------
@@ -38,8 +72,7 @@ release = ''
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-]
+extensions = [ "breathe" ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -97,6 +130,8 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
+# Breathe Configuration
+breathe_default_project = "chanser"
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

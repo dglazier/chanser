@@ -54,3 +54,11 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/rga_actions)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
 
+
+
+##use cmake to create docs
+# Add the cmake folder so the FindSphinx module is found
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
