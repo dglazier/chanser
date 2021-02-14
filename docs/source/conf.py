@@ -47,7 +47,7 @@ if read_the_docs_build:
 	output_dir = 'build'
 	configureDoxyfile(input_dir, output_dir)
 	subprocess.call('doxygen', shell=True)
-	breathe_projects['chanser'] = output_dir + '/doxygen/xml/'
+	breathe_projects['chanser'] = output_dir + '/xml/'
 
 
 
