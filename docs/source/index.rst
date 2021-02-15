@@ -19,7 +19,7 @@ Indices and tables
 * :ref:`Combitorials`
 * :ref:`Actions`
 
-`doxygen <../doxygen/html/index.html>`_
+`doxygen </home/docs/checkouts/readthedocs.org/user_builds/chanser/checkouts/latest/docs/doxygen/html/index.html>`_
 
 Docs
 ====
