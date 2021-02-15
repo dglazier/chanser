@@ -19,7 +19,8 @@ Indices and tables
 * :ref:`Combitorials`
 * :ref:`Actions`
 
-  
+`doxygen <../doxygen/html/index.html>`_
+
 Docs
 ====
 
