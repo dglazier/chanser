@@ -8,18 +8,20 @@ Welcome to chanser's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+
+   gettingstarted.rst
+
 
 
 
 Indices and tables
 ==================
 
-* :ref:`Getting Started`
+* :doc:`Getting Started <gettingstarted.rst>`
 * :ref:`Combitorials`
 * :ref:`Actions`
 
-`doxygen </home/docs/checkouts/readthedocs.org/user_builds/chanser/checkouts/latest/docs/doxygen/html/index.html>`_
+`doxygen <build/html/index.html>`_
 
 Docs
 ====
