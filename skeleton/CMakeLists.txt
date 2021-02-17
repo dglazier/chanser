@@ -10,8 +10,5 @@ add_library(${SKEL} SHARED Skeleton.cpp FSSkeleton.cpp SkeletonClass.cpp G__${SK
 install(TARGETS ${SKEL} 
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
-FILE(GLOB ROOT_SKEL_PCM ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
-#FILE(GLOB ROOT_SKEL_PCM ${CMAKE_BINARY_DIR}/*pcm)
-
-install (FILES  ${ROOT_SKEL_PCM}    
+install (FILES  ${CMAKE_CURRENT_BINARY_DIR}/libskeleton_rdict.pcm 
   DESTINATION "${CMAKE_INSTALL_LIBDIR}")

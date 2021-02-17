@@ -22,9 +22,7 @@ target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
 install(TARGETS ${CHANZER} 
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
-FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
-
-install (FILES  ${ROOT_CHANZER_PCM}    
+install (FILES  ${CMAKE_CURRENT_BINARY_DIR}/libchanser_rdict.pcm    
   DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
