@@ -10,18 +10,28 @@ Welcome to chanser's documentation!
    :maxdepth: 2
 
    gettingstarted.rst
+   combitorials.rst
 
 
 
-
-Indices and tables
+Some preamble
 ==================
 
-* :doc:`Getting Started <gettingstarted.rst>`
-* :ref:`Combitorials`
-* :ref:`Actions`
+* :ref:`FinalState`
+  
+  Analysing the Final State of a particular reaction
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`doxygen <build/html/index.html>`_
+  chanser is designed to analyse specific particle final states. In practise this
+  can be achieved by detecting a subset of the final particles (missing particles)
+  and so you may simulatanously define various topologies for your final state.
+
+  For example, you may be interested in reactions with an e-, proton, pi+ and pi-.
+  These are your final state particles. But you may be able to analyse events where,
+  for example, the proton has not been detected. So you may define 1 topology with an
+  exclusive final state (detect e-,p,pi+,pi-) and one with just (e-,pi+,pi-).
+
+`doxygen <html/index.html>`_
 
 Docs
 ====

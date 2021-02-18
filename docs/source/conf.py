@@ -133,6 +133,10 @@ html_static_path = ['_static']
 # Breathe Configuration
 breathe_default_project = "chanser"
 
+# for show/hide
+def setup(app):
+    app.add_css_file('custom.css')
+
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
