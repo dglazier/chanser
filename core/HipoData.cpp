@@ -6,7 +6,8 @@ namespace chanser{
   ///Initialise clas12reader from hipo filename
   Bool_t HipoData::SetFile(const TString filename){
     _c12=nullptr;
-    
+
+    std::cout<<"HipoData::SetFile "<< filename<<std::endl;
     _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
     _c12=_myC12.get(); //for using
     if(!_c12) return kFALSE; 
@@ -17,10 +18,18 @@ namespace chanser{
   ///Initialise clas12reader from hipo filename
   ///this gets called in HipoProcessor, unlike SetFile
   Bool_t HipoData::Init(){
-    
-    //current hack for finding if simulated data
+  
+    if(_c12==nullptr){
+      auto nextfile=NextFile();
+      if(nextfile==kFALSE){
+	std::cerr<<" HipoData::Init(), No files to process"<<std::endl;
+	exit(0);
+      }
+    }
+     //current hack for finding if simulated data
     //Only works if run number from gemc ==11  !!!!
-    if(clas12::clas12reader::readQuickRunConfig(_c12->getFilename())==11){
+    auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());
+    if(runN==11 || runN==10){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
 
@@ -34,18 +43,33 @@ namespace chanser{
 
     return kTRUE;
   }
+  //////////////////////////////////////////////////////////////
+  ///Next file
+  Bool_t HipoData::NextFile(){
+    if(_chainOfFiles.GetListOfFiles()->GetEntries()<_nFile)
+      return kFALSE;
+    
+    SetFile(_chainOfFiles.GetListOfFiles()->At(_nFile)->GetTitle());
+    _nFile++;
+    Notify();//let FinalStateManager call change run
+    return kTRUE;
+  }
   /////////////////////////////////////////////////////////////////////
   //Check if there is another event
   //Can now get Pid list for this event
   Bool_t HipoData::InitEvent(){
-
-      
     //keep going until we get an event that has particles
     while(_c12->getReader().next()){
 
       if(FetchPids())
 	return kTRUE;
     }
+    //check for more files
+    if(_nFile<_chainOfFiles.GetNtrees()){
+      NextFile();
+      return InitEvent();
+    }
+    
     return kFALSE; //all event done
   }
   /////////////////////////////////////////////////////////////////////
@@ -149,6 +173,8 @@ namespace chanser{
       FillRunInfoExp();
     }
 
+    if(IsLund()) return; //dont have runconfig
+    
     if(_c12->runconfig()->getTorus()<0)
       _runInfo._fieldSetting="INBEND";
     else if(_c12->runconfig()->getTorus()>0)

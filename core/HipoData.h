@@ -11,6 +11,7 @@
 #include "EventInfo.h"
 #include "clas12reader.h"
 #include "clas12writer.h"
+#include "TChain.h"
 
 
 namespace chanser{
@@ -48,7 +49,13 @@ namespace chanser{
       Init();
    }
     Bool_t SetFile(const TString filename);
-
+    void AddFile(TString name){
+      _chainOfFiles.Add(name);
+      if(_nFile==0)//create reader etc for inits
+	NextFile();
+    }
+    Bool_t NextFile();
+ 
     void SetWriteToFile(TString outfile){
       _myWriter.reset(new clas12::clas12writer(outfile.Data()));
       if(_c12)_myWriter->assignReader(*_c12);
@@ -64,6 +71,8 @@ namespace chanser{
 
     void LoadAnaDB(const string& name){ _runInfo.LoadAnaDB(name );}
 
+ 
+    
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
 
@@ -84,7 +93,10 @@ namespace chanser{
     EventInfo _eventInfo;
     
     clas12::clas12databases _c12db;
- 
+
+    TChain _chainOfFiles;
+    size_t _nFile={0};
+    
     std::unique_ptr<clas12::clas12writer> _myWriter; //if created here
 
   };

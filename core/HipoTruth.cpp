@@ -30,6 +30,8 @@ namespace chanser{
     //   _c12->readEvent();//only need mcparts read
     _c12->clearEvent();
     _c12->getStructure(_c12->mcparts());
+    _c12->getStructure(_c12->mcevent());
+    // _c12->getStructure(_c12->mcmatch());
     FillTruth();
     
     return kTRUE;
