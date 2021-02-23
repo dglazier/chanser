@@ -3,12 +3,16 @@
 #include <TH2.h>
 #include <TSystem.h>
 #include <TProofServ.h>
+#include <TProof.h>
 
 namespace chanser{
   
  
   HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) :
     HipoSelector{chain},_baseDir(new TNamed{"FSBASEDIR",base.Data()}),_boss{kTRUE} {
+      //if chanser_FinalStates exists with .so files then things
+      //will probably screw up...
+      //gSystem->Exec("rm -rf chanser_FinalStates/");
 
     //prepare extra options list
     _options.reset(new TList{});
@@ -34,6 +38,10 @@ namespace chanser{
     /////fInput is no the owner of its ptrs, so we use unique_ptrs
     ///// and give the raw ptr to fInput
 
+    //if chanser_FinalStates exists with .so files then things
+    //will probably screw up...
+    //    gSystem->Exec("rm -rf chanser_FinalStates/");
+
     //Give list of final states to input so it can be initiated on slaves
     fInput->Add(_listOfFinalStates.get());
     //Give the base output directory
@@ -51,24 +59,27 @@ namespace chanser{
     TDatabasePDG *pdgDB = TDatabasePDG::Instance();
    //name,title,mass,stable,width,charge,type.code
    pdgDB->AddParticle("deuteron","deuteron", 1.875612, kTRUE,0, 1, "Baryon", 45);  
-
+   std::cout<<"**********************HipoProcessor::SlaveBegin"<<std::endl;
     HipoSelector::SlaveBegin(0); //Do not remove this line!
 
     //give the hipor data reader to FinalStateManager
     //Data files are opened in Notify (see also HipoSelector)
     _fsm.LoadData(&_hipo);
-  
+    std::cout<<"**********************HipoProcessor::SlaveBegin data loaded"<<std::endl;
+ 
     //now initiliase all final states
     auto listFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
-
+    std::cout<<"**********************HipoProcessor::SlaveBegin finalstates"<<std::endl;
+ 
     //Read all the finalstate analysis objects
     for(Int_t ifs=0;ifs<listFinalStates->GetEntries();++ifs){
       TString workerName;
       if(gProofServ) workerName=gProofServ->GetOrdinal();
       _fsm.LoadFinalState(listFinalStates->At(ifs)->GetName(),listFinalStates->At(ifs)->GetTitle(),workerName);
-    }
-
+    }	
     
+    std::cout<<"**********************HipoProcessor::SlaveBegin output dir	"<<std::endl;
+ 
     //Get the output directory
     auto bDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")));
     _fsm.SetBaseOutDir(bDir->GetTitle());
@@ -76,8 +87,6 @@ namespace chanser{
     //read options 
     ApplyOptions();
     
-    //_fsm.Init();
-     
   }
   ////////////////////////////////////////////////
   Bool_t HipoProcessor::Notify(){
@@ -142,7 +151,9 @@ namespace chanser{
     MergeFinalOutput();
     
     //Tidy up
-    gROOT->ProcessLine(".! rm -fr chanser_FinalStates/");
+    gSystem->Exec(Form("rm -rf %s",_codeDir.Data()));
+    gSystem->Exec(Form("rm -rf chanser_FinalStates"));
+
   }
   /////////////////////////////////////////////////////////
   ///Loop over final states and merge trees from workers
@@ -202,7 +213,8 @@ namespace chanser{
       	continue; 
       Info("HipoProcessor::LoadFinalStates",fss.data(),fis.data());
       _listOfFinalStates->Add(new TNamed(fss,fis));
-      Archive::ExtractFinalState(fis,fss); //finalstate name, filename (full path)
+      _codeDir= TString("chanser_FinalStates/")+gProof->GetSessionTag();
+      Archive::ExtractFinalState(fis,fss,_codeDir); //finalstate name, filename (full path)
     }
     //Do any compilation that is needed
     Archive::doCompileThese();
@@ -237,7 +249,7 @@ namespace chanser{
       _hipo.SetWriteToFile(_fsm.BaseOutDir()+"worker_"+workerName+opt->GetTitle());
     }
     /////////////////////////////////////////////////
-    ///Write filtered hipo output file
+    ///Load analysis database
     opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_ANADB"));
     if(opt!=nullptr){
       TString pathsStr=opt->GetTitle();
