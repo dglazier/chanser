@@ -92,7 +92,8 @@ namespace dglazier{
     _kinCalc.MesonDecayGJ();
     TD->MesonCosThGJ=_kinCalc.CosTheta();
     TD->MesonPhiGJ=_kinCalc.Phi();
-    // std::cout<<"                                            Pi2 "<< TD->MesonCosThGJ<<" "<<TD->MesonPhiGJ<<std::endl;
+    //    std::cout<<"                                            Pi2 "<< TD->MesonCosThGJ<<" "<<TD->MesonPhiGJ<<std::endl;
+    // cout<<"event particles "<<GetEventParticles()<<" "<<GetEventParticles()->GetParticleVector(22)->size()<<" "<<FinalDirectory()<<" "<<_electron.P4().E()<<" "<<_electron.PDG()<<" "<<_electron.Detector()<<endl;
   }
     
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  
