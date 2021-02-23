@@ -10,7 +10,7 @@
   //  FS->MaskParticles(new MaskCalorSplitOffs(50,50,50,1) );//currently only works with inclusive =="ALL"
   
   ////Save TreeDataK2
-  // FS->UseOutputRootTree();
+  FS->UseOutputRootTree();
   //FS->UseOutputHipoNtuple();
 
 

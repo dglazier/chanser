@@ -9,7 +9,7 @@
    // hdata.SetFile("/home/dglazier/fastdata/skim3_005652.hipo");
    hdata.LoadAnaDB("$CHANSER/rga_actions/anadb/RGA_ACTIONS_PASS1.db");
    hdata.LoadAnaDB("$CHANSER/anadbs/RunPeriodPass1.db");
-   
+   hdata.SetRunPeriod("fall_2018");
    // hdata.SetFile("/work/jlab/clas12data/adamtsim/EptoXto2pi_54.hipo");
     hdata.Reader()->useFTBased();	
 

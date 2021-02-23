@@ -257,6 +257,13 @@ namespace chanser{
       for(auto* path:*paths)
 	_hipo.LoadAnaDB(path->GetName());
     }
+    /////////////////////////////////////////////////
+    ///Set Run period
+    opt=dynamic_cast<TNamed*>(options->FindObject("HIPOPROCESSOR_RUNPERIOD"));
+    if(opt!=nullptr){
+      _hipo.SetRunPeriod(opt->GetTitle());
+    }
+ 
   }
 
 }

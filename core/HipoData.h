@@ -71,7 +71,7 @@ namespace chanser{
 
     void LoadAnaDB(const string& name){ _runInfo.LoadAnaDB(name );}
 
- 
+    void SetRunPeriod(TString period){_runPeriod=period;}
     
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
@@ -91,6 +91,8 @@ namespace chanser{
 
     RunInfo _runInfo;
     EventInfo _eventInfo;
+
+    TString _runPeriod; //e.g. fall_2018, for getting correct parameters
     
     clas12::clas12databases _c12db;
 

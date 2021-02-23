@@ -165,6 +165,16 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfo(){
+
+   if(_runPeriod.Length()==0){
+      std::cerr<<" HipoData::FillRunInfo, need valid run period for AnaDB"<<std::endl;
+
+    }
+    else std::cout<<" HipoData::FillRunInfo, run period is "<<_runPeriod<<std::endl;
+
+    _runInfo._runPeriod=_runPeriod;
+
+
     if(IsSim()){
       FillRunInfoSim();
     }
@@ -188,10 +198,10 @@ namespace chanser{
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfoSim(){
     
-    _runInfo._runPeriod="fall_2018";
     _runInfo._dataType="SIM";
     
     auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
+
     _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
     
     //target position in simulation
@@ -215,6 +225,10 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillRunInfoExp(){
+    _runInfo._dataType="EXP";
+
+    auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
+ 
     //cache data from rcdb
     auto rcdb=_c12->rcdb();
     if(rcdb){
@@ -225,8 +239,17 @@ namespace chanser{
     if(ccdb){
       /////////////////////////////////////////////////
       //target
-      _runInfo._TargetCentre=ccdb->requestTableValueFor(0,"position","/geometry/target")/100;
-      _runInfo._TargetCentre=-0.03;
+      //can't get this data from ccdb, so put it in an anadb
+      //_runInfo._TargetCentre=ccdb->requestTableValueFor(0,"position","/geometry/target")/100;
+      //_runInfo._TargetCentre=-0.03;
+      auto table = _runInfo.
+	GetAnaDB().GetTable(period,
+			    "TARGET_POSITION"
+			    ,{3}); //x,y,z pos
+      std::vector<double> tarPos(3);
+      table.Fill(tarPos);
+      _runInfo._TargetCentre=tarPos[2];
+
       /////////////////////////////////////////////////
       //rf
       int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
@@ -239,9 +262,7 @@ namespace chanser{
       _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
  
     }
-    _runInfo._runPeriod="fall_2018";
-    _runInfo._dataType="EXP";
-
+ 
     
   }
   ///////////////////////////////////////////////////////////////
