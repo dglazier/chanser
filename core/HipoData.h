@@ -20,7 +20,10 @@ namespace chanser{
 
   public :
     HipoData()=default;
-    virtual ~HipoData()=default;
+    virtual ~HipoData(){
+      if(_myWriter.get())_myWriter->closeWriter();
+      _myWriter.reset();
+    };
 
     //DataManager
     Bool_t Init() override;
