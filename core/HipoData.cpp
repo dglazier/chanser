@@ -242,15 +242,7 @@ namespace chanser{
       //can't get this data from ccdb, so put it in an anadb
       //_runInfo._TargetCentre=ccdb->requestTableValueFor(0,"position","/geometry/target")/100;
       //_runInfo._TargetCentre=-0.03;
-      auto table = _runInfo.
-	GetAnaDB().GetTable(period,
-			    "TARGET_POSITION"
-			    ,{3}); //x,y,z pos
-      std::vector<double> tarPos(3);
-      table.Fill(tarPos);
-      _runInfo._TargetCentre=tarPos[2];
-
-      /////////////////////////////////////////////////
+       /////////////////////////////////////////////////
       //rf
       int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
       int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
@@ -263,7 +255,18 @@ namespace chanser{
  
     }
  
-    
+    auto table = _runInfo.GetAnaDB().GetTable(period,
+					      "TARGET_POSITION"
+					      ,{3}); //x,y,z pos
+    if(table.IsValid()){
+      std::vector<double> tarPos(3);
+      table.Fill(tarPos);
+      _runInfo._TargetCentre=tarPos[2];//2->z
+    }
+    else{
+      Warning("HipoData::FillRunInfoExp()",Form(" no TARGET_POSITION db entry for %s",period.data()),"");
+    }
+
   }
   ///////////////////////////////////////////////////////////////
   void HipoData::FillEventInfo(){
