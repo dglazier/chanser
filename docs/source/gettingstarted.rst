@@ -467,8 +467,8 @@ To set the data file
 
       ////Set hipo file to be analysed
       HipoData hdata;
-      hdata.SetFile("/input/dir/file.hipo");
-      //hdata.Reader()->useFTBased();
+      hdata.AddFile("/input/dir/file.hipo");
+      //hdata.Reader()->useFTBased();//use this if want FTBased ID
 
       #in Run_Pi4.C
 

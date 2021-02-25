@@ -11,8 +11,8 @@ Welcome to chanser's documentation!
 
    gettingstarted.rst
    combitorials.rst
-
-
+   actions.rst
+   anadb.rst
 
 Some preamble
 ==================
@@ -33,14 +33,14 @@ Some preamble
 
 `doxygen <html/index.html>`_
 
-Docs
-====
-
-.. doxygenclass:: chanser::ActionManager
-   :members:
-   :protected-members:
-   :private-members:
-.. doxygenclass:: chanser::FinalStateManager
-   :members:
-   :protected-members:
-   :private-members:
+#Docs
+#====
+#
+#.. doxygenclass:: chanser::ActionManager
+#   :members:
+#   :protected-members:
+#   :private-members:
+#.. doxygenclass:: chanser::FinalStateManager
+#   :members:
+#   :protected-members:
+#   :private-members:
