@@ -205,6 +205,10 @@ namespace chanser{
     for(auto& fs:_finalStates)
       fs->EndAndWrite();
   }
+  void FinalStateManager::CheckCombitorials(){
+    for(auto& fs:_finalStates)
+      fs->SetCheckCombitorials();
+  }
 
 
     

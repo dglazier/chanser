@@ -171,6 +171,8 @@ namespace chanser{
     }
   
     Short_t WasGoodEvent(){return _goodEvent;}
+
+    void SetCheckCombitorials(){_checkCombi=1;}
     
   protected :
 
@@ -280,6 +282,7 @@ namespace chanser{
     Short_t _itersConfigured=0;//!
     Short_t _ownsActions=1;//!
     Short_t _goodEvent=0;//!
+    Short_t _checkCombi=0;//!
     
     ClassDefOverride(chanser::FinalState,1); //class FinalState
   };
