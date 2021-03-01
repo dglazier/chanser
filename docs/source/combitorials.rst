@@ -90,7 +90,7 @@ will combine these and write out however many events they create.
 	  There are 3 type 1 combinations of -ve particles, for each there are 2 type 3 combinations
 	  There are 4 type 1 combinations of +ve particles, for each there are 3 type 3 combinations
 	  Total combinations = 3 x 2 x 4 x 3 = 72
-	  For this event chanser will create 48 possible combitorial events which the user can reduce
+	  For this event chanser will create 72 possible combitorial events which the user can reduce
 	  through cuts on particle ID variables and exclusivity variables.
 
 |
