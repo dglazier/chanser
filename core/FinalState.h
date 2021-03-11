@@ -74,6 +74,7 @@ namespace chanser{
     void SetEventParticles(EventParticles *eventp);
     
     Bool_t HasTruth()const noexcept{return _hasTruth;};
+    Bool_t IsGenerated()const noexcept{return _isGenerated;};
 
     void SetTruthParticles(const truth_ptrs *tr){_truth=tr;}
     const truth_ptrs& GetTruthParticles()const noexcept{return *_truth;}
@@ -171,6 +172,8 @@ namespace chanser{
     }
   
     Short_t WasGoodEvent(){return _goodEvent;}
+
+    void SetCheckCombitorials(){_checkCombi=1;}
     
   protected :
 
@@ -280,6 +283,7 @@ namespace chanser{
     Short_t _itersConfigured=0;//!
     Short_t _ownsActions=1;//!
     Short_t _goodEvent=0;//!
+    Short_t _checkCombi=0;//!
     
     ClassDefOverride(chanser::FinalState,1); //class FinalState
   };

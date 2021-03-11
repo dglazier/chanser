@@ -20,6 +20,12 @@ namespace chanser{
       _entry++;
       return kTRUE;
     }
+    //check for more files
+    if(_nFile<_chainOfFiles.GetNtrees()){
+      NextFile();
+      return InitEvent();
+    }
+  
     return kFALSE; //all event done
   }
  

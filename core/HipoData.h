@@ -78,6 +78,8 @@ namespace chanser{
     
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
+    size_t _nFile={0};
+    TChain _chainOfFiles;
 
   private :
 
@@ -99,8 +101,6 @@ namespace chanser{
     
     clas12::clas12databases _c12db;
 
-    TChain _chainOfFiles;
-    size_t _nFile={0};
     
     std::unique_ptr<clas12::clas12writer> _myWriter; //if created here
 

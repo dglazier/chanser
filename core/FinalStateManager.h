@@ -55,6 +55,8 @@ namespace chanser{
     const TString& BaseOutDir(){return _baseOutDir;};
     void SetBaseOutDir(const TString& name){_baseOutDir=name;}
     void MakeBaseOutputDir();
+
+    void CheckCombitorials();
     
   private :
       
