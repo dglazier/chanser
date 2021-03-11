@@ -74,6 +74,7 @@ namespace chanser{
     void SetEventParticles(EventParticles *eventp);
     
     Bool_t HasTruth()const noexcept{return _hasTruth;};
+    Bool_t IsGenerated()const noexcept{return _isGenerated;};
 
     void SetTruthParticles(const truth_ptrs *tr){_truth=tr;}
     const truth_ptrs& GetTruthParticles()const noexcept{return *_truth;}
