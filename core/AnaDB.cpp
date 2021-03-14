@@ -31,6 +31,7 @@ namespace chanser{
     }
     if( position>_vals.size() ) {
       std::cerr<<"ERROR AnaDBTable::GetEntry not enough values for this entry, we have "<<_vals.size()<<" and requested element "<<position<<std::endl;
+      return 0;
     }
     return _vals[position];
   }

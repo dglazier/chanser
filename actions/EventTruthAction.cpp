@@ -50,7 +50,7 @@ namespace chanser{
     auto matched = std::min_element(_truth->begin(),_truth->end(),[p](const TruthParticle *p1,const TruthParticle* p2){
 	////////////////////////////////////////
 	return p->p3DistanceSq(p1->_p4.Vect()) <
-	p->p3DistanceSq(p2->_p4.Vect());
+	  p->p3DistanceSq(p2->_p4.Vect());
       });
     ////////////////////////////////////////
 

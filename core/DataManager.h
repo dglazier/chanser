@@ -20,7 +20,9 @@ namespace chanser{
   using truth_ptrs = std::vector<TruthParticle*>;
 
   enum class DataType{Real,Sim,Lund};
-    
+
+  class FinalStateManager;
+  
   class DataManager{
 
   public:
@@ -51,6 +53,10 @@ namespace chanser{
 
     virtual void FillRunInfo(){};
     virtual void FillEventInfo(){};
+
+    void ConnectFinalStateManager(FinalStateManager *fsm){_fsmanager=fsm;}
+
+    void Notify();
     
   protected :
         
@@ -60,7 +66,7 @@ namespace chanser{
       
   private:
       
-       
+    FinalStateManager* _fsmanager={nullptr};
   };
 }
 

@@ -349,7 +349,7 @@ namespace chanser{
   void FinalState::FSProcess(){
     
     _rejectEvent=kFALSE;//in principle will save this combi
-    //CheckCombitorial();
+    if(_checkCombi) CheckCombitorial();
     
     _nPerm++;
 

@@ -20,7 +20,7 @@ namespace chanser{
   public :
     static void ArchiveIt(const TString& finalname, TFile* archiveTo);
 
-    static void ExtractFinalState(const TString& afile,const TString& fsname);
+    static void ExtractFinalState(const TString& afile,const TString& fsname,const TString& intoDir="chanser_FinalStates");
     
     static TString BareClassName(const TString& className);
 
