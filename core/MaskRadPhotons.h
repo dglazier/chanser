@@ -100,6 +100,9 @@ namespace chanser{
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;
     }
+    static Bool_t CheckForNotPCAL(particle_ptr p) noexcept{
+      return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()==0;
+    }
 
     ClassDefOverride(chanser::MaskRadPhotons,1); //class MaskRadPhotons
     

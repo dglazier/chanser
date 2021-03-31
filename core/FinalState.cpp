@@ -99,9 +99,9 @@ namespace chanser{
     //if we have masks apply them...
     for(auto&  mask : _maskedParticles) {
       //Let action manager link to this final state
+      mask->UseTopoInfo(_topoMan,_optPid,_optIncl);
       mask->AssignVectors(currEventP);	
       mask->ReadyFile(_outputDir);
-      mask->UseTopoInfo(_topoMan,_optPid,_optIncl);
       currEventP=mask.get();
     }
 

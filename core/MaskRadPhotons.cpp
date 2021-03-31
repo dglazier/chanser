@@ -38,17 +38,14 @@ namespace chanser{
     //use my own gamma and neutrons
     SetMapVector(22,&_vecGams);
     SetMapVector(2112,&_vecNeutrons);
+    SetMapVector(0,&_vec0);
 
     //which I am going to make from
     _originalGams=ep->GetParticleVector(22);
     _originalNeutrons=ep->GetParticleVector(2112);
-    
-    //particle 4-vectors that might change
-    /*SetMapVector(11,&_vecEls);
-    _originalEls=ep->GetParticleVector(11);
-    SetMapVector(-11,&_vecPos);
-    _originalPos=ep->GetParticleVector(-11);
-    */
+    //vec0 will be sum of Gams and Neuts
+
+  
     if(_elID==11){
       SetMapVector(_elID,&_vecEls);
       _originalEls=ep->GetParticleVector(_elID);
@@ -62,20 +59,18 @@ namespace chanser{
       _originalPos=ep->GetParticleVector(_posID);
       
     }
-      
-    //so we don't have to use the map in the event loop
+     //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
     
   }
   Bool_t MaskRadPhotons::ReReadEvent(){
     using  Position= ROOT::Math::XYZPointF; //floating point position 
-
+ 
     MaskedEventParticles::ReReadEvent(); //set counters to 0
     
-    _vecGams.clear();
-    _vecNeutrons.clear();
-  
+
+
     //copy els and pos as we may modify those
     if(_elID==11){
       _vecEls.clear();
@@ -87,10 +82,25 @@ namespace chanser{
       _vecMinus.clear();
       _vecPlus.clear();
       ranges::copy(*_originalEls,_vecMinus);
-      ranges::copy(*_originalPos,_vecPlus);     
+      ranges::copy(*_originalPos,_vecPlus);
     }
+
+    //clear neutrons adn gammas, will add to them if not masked
+    _vecGams.clear();
+    _vecNeutrons.clear();
+    _vec0.clear();
     
-    //remove photons with no PCAL hit
+    //Keep all neutrals with no PCAL hit (not good photon candidates)
+    //This will not be removed from the event
+    auto notpcalGams=ranges::filter(*_originalGams,CheckForNotPCAL);
+    ranges::copy(notpcalGams,_vecGams);
+    ranges::copy(notpcalGams,_vec0);
+    auto notpcalNeutrons=ranges::filter(*_originalNeutrons,CheckForNotPCAL);
+    ranges::copy(notpcalNeutrons,_vecNeutrons);
+    ranges::append(notpcalNeutrons,_vec0);
+
+    //remove photons with no PCAL hit from potential masking
+    //Only neutrals with PCAL considered for radiative correction
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
     auto pcalNeutrons=ranges::filter(*_originalNeutrons,CheckForPCAL);
  
@@ -221,8 +231,15 @@ namespace chanser{
       }
       
       //This gamma is fine, include it in data
-      if( maskIt == kFALSE)_vecGams.push_back(radPart);
-    }
+      if( maskIt == kFALSE){
+	//std::cout<<"Don't Mask "<<neutrons<<" "<<radPart->PDG()<<" "<<radPart->P4().Theta()*TMath::RadToDeg()<<endl; 
+	if(neutrons==false)_vecGams.push_back(radPart);
+	else _vecNeutrons.push_back(radPart);
+	//and add to all neutrals
+	_vec0.push_back(radPart);	
+      }
+     }
+ 
   }
 
   void MaskRadPhotons::PrintMask() const{
