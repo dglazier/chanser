@@ -15,7 +15,7 @@
 
 namespace chanser{
 
-   
+  
   class MaskCalorSplitOffs : public MaskedEventParticles{
       
   public :
@@ -34,6 +34,8 @@ namespace chanser{
     void PrintMask() const override;
     Bool_t ReReadEvent() override;
     
+    void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
+    
   private:
     
     //keep a link to EventParticles vector I will replace
@@ -50,7 +52,8 @@ namespace chanser{
 
 
     Short_t _addSplits={0}; //Combine clusters?
-    
+    Short_t _gamID={22};
+ 
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;
     }

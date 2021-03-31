@@ -28,75 +28,7 @@ namespace chanser{
     Write(_hPyN);
     Write(_hPzN);
 
-    /*TCanvas cR;
-    _hR.Draw();
-    cR.Draw();
-    cR.Print("_hR.pdf","pdf");
-
-    TCanvas cT;
-    _hdTheta.Draw();
-    cT.Draw();
-    cT.Print("_hdTheta.pdf","pdf");
-
-    TCanvas cP;
-    _hdPhi.Draw();
-    cP.Draw();
-    cP.Print("_hdPhi.pdf","pdf");
-
-    TCanvas cTR;
-    _hdThetaR.Draw("colz");
-    cTR.Draw();
-    cTR.Print("_hdThetaR.pdf","pdf");
-
-    TCanvas cTP;
-    _hdThetadPhi.Draw("colz");
-    cTP.Draw();
-    cTP.Print("_hdThetadPhi.pdf","pdf");
-
-    TCanvas cPR;
-    _hdPhiR.Draw("colz");
-    cPR.Draw();
-    cPR.Print("_hdPhiR.pdf","pdf");
-
-    TCanvas cPm;
-    _hP.Draw();
-    cPm.Draw();
-    cPm.Print("_hP.pdf","pdf");
-
-    TCanvas cRN;
-    _hRN.Draw();
-    cRN.Draw();
-    cRN.Print("_hRN.pdf","pdf");
-
-    TCanvas cTN;
-    _hdThetaN.Draw();
-    cTN.Draw();
-    cTN.Print("_hdThetaN.pdf","pdf");
-
-    TCanvas cPN;
-    _hdPhiN.Draw();
-    cPN.Draw();
-    cPN.Print("_hdPhiN.pdf","pdf");
-
-    TCanvas cTRN;
-    _hdThetaRN.Draw("colz");
-    cTRN.Draw();
-    cTRN.Print("_hdThetaRN.pdf","pdf");
-
-    TCanvas cTPN;
-    _hdThetadPhiN.Draw("colz");
-    cTPN.Draw();
-    cTPN.Print("_hdThetadPhiN.pdf","pdf");
-
-    TCanvas cPRN;
-    _hdPhiRN.Draw("colz");
-    cPRN.Draw();
-    cPRN.Print("_hdPhiRN.pdf","pdf");
-
-     TCanvas cPmN;
-    _hPN.Draw();
-    cPmN.Draw();
-    cPmN.Print("_hPN.pdf","pdf");*/
+   
   }
   
   void MaskRadPhotons::AssignVectors(EventParticles* ep){
@@ -143,16 +75,21 @@ namespace chanser{
     
     _vecGams.clear();
     _vecNeutrons.clear();
-
+  
     //copy els and pos as we may modify those
     if(_elID==11){
+      _vecEls.clear();
+      _vecPos.clear();
       ranges::copy(*_originalEls,_vecEls);
       ranges::copy(*_originalPos,_vecPos);
     }
     else{
+      _vecMinus.clear();
+      _vecPlus.clear();
       ranges::copy(*_originalEls,_vecMinus);
       ranges::copy(*_originalPos,_vecPlus);     
     }
+    
     //remove photons with no PCAL hit
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
     auto pcalNeutrons=ranges::filter(*_originalNeutrons,CheckForPCAL);

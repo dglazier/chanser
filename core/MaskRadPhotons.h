@@ -16,7 +16,6 @@
 
 #include <TH1F.h>
 #include <TH2F.h>
-#include <TCanvas.h>
 
 namespace chanser{
 

@@ -1,5 +1,7 @@
 #include "MaskCalorSplitOffs.h"
 #include "VectorUtility.h"
+#include "Topology.h"
+#include "TopologyManager.h"
 
 
 namespace chanser{
@@ -13,23 +15,34 @@ namespace chanser{
   void MaskCalorSplitOffs::AssignVectors(EventParticles* ep){
     //Just Copy all EventParticle vectors
     MaskedEventParticles::AssignVectors(ep);
-    // return;
-    //use my own gamma
-    SetMapVector(22,&_vecGams);
+
+    if(_gamID==22){
+      //use my own gamma
+      SetMapVector(_gamID,&_vecGams);
+      //which I am going to make from EventBuilder IDed gammas
+      _originalGams=ep->GetParticleVector(_gamID);
+    }
+    else{
+      //use my own all neutral vector for gammas
+      SetMapVector(_gamID,&_vec0);
+      //which I am going to make from event particle, all neutrals
+      _originalGams=ep->GetParticleVector(_gamID);
+      
+    }
     
-    //which I am going to make from
-    _originalGams=ep->GetParticleVector(22);
-     //so we don't have to use the map in the event loop
+    //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
- 
+    
   }
   Bool_t MaskCalorSplitOffs::ReReadEvent(){
     using  Position= ROOT::Math::XYZPointF; //floating point position 
 
     MaskedEventParticles::ReReadEvent(); //set counters to 0
     
-    _vecGams.clear();
+    if(_gamID==22)_vecGams.clear();
+    else _vec0.clear();
+
 
     //remove photons with no PCAL hit
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
@@ -93,44 +106,27 @@ namespace chanser{
       compareToOther(NegID(),_rnmin,_hRm);
       
  
-      if( maskIt == kFALSE)_vecGams.push_back(gam);
+      if( maskIt == kFALSE){
+	if(_gamID==22)_vecGams.push_back(gam);
+	else _vec0.push_back(gam);
+      }
     }
-      //check for nearby neutrals
-      // ranges::filter(GetParticleVector(0),[&gam](particle_ptr neighbour){
-
-      // 	});
-      
-    // if( CheckGamma() )
-    //   _vecGams.push_back();
-    
-    //if(_vecGams.size()<1) return kFALSE;
+  
 
     return kTRUE;
   }
-  // void MaskCalorSplitOffs::CheckGamma(){
-  //   particle_ptr other{nullptr};
-
-  //   //loop over -ve tracks
-  //   UInt_t entry=0;
 
   
-  //   while(NextParticle(-1E4,entry)){
-
-  //   }
-  //  //loop over +ve tracks
-  //   entry=0;
-  //   while(NextParticle(1E4,entry)){
-
-  //   }
-  //  //loop over neutral tracks
-  //   entry=0;
-  //   while(NextParticle(0,entry)){
-      
-  //   }
-  // }
   void MaskCalorSplitOffs::PrintMask() const{
     Info("MaskCalorSplitOffs::PrintMask() ",Form("Masking EventParticles with  = %s",Class_Name()),"");
     Info("MaskCalorSplitOffs::PrintMask() ",Form("   cutting Gamma candidates at r0=%f , r+=%f , r-=%f .\n Will I combine splitoff neutrals ?  %d",_r0min,_rpmin,_rnmin,(Int_t)_addSplits),"");
+    Info("MaskCalorSplitOffs::PrintMask() ",Form("   using gamma PID value %d",_gamID),"");
+
+  }
+  /* Get particle ID info from topology manager
+   */
+  void MaskCalorSplitOffs::UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo){
+    _gamID=topoInfo.ParticleID(22);
   }
 
 }
