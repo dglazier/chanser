@@ -35,7 +35,8 @@ namespace chanser{
     Bool_t ReReadEvent() override;
     
     void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
-    
+    TString ClassName() const override {return "MaskCalorNeutronSplitOffs";} 
+  
   private:
     
     //keep a link to EventParticles vector I will replace

@@ -35,20 +35,22 @@ namespace chanser{
     Bool_t ReReadEvent() override;
     
     void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
-    
+    TString ClassName() const override {return "MaskCalorSplitOffs";} 
   private:
     
     //keep a link to EventParticles vector I will replace
     particles_ptrs* _originalGams{nullptr}; //!
+    particles_ptrs* _originalNeuts{nullptr}; //!
+    particles_ptrs* _original0s{nullptr}; //!
 
 
-    Float_t _r0min={50};
-    Float_t _rpmin={50};
-    Float_t _rnmin={50};
+    Float_t _r0min={6};
+    Float_t _rpmin={6};
+    Float_t _rnmin={6};
     
-    TH1F _hR0={"R0","Distance to neutral",1000,0,500};//!
-    TH1F _hRp={"Rp","Distance to +ve",1000,0,500};//!
-    TH1F _hRm={"Rm","Distance to -ve",1000,0,500};//!
+    TH1F _hR0={"R0","Distance to neutral",180,0,90};//!
+    TH1F _hRp={"Rp","Distance to +ve",180,0,90};//!
+    TH1F _hRm={"Rm","Distance to -ve",180,0,90};//!
 
 
     Short_t _addSplits={0}; //Combine clusters?
@@ -56,6 +58,15 @@ namespace chanser{
  
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;
+    }
+    static Bool_t CheckForNotPCAL(particle_ptr p) noexcept{
+      return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()==0;
+    }
+    static Bool_t CheckForFD(particle_ptr p) noexcept{
+      return static_cast<CLAS12Particle*>(p)->CLAS12()->getRegion()==clas12::FD;
+    }
+    static Bool_t CheckForNotFD(particle_ptr p) noexcept{
+      return static_cast<CLAS12Particle*>(p)->CLAS12()->getRegion()!=clas12::FD;
     }
 
     ClassDefOverride(chanser::MaskCalorSplitOffs,1); //class MaskCalorSplitOffs

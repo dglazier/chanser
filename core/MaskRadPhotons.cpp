@@ -70,7 +70,6 @@ namespace chanser{
     MaskedEventParticles::ReReadEvent(); //set counters to 0
     
 
-
     //copy els and pos as we may modify those
     if(_elID==11){
       _vecEls.clear();
@@ -93,10 +92,10 @@ namespace chanser{
     //Keep all neutrals with no PCAL hit (not good photon candidates)
     //This will not be removed from the event
     auto notpcalGams=ranges::filter(*_originalGams,CheckForNotPCAL);
-    ranges::copy(notpcalGams,_vecGams);
-    ranges::copy(notpcalGams,_vec0);
+    ranges::append(notpcalGams,_vecGams);
+    ranges::append(notpcalGams,_vec0);
     auto notpcalNeutrons=ranges::filter(*_originalNeutrons,CheckForNotPCAL);
-    ranges::copy(notpcalNeutrons,_vecNeutrons);
+    ranges::append(notpcalNeutrons,_vecNeutrons);
     ranges::append(notpcalNeutrons,_vec0);
 
     //remove photons with no PCAL hit from potential masking
@@ -128,9 +127,25 @@ namespace chanser{
   	auto c12RadPart=static_cast<CLAS12Particle*>(radPart)->CLAS12();
 	Double_t partTheta= c12RadPart->getTheta();
 	Double_t partPhi= c12RadPart->getPhi();
+
 	auto partPos= HSPosition(c12RadPart->cal(clas12::PCAL)->getX(),
 		       c12RadPart->cal(clas12::PCAL)->getY(),
 		       c12RadPart->cal(clas12::PCAL)->getZ());
+
+
+	//Now check if hit in ECIN
+	if(c12RadPart->cal(clas12::ECIN)->getEnergy()!=0){
+	  partPos.SetXYZ(c12RadPart->cal(clas12::ECIN)->getX(),
+			 c12RadPart->cal(clas12::ECIN)->getY(),
+			 c12RadPart->cal(clas12::ECIN)->getZ());
+	}
+	//Now check if hit in ECOUT
+	else if(c12RadPart->cal(clas12::ECOUT)->getEnergy()!=0){
+	  partPos.SetXYZ(c12RadPart->cal(clas12::ECOUT)->getX(),
+			 c12RadPart->cal(clas12::ECOUT)->getY(),
+			 c12RadPart->cal(clas12::ECOUT)->getZ());
+	}
+
 
 	CLAS12Particle*  lepton{nullptr};
 	UInt_t entry=0;
@@ -224,22 +239,22 @@ namespace chanser{
       //will mask photon based on dTheta and ECAL distance
       if(neutrons){
 	compareToOther(_elID,_dTheta,_ecalR,_hRN,_hdThetaN,_hdPhiN,_hdThetaRN,_hdThetadPhiN,_hdPhiRN,_hPN,_hPxN,_hPyN,_hPzN);
-	compareToOther(_posID,_dTheta,_ecalR,_hRN,_hdThetaN,_hdPhiN,_hdThetaRN,_hdThetadPhiN,_hdPhiRN,_hPN,_hPxN,_hPyN,_hPzN);
+	if(maskIt==kFALSE) compareToOther(_posID,_dTheta,_ecalR,_hRN,_hdThetaN,_hdPhiN,_hdThetaRN,_hdThetadPhiN,_hdPhiRN,_hPN,_hPxN,_hPyN,_hPzN);
       } else {
 	compareToOther(_elID,_dTheta,_ecalR,_hR,_hdTheta,_hdPhi,_hdThetaR,_hdThetadPhi,_hdPhiR,_hP,_hPx,_hPy,_hPz);
-	compareToOther(_posID,_dTheta,_ecalR,_hR,_hdTheta,_hdPhi,_hdThetaR,_hdThetadPhi,_hdPhiR,_hP,_hPx,_hPy,_hPz);
+	if(maskIt==kFALSE) compareToOther(_posID,_dTheta,_ecalR,_hR,_hdTheta,_hdPhi,_hdThetaR,_hdThetadPhi,_hdPhiR,_hP,_hPx,_hPy,_hPz);
       }
       
       //This gamma is fine, include it in data
       if( maskIt == kFALSE){
-	//std::cout<<"Don't Mask "<<neutrons<<" "<<radPart->PDG()<<" "<<radPart->P4().Theta()*TMath::RadToDeg()<<endl; 
 	if(neutrons==false)_vecGams.push_back(radPart);
 	else _vecNeutrons.push_back(radPart);
 	//and add to all neutrals
 	_vec0.push_back(radPart);	
       }
-     }
- 
+     
+    }
+
   }
 
   void MaskRadPhotons::PrintMask() const{

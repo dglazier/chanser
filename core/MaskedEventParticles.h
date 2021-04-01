@@ -27,6 +27,8 @@ namespace chanser{
     MaskedEventParticles& operator=(const MaskedEventParticles& other)=default;
     MaskedEventParticles& operator=(MaskedEventParticles&& other)=default;
  
+    virtual TString ClassName() const{return "MaskedEventParticles";}
+
     virtual void AssignVectors(EventParticles* ep);
     virtual void PrintMask() const;
     virtual Bool_t ReReadEvent(){

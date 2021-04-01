@@ -279,23 +279,17 @@ namespace chanser{
     }
 
     //check if this final state has a particle mask
-    /* if(_maskedParticles){
-      _maskedParticles->ReReadEvent();
-      _maskedParticles->PidCounter();
-      //if so recheck if event still valid when mask applied
-      if(CheckForValidTopos(_maskedParticles->Pids())==kFALSE)
-	return kFALSE;//going to ignore event
-	}*/
     if(_maskedParticles.empty()==false){
       for(auto& mask : _maskedParticles) {
 	mask->ReReadEvent();
 	mask->PidCounter();
-      }
+      }	
+      
       //if so recheck if event still valid when mask applied
       //only use last mask wich has cummulative effect of others
       if(CheckForValidTopos( _maskedParticles.back()->Pids() )==kFALSE)
 	return kFALSE;//going to ignore event
-    }
+    }	
     
     
     return kTRUE;

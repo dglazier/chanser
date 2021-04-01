@@ -170,7 +170,7 @@ namespace chanser{
       std::cerr<<" HipoData::FillRunInfo, need valid run period for AnaDB"<<std::endl;
 
     }
-    else std::cout<<" HipoData::FillRunInfo, run period is "<<_runPeriod<<std::endl;
+   else std::cout<<" HipoData::FillRunInfo, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
 
     _runInfo._runPeriod=_runPeriod;
 
@@ -203,7 +203,7 @@ namespace chanser{
     auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
 
     _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
-    
+    std::cout<<"HipoData::FillRunInfoSim() "<<_runInfo._BeamEnergy<<" "<<_c12->mcevent()->getEbeam()<<std::endl;
     //target position in simulation
     auto table = _runInfo.
       GetAnaDB().GetTable(period,

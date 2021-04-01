@@ -42,6 +42,7 @@ namespace chanser{
     void ChangeRun(FinalState* fs) override;
 
     void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
+    TString ClassName() const override {return "MaskRadPhotons";} 
 
   private:
 
