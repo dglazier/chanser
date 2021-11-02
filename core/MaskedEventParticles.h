@@ -21,10 +21,10 @@ namespace chanser{
   public :
     MaskedEventParticles()=default;
     virtual ~MaskedEventParticles()=default;
-    MaskedEventParticles(const MaskedEventParticles& other) = default; //Copy Constructor
+    MaskedEventParticles(const MaskedEventParticles& other) = delete; //Copy Constructor
     MaskedEventParticles(MaskedEventParticles&& other) = default; //Move Constructor
       
-    MaskedEventParticles& operator=(const MaskedEventParticles& other)=default;
+    MaskedEventParticles& operator=(const MaskedEventParticles& other)=delete;
     MaskedEventParticles& operator=(MaskedEventParticles&& other)=default;
  
     virtual TString ClassName() const{return "MaskedEventParticles";}

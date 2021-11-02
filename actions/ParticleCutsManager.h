@@ -25,10 +25,10 @@ namespace chanser{
   ParticleCutsManager(TString name,Short_t forReal=0):ActionManager(name),_forReal(forReal){};
     
     virtual ~ParticleCutsManager()=default;
-    ParticleCutsManager(const ParticleCutsManager& other) = default; //Copy Constructor
+    ParticleCutsManager(const ParticleCutsManager& other) = delete; //Copy Constructor
     ParticleCutsManager(ParticleCutsManager&& other) = default; //Move Constructor
       
-    ParticleCutsManager& operator=(const ParticleCutsManager& other)=default;
+    ParticleCutsManager& operator=(const ParticleCutsManager& other)=delete;
     ParticleCutsManager& operator=(ParticleCutsManager&& other)=default;
 
 
