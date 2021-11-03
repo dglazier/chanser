@@ -313,7 +313,8 @@ these particles allowed in the event). alternative "" for NONE,
       #in Create_Pi4.C
 
 Now choose however many of the topologies you have defined that you want
-to include in this configuration
+to include in this configuration. These strings should be the same as those
+in the _doToTopo functions in your .cpp file.
 
 ::
 
@@ -411,8 +412,18 @@ Start time
 ~~~~~~~~~~
 
 You also have to decide where to get the event start time from. See the
-FAQ for details, but to calculate the starttime for each combitorial
-from the e- candidate,
+FAQ for details, to take the particle vertex time from the event builder
+
+::
+
+    ///StartTime
+    StartTimeAction st("EBStartTime",new C12StartTimeFromVt());
+    FS->RegisterPreTopoAction(st);
+
+     #in Create_Pi4.C
+
+Or you can reccalculate the starttime for each combitorial
+from the e- candidate (or other nominated particle),
 
 ::
 
@@ -421,6 +432,9 @@ from the e- candidate,
     FS->RegisterPreTopoAction(st);  //PRETOPO
 
      #in Create_Pi4.C
+     
+     
+For full StartTime options see section .
 
 Particle Corrections
 ~~~~~~~~~~~~~~~~~~~~
