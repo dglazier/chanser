@@ -11,8 +11,13 @@ Welcome to chanser's documentation!
 
    gettingstarted.rst
    combitorials.rst
+   hipodata.rst
    actions.rst
+   masks.rst
    anadb.rst
+   standardactions.rst
+   simulations.rst
+   machinelearning.rst
 
 Some preamble
 ==================

@@ -79,4 +79,17 @@ your final state to calculate the start time from
    StartTimeAction st("StartTime",new C12StartTimeFromHighMomentum("Electron:Pip:Pim"));
 
 
-   
+Use of these options requires parameters from the run database to calibrate
+the RF timings. This must be set in the run script when performing the analysis
+
+::
+
+    clas12databases::SetCCDBLocalConnection("/hdd/Dropbox/clas12/clas12root/RunRoot/ccdb.sqlite");
+
+
+If applying particle ID cuts using timing information then you should
+use position vertex corrected variable. For example when using DeltaTime
+you should get DeltaTimeVer from the particle rather than DeltaTime. If
+you want to use the DeltaTimeCuts method you should use DeltaTimeVerCuts
+instead.
+
