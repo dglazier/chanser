@@ -89,7 +89,7 @@ namespace chanser{
   
   void  MaskedEventParticles::Write(TObject& obj ){
     if(_outFile.get()==nullptr) return;
-    std::cout<<"MaskedEventParticles::Write "<<_outFile->GetTitle()<<" "<<Class()->GetName()<<" "<<ClassName()<<" "<<endl;
+    //std::cout<<"MaskedEventParticles::Write "<<_outFile->GetTitle()<<" "<<Class()->GetName()<<" "<<ClassName()<<" "<<endl;
     if(_outFile->IsWritable()==false){
       Warning("MaskedEventParticles::Write"," file not writeable, probably unclean exit from root");
       return;

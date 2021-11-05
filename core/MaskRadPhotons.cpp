@@ -133,6 +133,7 @@ namespace chanser{
 		       c12RadPart->cal(clas12::PCAL)->getZ());
 
 
+	//////dglazier, why do we not just take the PCAL position ?
 	//Now check if hit in ECIN
 	if(c12RadPart->cal(clas12::ECIN)->getEnergy()!=0){
 	  partPos.SetXYZ(c12RadPart->cal(clas12::ECIN)->getX(),
