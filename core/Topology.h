@@ -63,7 +63,8 @@ namespace chanser{
     void SetPartNames(const vector<TString> names){_partNames=names;}
     const vector<TString> GetPartNames()const {return _partNames;}
     const TString GetPartName(UInt_t i) const {if(_partNames.size()>i) return _partNames[i]; cout<<"Warning Topology PartName not enough particles"<<endl; return TString();}
-    
+    const ParticleConfig& GetPartConfig(UInt_t i)const {return _pconfigs[i];}
+
     UInt_t NParts() const {return _trueDefinition.size();}
     
     UInt_t HowManyTrue(Short_t pdg){

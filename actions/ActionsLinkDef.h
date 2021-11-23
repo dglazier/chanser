@@ -26,6 +26,7 @@
 #pragma link C++ class chanser::FTel_pol4_ECorrection+;
 #pragma link C++ class chanser::FTel_VzCorrection+;
 #pragma link C++ class chanser::EventTruthAction+;
+#pragma link C++ class chanser::MCMatchAction+;
 #pragma link C++ class chanser::MVASignalIDAction+;
 
 #endif
