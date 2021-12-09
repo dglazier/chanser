@@ -83,13 +83,17 @@ namespace chanser{
   #include <TDirectory.h>
   void MaskedEventParticles::ReadyFile(TString outDir){
     auto saveDir=gDirectory;
-    _outFile.reset(TFile::Open(outDir+Class_Name() +".root","recreate"));
+    _outFile.reset(TFile::Open(outDir+ClassName() +".root","recreate"));
     saveDir->cd();
   }
   
   void  MaskedEventParticles::Write(TObject& obj ){
     if(_outFile.get()==nullptr) return;
-    
+    //std::cout<<"MaskedEventParticles::Write "<<_outFile->GetTitle()<<" "<<Class()->GetName()<<" "<<ClassName()<<" "<<endl;
+    if(_outFile->IsWritable()==false){
+      Warning("MaskedEventParticles::Write"," file not writeable, probably unclean exit from root");
+      return;
+    }
     auto saveDir=gDirectory;
     _outFile->cd();
     obj.Write();

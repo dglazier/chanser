@@ -45,9 +45,9 @@ namespace chanser{
       SetTreeDirectory();
     }
     
-    FiledTree(const FiledTree&)=default;
+    FiledTree(const FiledTree&)=delete;
     FiledTree(FiledTree&&)=default;
-    FiledTree& operator=(const FiledTree& other)= default;
+    FiledTree& operator=(const FiledTree& other)= delete;
     FiledTree& operator=(FiledTree&& other) = default;
 
     virtual ~FiledTree();

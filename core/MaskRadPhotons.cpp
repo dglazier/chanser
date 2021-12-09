@@ -28,75 +28,7 @@ namespace chanser{
     Write(_hPyN);
     Write(_hPzN);
 
-    /*TCanvas cR;
-    _hR.Draw();
-    cR.Draw();
-    cR.Print("_hR.pdf","pdf");
-
-    TCanvas cT;
-    _hdTheta.Draw();
-    cT.Draw();
-    cT.Print("_hdTheta.pdf","pdf");
-
-    TCanvas cP;
-    _hdPhi.Draw();
-    cP.Draw();
-    cP.Print("_hdPhi.pdf","pdf");
-
-    TCanvas cTR;
-    _hdThetaR.Draw("colz");
-    cTR.Draw();
-    cTR.Print("_hdThetaR.pdf","pdf");
-
-    TCanvas cTP;
-    _hdThetadPhi.Draw("colz");
-    cTP.Draw();
-    cTP.Print("_hdThetadPhi.pdf","pdf");
-
-    TCanvas cPR;
-    _hdPhiR.Draw("colz");
-    cPR.Draw();
-    cPR.Print("_hdPhiR.pdf","pdf");
-
-    TCanvas cPm;
-    _hP.Draw();
-    cPm.Draw();
-    cPm.Print("_hP.pdf","pdf");
-
-    TCanvas cRN;
-    _hRN.Draw();
-    cRN.Draw();
-    cRN.Print("_hRN.pdf","pdf");
-
-    TCanvas cTN;
-    _hdThetaN.Draw();
-    cTN.Draw();
-    cTN.Print("_hdThetaN.pdf","pdf");
-
-    TCanvas cPN;
-    _hdPhiN.Draw();
-    cPN.Draw();
-    cPN.Print("_hdPhiN.pdf","pdf");
-
-    TCanvas cTRN;
-    _hdThetaRN.Draw("colz");
-    cTRN.Draw();
-    cTRN.Print("_hdThetaRN.pdf","pdf");
-
-    TCanvas cTPN;
-    _hdThetadPhiN.Draw("colz");
-    cTPN.Draw();
-    cTPN.Print("_hdThetadPhiN.pdf","pdf");
-
-    TCanvas cPRN;
-    _hdPhiRN.Draw("colz");
-    cPRN.Draw();
-    cPRN.Print("_hdPhiRN.pdf","pdf");
-
-     TCanvas cPmN;
-    _hPN.Draw();
-    cPmN.Draw();
-    cPmN.Print("_hPN.pdf","pdf");*/
+   
   }
   
   void MaskRadPhotons::AssignVectors(EventParticles* ep){
@@ -106,17 +38,14 @@ namespace chanser{
     //use my own gamma and neutrons
     SetMapVector(22,&_vecGams);
     SetMapVector(2112,&_vecNeutrons);
+    SetMapVector(0,&_vec0);
 
     //which I am going to make from
     _originalGams=ep->GetParticleVector(22);
     _originalNeutrons=ep->GetParticleVector(2112);
-    
-    //particle 4-vectors that might change
-    /*SetMapVector(11,&_vecEls);
-    _originalEls=ep->GetParticleVector(11);
-    SetMapVector(-11,&_vecPos);
-    _originalPos=ep->GetParticleVector(-11);
-    */
+    //vec0 will be sum of Gams and Neuts
+
+  
     if(_elID==11){
       SetMapVector(_elID,&_vecEls);
       _originalEls=ep->GetParticleVector(_elID);
@@ -130,30 +59,47 @@ namespace chanser{
       _originalPos=ep->GetParticleVector(_posID);
       
     }
-      
-    //so we don't have to use the map in the event loop
+     //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors
     SetPidVectors();
     
   }
   Bool_t MaskRadPhotons::ReReadEvent(){
     using  Position= ROOT::Math::XYZPointF; //floating point position 
-
+ 
     MaskedEventParticles::ReReadEvent(); //set counters to 0
     
-    _vecGams.clear();
-    _vecNeutrons.clear();
 
     //copy els and pos as we may modify those
     if(_elID==11){
+      _vecEls.clear();
+      _vecPos.clear();
       ranges::copy(*_originalEls,_vecEls);
       ranges::copy(*_originalPos,_vecPos);
     }
     else{
+      _vecMinus.clear();
+      _vecPlus.clear();
       ranges::copy(*_originalEls,_vecMinus);
-      ranges::copy(*_originalPos,_vecPlus);     
+      ranges::copy(*_originalPos,_vecPlus);
     }
-    //remove photons with no PCAL hit
+
+    //clear neutrons adn gammas, will add to them if not masked
+    _vecGams.clear();
+    _vecNeutrons.clear();
+    _vec0.clear();
+    
+    //Keep all neutrals with no PCAL hit (not good photon candidates)
+    //This will not be removed from the event
+    auto notpcalGams=ranges::filter(*_originalGams,CheckForNotPCAL);
+    ranges::append(notpcalGams,_vecGams);
+    ranges::append(notpcalGams,_vec0);
+    auto notpcalNeutrons=ranges::filter(*_originalNeutrons,CheckForNotPCAL);
+    ranges::append(notpcalNeutrons,_vecNeutrons);
+    ranges::append(notpcalNeutrons,_vec0);
+
+    //remove photons with no PCAL hit from potential masking
+    //Only neutrals with PCAL considered for radiative correction
     auto pcalGams=ranges::filter(*_originalGams,CheckForPCAL);
     auto pcalNeutrons=ranges::filter(*_originalNeutrons,CheckForPCAL);
  
@@ -181,9 +127,26 @@ namespace chanser{
   	auto c12RadPart=static_cast<CLAS12Particle*>(radPart)->CLAS12();
 	Double_t partTheta= c12RadPart->getTheta();
 	Double_t partPhi= c12RadPart->getPhi();
+
 	auto partPos= HSPosition(c12RadPart->cal(clas12::PCAL)->getX(),
 		       c12RadPart->cal(clas12::PCAL)->getY(),
 		       c12RadPart->cal(clas12::PCAL)->getZ());
+
+
+	//////dglazier, why do we not just take the PCAL position ?
+	//Now check if hit in ECIN
+	if(c12RadPart->cal(clas12::ECIN)->getEnergy()!=0){
+	  partPos.SetXYZ(c12RadPart->cal(clas12::ECIN)->getX(),
+			 c12RadPart->cal(clas12::ECIN)->getY(),
+			 c12RadPart->cal(clas12::ECIN)->getZ());
+	}
+	//Now check if hit in ECOUT
+	else if(c12RadPart->cal(clas12::ECOUT)->getEnergy()!=0){
+	  partPos.SetXYZ(c12RadPart->cal(clas12::ECOUT)->getX(),
+			 c12RadPart->cal(clas12::ECOUT)->getY(),
+			 c12RadPart->cal(clas12::ECOUT)->getZ());
+	}
+
 
 	CLAS12Particle*  lepton{nullptr};
 	UInt_t entry=0;
@@ -277,15 +240,22 @@ namespace chanser{
       //will mask photon based on dTheta and ECAL distance
       if(neutrons){
 	compareToOther(_elID,_dTheta,_ecalR,_hRN,_hdThetaN,_hdPhiN,_hdThetaRN,_hdThetadPhiN,_hdPhiRN,_hPN,_hPxN,_hPyN,_hPzN);
-	compareToOther(_posID,_dTheta,_ecalR,_hRN,_hdThetaN,_hdPhiN,_hdThetaRN,_hdThetadPhiN,_hdPhiRN,_hPN,_hPxN,_hPyN,_hPzN);
+	if(maskIt==kFALSE) compareToOther(_posID,_dTheta,_ecalR,_hRN,_hdThetaN,_hdPhiN,_hdThetaRN,_hdThetadPhiN,_hdPhiRN,_hPN,_hPxN,_hPyN,_hPzN);
       } else {
 	compareToOther(_elID,_dTheta,_ecalR,_hR,_hdTheta,_hdPhi,_hdThetaR,_hdThetadPhi,_hdPhiR,_hP,_hPx,_hPy,_hPz);
-	compareToOther(_posID,_dTheta,_ecalR,_hR,_hdTheta,_hdPhi,_hdThetaR,_hdThetadPhi,_hdPhiR,_hP,_hPx,_hPy,_hPz);
+	if(maskIt==kFALSE) compareToOther(_posID,_dTheta,_ecalR,_hR,_hdTheta,_hdPhi,_hdThetaR,_hdThetadPhi,_hdPhiR,_hP,_hPx,_hPy,_hPz);
       }
       
       //This gamma is fine, include it in data
-      if( maskIt == kFALSE)_vecGams.push_back(radPart);
+      if( maskIt == kFALSE){
+	if(neutrons==false)_vecGams.push_back(radPart);
+	else _vecNeutrons.push_back(radPart);
+	//and add to all neutrals
+	_vec0.push_back(radPart);	
+      }
+     
     }
+
   }
 
   void MaskRadPhotons::PrintMask() const{

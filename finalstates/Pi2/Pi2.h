@@ -46,6 +46,8 @@ namespace dglazier{
     void DerivedChangeRun() final {
       auto ebeam=GetRunInfo()->_BeamEnergy;
       auto mele = 0.00051099891;
+      //     ebeam=10.6;
+      std::cout<<"Change beam energy to :"<<ebeam<<std::endl;
       _beam.SetXYZT(0,0,ebeam,TMath::Sqrt(ebeam*ebeam + mele*mele));
     }
 

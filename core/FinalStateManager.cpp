@@ -102,7 +102,8 @@ namespace chanser{
     MakeBaseOutputDir();
     std::cout<<" FinalStateManager::Init()"<<std::endl;
     
-       
+    _data->ConnectFinalStateManager(this);
+    
     if(_data->IsLund()){ //if reading LUND events only
       for(const auto& fs : _finalStates){
 	fs->SetTruthParticles(&_data->GetTruth()); //link to truth particles
@@ -203,6 +204,10 @@ namespace chanser{
   void FinalStateManager::EndAndWrite(){
     for(auto& fs:_finalStates)
       fs->EndAndWrite();
+  }
+  void FinalStateManager::CheckCombitorials(){
+    for(auto& fs:_finalStates)
+      fs->SetCheckCombitorials();
   }
 
 

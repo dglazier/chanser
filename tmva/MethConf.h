@@ -87,8 +87,7 @@ namespace chanser{
 
     public:
 
-      DNNConf()=default;
-    DNNConf(TString name):MethConf(TMVA::Types::kDNN,name,"")
+      DNNConf(TString name):MethConf(TMVA::Types::kDNN,name,"")
 	{
 	  SetLayout();
 	  DefaultTrainingStrategy();
