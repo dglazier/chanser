@@ -36,16 +36,3 @@ Some preamble
   for example, the proton has not been detected. So you may define 1 topology with an
   exclusive final state (detect e-,p,pi+,pi-) and one with just (e-,pi+,pi-).
 
-`doxygen <html/index.html>`_
-
-#Docs
-#====
-#
-#.. doxygenclass:: chanser::ActionManager
-#   :members:
-#   :protected-members:
-#   :private-members:
-#.. doxygenclass:: chanser::FinalStateManager
-#   :members:
-#   :protected-members:
-#   :private-members:
