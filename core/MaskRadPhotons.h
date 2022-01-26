@@ -16,7 +16,6 @@
 
 #include <TH1F.h>
 #include <TH2F.h>
-#include <TCanvas.h>
 
 namespace chanser{
 
@@ -30,10 +29,10 @@ namespace chanser{
     };
     
     virtual ~MaskRadPhotons();//=default;
-    MaskRadPhotons(const MaskRadPhotons& other) = default; //Copy Constructor
+    MaskRadPhotons(const MaskRadPhotons& other) = delete; //Copy Constructor
     MaskRadPhotons(MaskRadPhotons&& other) = default; //Move Constructor
       
-    MaskRadPhotons& operator=(const MaskRadPhotons& other)=default;
+    MaskRadPhotons& operator=(const MaskRadPhotons& other)=delete;
     MaskRadPhotons& operator=(MaskRadPhotons&& other)=default;
  
     void AssignVectors(EventParticles* ep) override;
@@ -43,6 +42,7 @@ namespace chanser{
     void ChangeRun(FinalState* fs) override;
 
     void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
+    TString ClassName() const override {return "MaskRadPhotons";} 
 
   private:
 
@@ -100,6 +100,9 @@ namespace chanser{
     
     static Bool_t CheckForPCAL(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()>0;
+    }
+    static Bool_t CheckForNotPCAL(particle_ptr p) noexcept{
+      return static_cast<CLAS12Particle*>(p)->CLAS12()->cal(clas12::PCAL)->getEnergy()==0;
     }
 
     ClassDefOverride(chanser::MaskRadPhotons,1); //class MaskRadPhotons

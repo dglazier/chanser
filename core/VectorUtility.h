@@ -19,6 +19,11 @@ namespace chanser{
       to.clear();
       copy(from.begin(), from.end(), back_inserter(to));
     }
+   ////////////////////////////////////////////////////
+    template<typename Range>
+      void append(const Range& from,Range& to ){
+      copy(from.begin(), from.end(), back_inserter(to));
+    }	
     ///////////////////////////////////////////////////
     ////////////////////////////////////////////////////
     template<typename Range, typename Function>

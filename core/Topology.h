@@ -94,7 +94,7 @@ namespace chanser{
     Short_t _isInclusive=0;
     Short_t _useChargePID=0;
 
-    const Short_t _noID=1E4;//!
+    Short_t _noID=1E4;//!
     
     ClassDef(chanser::Topology,1); //class Topology
   }; //class Topology

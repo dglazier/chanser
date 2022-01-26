@@ -100,6 +100,8 @@ namespace chanser{
       
       
     Bool_t ParticleCut(const BaseParticle* part) const noexcept override{
+      // std::cout<<"ParticleCut "<<(static_cast<const CLAS12Particle*>(part))->CLAS12()<<"    "<<part->PDG()<<" "<<part->P4().Theta()*TMath::RadToDeg()<<std::endl;
+      if((static_cast<const CLAS12Particle*>(part))->CLAS12()==nullptr) return kFALSE;
       return (static_cast<const CLAS12Particle*>(part))->CLAS12()->getPid()==part->PDG() ?  kTRUE :  kFALSE;
     }
       

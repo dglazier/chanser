@@ -24,7 +24,7 @@ void chanser::TreeData::Branches(TTree* tree,TList* dmList){
     auto member=dynamic_cast<TDataMember*> (dmList->At(i));
     auto moffset = member->GetOffset()/sizeOfShort;
     auto mtype=TString(member->GetFullTypeName());
-    TString mname=_name+member->GetName();
+    TString mname=_name+"_"+member->GetName();
     if(typelabel.find(mtype)==typelabel.end()){
       continue;
     }

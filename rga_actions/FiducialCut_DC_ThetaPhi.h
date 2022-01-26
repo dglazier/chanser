@@ -57,7 +57,7 @@ namespace chanser{
       
       short pos=sector;
       if (sector == 3 && phi_DCr_raw > 0)
-	pos = 6; //+180 rather than -180
+	pos = 6; //-180 rather than +180
 
       auto phi_DCr = phi_DCr_raw + _phiRotation[pos];
       
@@ -93,7 +93,7 @@ namespace chanser{
     size_t _NLayers={3};
     size_t _NCoefs={4}; //4 polynomial params
     
-    std::vector<int> _phiRotation={0,-60,-120,-180, 120, 60, 180};
+    std::vector<int> _phiRotation={0,-60,-120,180, 120, 60, -180};
 
     tablevals3D_t _minparams;
     tablevals3D_t _maxparams;
