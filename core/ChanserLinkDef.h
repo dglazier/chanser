@@ -25,6 +25,7 @@
 #pragma link C++ class chanser::DataManager+;
 #pragma link C++ class chanser::HipoData+;
 #pragma link C++ class chanser::HipoTruth+;
+#pragma link C++ class chanser::LundData+;
 #pragma link C++ class chanser::Topology+;
 #pragma link C++ class chanser::TopologyManager+;
 #pragma link C++ class chanser::ParticleConfig+;

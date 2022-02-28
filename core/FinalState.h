@@ -153,7 +153,7 @@ namespace chanser{
     actionman_ptrs& getPostTopoActions() {return _postTopoAction;}
     actionman_ptrs& getPostKinActions(){return _postKinAction;}
       
-    void EndAndWrite();
+    virtual void EndAndWrite();
     virtual TString GetUSER(){return "";};
     const TString& GetOutputDir(){return _outputDir;}
 
