@@ -45,11 +45,11 @@ namespace chanser{
       
     virtual ~FinalState(); //need to delete ActionManagers
       
-    FinalState(const FinalState& other) = default; //Copy Constructor
-    FinalState(FinalState&& other) = default; //Move Constructor
+    FinalState(const FinalState& other) = delete; //Copy Constructor
+    FinalState(FinalState&& other) = delete; //Move Constructor
       
-    FinalState& operator=(const FinalState& other)=default;
-    FinalState& operator=(FinalState&& other)=default;
+    FinalState& operator=(const FinalState& other)=delete;
+    FinalState& operator=(FinalState&& other)=delete;
 
     void Print(Option_t* option = "")const override;
     

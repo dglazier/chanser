@@ -24,10 +24,10 @@ namespace chanser{
   MaskCalorSplitOffs(Float_t r0,Float_t rp,Float_t rm,Short_t add):_r0min{r0},_rpmin{rp},_rnmin{r0},_addSplits{add}{};
     
     virtual ~MaskCalorSplitOffs();//=default;
-    MaskCalorSplitOffs(const MaskCalorSplitOffs& other) = default; //Copy Constructor
+    MaskCalorSplitOffs(const MaskCalorSplitOffs& other) = delete; //Copy Constructor
     MaskCalorSplitOffs(MaskCalorSplitOffs&& other) = default; //Move Constructor
       
-    MaskCalorSplitOffs& operator=(const MaskCalorSplitOffs& other)=default;
+    MaskCalorSplitOffs& operator=(const MaskCalorSplitOffs& other)=delete;
     MaskCalorSplitOffs& operator=(MaskCalorSplitOffs&& other)=default;
  
     void AssignVectors(EventParticles* ep) override;

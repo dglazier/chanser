@@ -29,10 +29,10 @@ namespace chanser{
     };
     
     virtual ~MaskRadPhotons();//=default;
-    MaskRadPhotons(const MaskRadPhotons& other) = default; //Copy Constructor
+    MaskRadPhotons(const MaskRadPhotons& other) = delete; //Copy Constructor
     MaskRadPhotons(MaskRadPhotons&& other) = default; //Move Constructor
       
-    MaskRadPhotons& operator=(const MaskRadPhotons& other)=default;
+    MaskRadPhotons& operator=(const MaskRadPhotons& other)=delete;
     MaskRadPhotons& operator=(MaskRadPhotons&& other)=default;
  
     void AssignVectors(EventParticles* ep) override;

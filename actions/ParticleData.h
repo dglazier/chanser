@@ -21,10 +21,10 @@ namespace chanser{
   ParticleData(const TString& treename,const TString& filename,size_t np):_tree{FiledTree::Recreate(treename,filename)}{};
       
     virtual ~ParticleData()=default;
-    ParticleData(const ParticleData& other) = default; //Copy Constructor
+    ParticleData(const ParticleData& other) = delete; //Copy Constructor
     ParticleData(ParticleData&& other) = default; //Move Constructor
       
-    ParticleData& operator=(const ParticleData& other)=default;
+    ParticleData& operator=(const ParticleData& other)=delete;
     ParticleData& operator=(ParticleData&& other)=default;
 
     void AddParticle( ParticleOutEvent* out,BaseParticle* particle,TString name){
