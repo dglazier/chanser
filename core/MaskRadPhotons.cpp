@@ -189,7 +189,7 @@ namespace chanser{
 		Float_t EdepTot = EdepPCAL+EdepECIN+EdepECOUT;
 
 		Float_t reP = EdepTot/GetMeanSF(EdepTot);
-		HSLorentzVector newNP4(reP*sin(partTheta)*cos(partPhi),reP*sin(partTheta)*sin(partPhi),reP*cos(partPhi), reP);
+		HSLorentzVector newNP4(reP*sin(partTheta)*cos(partPhi),reP*sin(partTheta)*sin(partPhi),reP*cos(partTheta), reP);
 
 		//reassign e lorentzvector
 		lepton->SetP4(newNP4+lepton->P4());
