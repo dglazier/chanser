@@ -24,7 +24,7 @@ namespace chanser{
   public :
     MaskSecondaryNeutrons()=default;
 
-  MaskSecondaryNeutrons(Short_t mask):_maskSecondaries{mask}{
+  MaskSecondaryNeutrons(Short_t mask,Double_t betaCut):_maskSecondaries{mask},_betaCut{betaCut}{
     };
     
     virtual ~MaskSecondaryNeutrons();//=default;
@@ -54,6 +54,7 @@ namespace chanser{
     particles_ptrs* _original0{nullptr}; //!
 
     Short_t _maskSecondaries={0}; //Remove Secondaries?
+    Double_t _betaCut={2}; //Cut on beta to ID neutrons
 
     static Bool_t CheckForFD(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->getRegion()==clas12::FD;
@@ -61,6 +62,38 @@ namespace chanser{
     static Bool_t CheckForNotFD(particle_ptr p) noexcept{
       return static_cast<CLAS12Particle*>(p)->CLAS12()->getRegion()!=clas12::FD;
     }
+
+    /* Doesn't want to take non-static beta, but has to be static
+       method to be used in filter
+    static Bool_t CheckNotPassBetaCut(particle_ptr p) noexcept{
+      auto c12p=static_cast<CLAS12Particle*>(p)->CLAS12();
+      //The below seems a bit weird but we want to use
+      //the beta value from DSTs to calculate momentum
+      //then recalculate beta assuming we have a neutron
+      Double_t betaFromDST=c12p->par()->getBeta();
+      Double_t P=0.93957*betaFromDST/sqrt(1-betaFromDST*betaFromDST);
+      Double_t beta=P/sqrt(P*P+0.93957*0.93957);
+      Bool_t passCut=false;
+      if(std::isnan(beta) || beta>_betaCut){
+	passCut=true;
+      }
+      return passCut;
+    }
+
+     static Bool_t CheckPassBetaCut(particle_ptr p) noexcept{
+      auto c12p=static_cast<CLAS12Particle*>(p)->CLAS12();
+      //The below seems a bit weird but we want to use
+      //the beta value from DSTs to calculate momentum
+      //then recalculate beta assuming we have a neutron
+      Double_t betaFromDST=c12p->par()->getBeta();
+      Double_t P=0.93957*betaFromDST/sqrt(1-betaFromDST*betaFromDST);
+      Double_t beta=P/sqrt(P*P+0.93957*0.93957);
+      Bool_t passCut=false;
+      if(!std::isnan(beta) && beta<=_betaCut){
+	passCut=true;
+      }
+      return passCut;
+      }*/
 
     ClassDefOverride(chanser::MaskSecondaryNeutrons,1); //class MaskSecondaryNeutrons
     

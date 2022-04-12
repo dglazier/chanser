@@ -45,6 +45,10 @@ namespace chanser{
    //Keep all non FD 
     ranges::append(ranges::filter(*_original0,CheckForNotFD),_vec0);
 
+    /*auto fdNs=ranges::filter(fd0s,CheckPassBetaCut);
+    //Keep all that pass neutron ID
+    ranges::append(ranges::filter(fd0s,CheckNotPassBetaCut),_vec0);*/
+
     std::cout<<"Sec N size of neutrals pre cut: "<<_original0->size()<<std::endl;
 
     doCorrection(fd0s);
@@ -67,7 +71,7 @@ namespace chanser{
       auto c12Pos=static_cast<CLAS12Particle*>(pos);
       //if(c12Pos->Detector()>=20){
 	//cout<<"e+ with rad photon"<<endl;
-	chargedParticleSectors.push_back(c12Pos->CLAS12()->getSector());
+	//chargedParticleSectors.push_back(c12Pos->CLAS12()->getSector());
 	//}
     }
 
@@ -76,25 +80,18 @@ namespace chanser{
       auto c12Neg=static_cast<CLAS12Particle*>(neg);
       ///if(c12Neg->Detector()>=20){
 	//cout<<"e- with rad photon"<<endl;
-	chargedParticleSectors.push_back(c12Neg->CLAS12()->getSector());
+	//chargedParticleSectors.push_back(c12Neg->CLAS12()->getSector());
       //}
     }
 
-    /*maps are ordered by key, meaning we can use this to sort
-      our list of neutrons by the shortest time. 
-      Make a map per sector as we want the earliest neutral per sector.*/
-    std::map<Double_t,int> timeIndexMap_S1;
-    std::map<Double_t,int> timeIndexMap_S2;
-    std::map<Double_t,int> timeIndexMap_S3;
-    std::map<Double_t,int> timeIndexMap_S4;
-    std::map<Double_t,int> timeIndexMap_S5;
-    std::map<Double_t,int> timeIndexMap_S6;
+    //Match time to index in fd0s, create vector of these.
+    using pairTimeIndex = std::pair<Double_t,Int_t>;
+    using vecTimeIndex = std::vector<pairTimeIndex>;
 
-    /*Maps can only contain one entry per key, if two neutrals have
-      the same time, the second will be assigned that time+time/1000
-      If two neutrals have the exact same time they will have similar 
-      values of momentum anyways so no need to worry about this.*/
-    std::vector<Double_t> timePEvent;
+    vector<vecTimeIndex> sectTimeIndex(6); //1 vector for each sector
+
+    //Skip particles from ranking if Beta is nan or IDed as photons
+     vector<Int_t> skipParticles;
 
     int index=0;
     //First we loop over neutrals to find the time of each one produced
@@ -110,114 +107,77 @@ namespace chanser{
       Double_t ECout_Edep = c12N->cal(clas12::ECOUT)->getEnergy();
 
       //if a neutral doesn't have a hit in the calorimeter.
-      Double_t time=9999+index;
+      Double_t time=9999;
+      int sector=c12N->getSector();
 
       /*Check which calorimeter layers have a hit.
 	Take preference for layers closest to target.*/
-      if(PCal_Edep>0.01){time=PCal_Time;}
-      else if (ECin_Edep>0.01){time=ECin_Time;}
-      else if (ECout_Edep>0.01){time=ECout_Time;}
+      /*if(PCal_Edep>0.01){time=PCal_Time;}
+	else if (ECin_Edep>0.01){time=ECin_Time;}
+	else if (ECout_Edep>0.01){time=ECout_Time;}*/
 
-      if(vectorContainsD(timePEvent,time)){time=time+index*time/1000;}
+      if(PCal_Time>50){time=PCal_Time;}
+      else if (ECin_Time>50){time=ECin_Time;}
+      else if (ECout_Time>50){time=ECout_Time;}
 
-      if(c12N->getSector()==1){timeIndexMap_S1[time]=index;}
-      else if(c12N->getSector()==2){timeIndexMap_S2[time]=index;}
-      else if(c12N->getSector()==3){timeIndexMap_S3[time]=index;}
-      else if(c12N->getSector()==4){timeIndexMap_S4[time]=index;}
-      else if(c12N->getSector()==5){timeIndexMap_S5[time]=index;}
-      else if(c12N->getSector()==6){timeIndexMap_S6[time]=index;}
+      /*The below seems a bit weird but we want to use
+	the beta value from DSTs to calculate momentum
+	then recalculate beta assuming we have a neutron*/
+      Double_t betaFromDST=c12N->par()->getBeta();
+      Double_t P=0.93957*betaFromDST/sqrt(1-betaFromDST*betaFromDST);
+      Double_t beta=P/sqrt(P*P+0.93957*0.93957);
+      Bool_t passCut=false;
+      if(!std::isnan(beta) && beta<=_betaCut){
+	sectTimeIndex[sector-1].push_back(std::make_pair(time,index));
+      } else{
+	skipParticles.push_back(index);
+      }
       
-
       index++;
     }//loop over neutrals
 
+    //Add particles skipped from ranking
+    for (auto& ind:skipParticles){
+      _vec0.push_back(fd0s.at(ind));
+    }
+
     
+    auto isector=1;
+
+    for(auto& veci:sectTimeIndex){
+      
+      if(veci.empty()==true) continue; //nothing to do in this sector
+
+      //If we have a charged particle in this sector, don't mask neutrals
+      if(vectorContains(chargedParticleSectors,isector)==kTRUE){
+	for(auto& vecj:veci){_vec0.push_back(fd0s.at(vecj.second));}
+	continue; 
+      }
+
+      //will sort based on pair.first, now ranking==order in vector
+      std::sort(veci.begin(), veci.end());
+
+      //Have at least one entry, start with that
+      //This has earliest time so we always keep it
+      auto index = veci[0].second;
+      static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(1);
+      _vec0.push_back(fd0s.at(index));
+
+      //only 1 particle, nothing else to do
+      if(veci.size()==1) continue; 
+
+      //If we're not masking secondaries
+      if(_maskSecondaries==0){
+	//then loop over and add them
+	for(UInt_t entry=1;entry<veci.size();++entry) {
+	  auto index = veci[entry].second;
+	  static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(entry+1);
+	  _vec0.push_back(fd0s.at(index));
+	}
+      }
+      isector++;
+    }
     
-    for (std::map<Double_t, int>::iterator it = timeIndexMap_S1.begin(); it != timeIndexMap_S1.end(); it++){
-      int indexR=it->second;
-      Double_t ranking=distance(timeIndexMap_S1.begin(),it)+1;
-      //don't want to remove neutrals in same sector as charged particles.
-      if(vectorContains(chargedParticleSectors,1)){_vec0.push_back(fd0s.at(indexR));}
-      else{
-	//std::cout<<"neutron S1 not in same sector as charged particle"<<std::endl;
-	//std::cout<<"Ranking: "<<ranking<<" index "<<indexR<<endl;
-	auto neutralW=static_cast<CLAS12Particle*>(fd0s.at(indexR));
-	neutralW->SetTimeRanking(ranking);
-	//if the ranking is 1 then keep that particle
-	if(ranking == 1){_vec0.push_back(fd0s.at(indexR));}
-	//if the user chooses not to remove secondaries
-	else if(_maskSecondaries==0){_vec0.push_back(fd0s.at(indexR));}
-	else{std::cout<<"SecN removed neutral"<<std::endl;}
-	/*auto test=static_cast<CLAS12Particle*>(_vec0.back());
-	  std::cout<<"Set ranking: "<<test->TimeRanking()<<std::endl;*/
-      }
-    }//loop over map
-
-    //same for other sectors
-    for (std::map<Double_t, int>::iterator it = timeIndexMap_S2.begin(); it != timeIndexMap_S2.end(); it++){
-      int indexR=it->second;
-      Double_t ranking=distance(timeIndexMap_S2.begin(),it)+1;
-      if(vectorContains(chargedParticleSectors,2)){_vec0.push_back(fd0s.at(indexR));}
-      else{
-	auto neutralW=static_cast<CLAS12Particle*>(fd0s.at(indexR));
-	neutralW->SetTimeRanking(ranking);
-	if(ranking == 1){_vec0.push_back(fd0s.at(indexR));}
-	else if(_maskSecondaries==0){_vec0.push_back(fd0s.at(indexR));}
-	else{std::cout<<"SecN removed neutral"<<std::endl;}
-      }
-    }//loop over map S2
-
-    for (std::map<Double_t, int>::iterator it = timeIndexMap_S3.begin(); it != timeIndexMap_S3.end(); it++){
-      int indexR=it->second;
-      Double_t ranking=distance(timeIndexMap_S3.begin(),it)+1;
-      if(vectorContains(chargedParticleSectors,3)){_vec0.push_back(fd0s.at(indexR));}
-      else{
-	auto neutralW=static_cast<CLAS12Particle*>(fd0s.at(indexR));
-	neutralW->SetTimeRanking(ranking);
-	if(ranking == 1){_vec0.push_back(fd0s.at(indexR));}
-	else if(_maskSecondaries==0){_vec0.push_back(fd0s.at(indexR));}
-	else{std::cout<<"SecN removed neutral"<<std::endl;}
-      }
-    }//loop over map S3
-
-    for (std::map<Double_t, int>::iterator it = timeIndexMap_S4.begin(); it != timeIndexMap_S4.end(); it++){
-      int indexR=it->second;
-      Double_t ranking=distance(timeIndexMap_S4.begin(),it)+1;
-      if(vectorContains(chargedParticleSectors,4)){_vec0.push_back(fd0s.at(indexR));}
-      else{
-	auto neutralW=static_cast<CLAS12Particle*>(fd0s.at(indexR));
-	neutralW->SetTimeRanking(ranking);
-	if(ranking == 1){_vec0.push_back(fd0s.at(indexR));}
-	else if(_maskSecondaries==0){_vec0.push_back(fd0s.at(indexR));}
-	else{std::cout<<"SecN removed neutral"<<std::endl;}
-      }
-    }//loop over map S4
-
-    for (std::map<Double_t, int>::iterator it = timeIndexMap_S5.begin(); it != timeIndexMap_S5.end(); it++){
-      int indexR=it->second;
-      Double_t ranking=distance(timeIndexMap_S5.begin(),it)+1;
-      if(vectorContains(chargedParticleSectors,5)){_vec0.push_back(fd0s.at(indexR));}
-      else{
-	auto neutralW=static_cast<CLAS12Particle*>(fd0s.at(indexR));
-	neutralW->SetTimeRanking(ranking);
-	if(ranking == 1){_vec0.push_back(fd0s.at(indexR));}
-	else if(_maskSecondaries==0){_vec0.push_back(fd0s.at(indexR));}
-	else{std::cout<<"SecN removed neutral"<<std::endl;}
-      }
-    }//loop over map S5
-
-    for (std::map<Double_t, int>::iterator it = timeIndexMap_S6.begin(); it != timeIndexMap_S6.end(); it++){
-      int indexR=it->second;
-      Double_t ranking=distance(timeIndexMap_S6.begin(),it)+1;
-      if(vectorContains(chargedParticleSectors,6)){_vec0.push_back(fd0s.at(indexR));}
-      else{
-	auto neutralW=static_cast<CLAS12Particle*>(fd0s.at(indexR));
-	neutralW->SetTimeRanking(ranking);
-	if(ranking == 1){_vec0.push_back(fd0s.at(indexR));}
-	else if(_maskSecondaries==0){_vec0.push_back(fd0s.at(indexR));}
-	else{std::cout<<"SecN removed neutral"<<std::endl;}
-      }
-    }//loop over map S6
 
     //check ranking has propagated -- it has last tested
     /*auto vec=GetParticleVector(0);
