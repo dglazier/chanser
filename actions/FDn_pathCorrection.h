@@ -42,7 +42,7 @@ namespace chanser{
       double nCalcBeta=(nPath*1e-2)/(nTime*1e-9*2.99792e+08);
       double nCalcP=0.93957*nCalcBeta/sqrt(1-nCalcBeta*nCalcBeta);
 
-      if(nCalcBeta>1 || nCalcBeta<0){
+      if(nCalcBeta>1 || nCalcBeta<0 ||!isfinite(nCalcP)){
 	nCalcP=0;
       }
 
