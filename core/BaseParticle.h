@@ -68,7 +68,7 @@ namespace chanser{
     Short_t _pdgCode{0};           //PDG number
     Short_t _charge{0};
     Short_t _detector{0};//! some detector ID
-    Short_t _timeRanking{1};
+    Short_t _timeRanking{-1};
 
     Bool_t _useTruth{0};//
       
@@ -88,6 +88,7 @@ namespace chanser{
     //use the truth P4
     void UseTruth() {_useTruth=kTRUE;}
     void NotTruth() {_useTruth=kFALSE;}
+    Bool_t IsTruth() {return _useTruth;}
     
     //Setting functions
     void SetPDGcode(Int_t code);

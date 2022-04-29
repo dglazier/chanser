@@ -52,11 +52,14 @@ namespace chanser{
     particle_ptr NextParticle(Short_t pid,UInt_t& entry);
     
     CLAS12Particle* NextFromPool(){
-      while(_particlePool.size()==_nFromPool)
-	_particlePool.push_back(std::move(CLAS12Particle()));
-      auto& next=_particlePool[_nFromPool];
+      while(_particlePool.size()==_nFromPool){
+	_particlePool.push_back(std::unique_ptr<CLAS12Particle>{new CLAS12Particle()});
+      }
+      
+      auto next=_particlePool.at(_nFromPool).get();
       ++_nFromPool;
-      return &next;
+      next->Clear();
+      return next;
     }
     CLAS12Particle* ReplaceParticlePtr(Short_t pdg,CLAS12Particle* p0,CLAS12Particle* p1){
       //Replace with a p0 with a copy of p0 
@@ -70,7 +73,7 @@ namespace chanser{
     void Write(TObject& obj );
     
   private:
-    std::vector<CLAS12Particle> _particlePool; //! pool of particle objects can use for each event
+    std::vector<std::unique_ptr<CLAS12Particle>> _particlePool; //! pool of particle objects can use for each event
 
     std::vector<particles_ptrs*> _pidParticles;//!
     std::vector<Short_t> _pidCounts;//!

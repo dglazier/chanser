@@ -11,47 +11,9 @@ namespace chanser{
     FDn_pathCorrection()=default;
     
   FDn_pathCorrection(Double_t corPCAL,Double_t corECIN,Double_t corECOUT):
-    _corPCAL{corPCAL},_corECIN{corECIN},_corECOUT{corECOUT},_useDefault{1}{};
+    _corPCAL{corPCAL},_corECIN{corECIN},_corECOUT{corECOUT}{};
 
 
-    void ChangeRun() final{
-
-
-      if(_useDefault==0){
-
-	/*In simulated data, the time used to calculate/apply correction
-	  is uncalibrated, leading to different corrections for
-	  MC and data*/
-	std::cout<<"FDn path Cor use default"<<std::endl;
-	if(GetFinalState()->HasTruth()){
-	  std::cout<<"Has Truth"<<std::endl;
-	  _corPCAL=8.13;
-	  _corECIN=26.51;
-	  _corECOUT=29.48;
-	  std::cout<<"set vals"<<std::endl;
-	} else{
-
-	  /*There's a momentum dependence of the correction. This is hard
-	    to establish as we're aiming to correct the momentum. Therefore
-	    we use the average correction, which shifts with the beam energy.*/
-	  Double_t BeamE=GetFinalState()->GetRunInfo()->_BeamEnergy;
-	  std::cout<<"beam e: "<<BeamE<<std::endl;
-	  if(BeamE>10.5){
-	    _corPCAL=6.212;
-	    _corECIN=7.927;
-	    _corECOUT=3.044;
-	  }
-	  else if(BeamE<10.3){
-	    _corPCAL=10.27;
-	    _corECIN=10.89;
-	    _corECOUT=5.584;
-	  }
-	}
-      }
-      
-    }
-
-   
     void ParticleCorrect(BaseParticle* part) const noexcept override{
       auto c12p = static_cast<const chanser::CLAS12Particle*>(part);
       auto c12=c12p->CLAS12();
@@ -86,18 +48,13 @@ namespace chanser{
     
    private:
 
-    int _useDefault{0};
     Double_t _corPCAL{0};
     Double_t _corECOUT{0};
     Double_t _corECIN{0};
    
     
     void Print(Option_t* option = "")const final{
-      if(_useDefault!=0){
-	std::cout<<"\t\t"<<ClassName()<<" with PCAL "<<_corPCAL<<", ECIN "<<_corECIN<<", ECOUT "<<_corECOUT<<std::endl;
-      } else{
-	std::cout<<"\t\t"<<ClassName()<<" with default corrections."<<std::endl;
-      }
+      std::cout<<"\t\t"<<ClassName()<<" with PCAL "<<_corPCAL<<", ECIN "<<_corECIN<<", ECOUT "<<_corECOUT<<std::endl;
     }
 
   private:
