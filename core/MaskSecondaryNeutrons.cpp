@@ -14,8 +14,14 @@ namespace chanser{
     MaskedEventParticles::AssignVectors(ep);
 
     SetMapVector(0,&_vec0);
+    SetMapVector(22,&_vecGams);
+    SetMapVector(2112,&_vecNeutrons);
 
     _original0=ep->GetParticleVector(0);
+    _originalGams=ep->GetParticleVector(22);
+    _originalNeutrons=ep->GetParticleVector(2112);
+    
+    
 
      //so we don't have to use the map in the event loop
     //Must call this at the end of any derived class AssignVectors
@@ -27,13 +33,24 @@ namespace chanser{
     MaskedEventParticles::ReReadEvent(); //set counters to 0
 
     _vec0.clear();
+    _vecGams.clear();
+    _vecNeutrons.clear();
 
-    auto fd0s=ranges::filter(*_original0,CheckForFD);
-   //Keep all non FD 
-    ranges::append(ranges::filter(*_original0,CheckForNotFD),_vec0);
-
-    doCorrection(fd0s);
-
+    if(_nID==2112){
+      auto fdNs=ranges::filter(*_originalNeutrons,CheckForFD);
+      //Keep all non FD 
+      ranges::append(ranges::filter(*_originalNeutrons,CheckForNotFD),_vecNeutrons);
+      ranges::append(ranges::filter(*_originalNeutrons,CheckForNotFD),_vec0);
+      //keep all photons
+      ranges::append(*_originalGams,_vecGams);
+      ranges::append(*_originalGams,_vec0);
+      doCorrection(fdNs);
+    } else {
+      auto fd0s=ranges::filter(*_original0,CheckForFD);
+      //Keep all non FD 
+      ranges::append(ranges::filter(*_original0,CheckForNotFD),_vec0);
+      doCorrection(fd0s);
+    }
     return kTRUE;
   }
 
@@ -66,13 +83,9 @@ namespace chanser{
 
       /*Check which calorimeter layers have a hit.
 	Take preference for layers closest to target.*/
-      /*if(PCal_Edep>0.01){time=PCal_Time;}
-	else if (ECin_Edep>0.01){time=ECin_Time;}
-	else if (ECout_Edep>0.01){time=ECout_Time;}*/
-
-      if(PCal_Time>50){time=PCal_Time;}
-      else if (ECin_Time>50){time=ECin_Time;}
-      else if (ECout_Time>50){time=ECout_Time;}
+      if(PCal_Edep>0.01){time=PCal_Time;}
+      else if (ECin_Edep>0.01){time=ECin_Time;}
+      else if (ECout_Edep>0.01){time=ECout_Time;}
 
       sectTimeIndex[sector-1].push_back(std::make_pair(time,index));
       
@@ -93,6 +106,11 @@ namespace chanser{
       auto index = veci[0].second;
       static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(1);
       _vec0.push_back(fd0s.at(index));
+      if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==22){
+	_vecGams.push_back(fd0s.at(index));
+      } else if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==2112){
+	_vecNeutrons.push_back(fd0s.at(index));
+      }
 
       //only 1 particle, nothing else to do
       if(veci.size()==1) continue; 
@@ -104,6 +122,11 @@ namespace chanser{
 	  auto index = veci[entry].second;
 	  static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(entry+1);
 	  _vec0.push_back(fd0s.at(index));
+	  if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==22){
+	    _vecGams.push_back(fd0s.at(index));
+	  } else if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==2112){
+	    _vecNeutrons.push_back(fd0s.at(index));
+	  }
 	}
       }
       isector++;
@@ -116,6 +139,14 @@ namespace chanser{
     Info("MaskSecondaryNeutrons::PrintMask() ",Form("Masking EventParticles with  = %s",Class_Name()),"");
     Info("MaskSecondaryNeutrons::PrintMask() ",Form("Flagging secondary neutrons, will I remove these? %d",(Int_t)_maskSecondaries),"");
    
+  }
+
+   /* Get particle ID info from topology manager
+   */
+  void MaskSecondaryNeutrons::UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo){
+
+    _nID=topoInfo.ParticleID(2112);
+ 
   }
   
 }

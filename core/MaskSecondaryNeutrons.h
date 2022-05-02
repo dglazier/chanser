@@ -37,7 +37,7 @@ namespace chanser{
     void PrintMask() const override;
     Bool_t ReReadEvent() override;
 
-    
+    void UseTopoInfo(TopologyManager& topoInfo, TString pidInfo, TString incInfo) override;
     TString ClassName() const override {return "MaskSecondaryNeutrons";} 
 
   private:
@@ -47,7 +47,10 @@ namespace chanser{
     
     //keep a link to EventParticles vector I will replace
     particles_ptrs* _original0{nullptr}; //!
+    particles_ptrs* _originalGams{nullptr}; //!
+    particles_ptrs* _originalNeutrons{nullptr}; //!
 
+    Short_t _nID={2112};
     Short_t _maskSecondaries={0}; //Remove Secondaries?
 
     static Bool_t CheckForFD(particle_ptr p) noexcept{
