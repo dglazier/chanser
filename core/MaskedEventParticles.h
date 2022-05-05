@@ -9,6 +9,7 @@
 
 #include "EventParticles.h"
 #include "CLAS12Particle.h"
+#include "CLAS12Neutral.h"
 
 #include <TFile.h>
 
@@ -61,6 +62,18 @@ namespace chanser{
       next->Clear();
       return next;
     }
+    
+    CLAS12Neutral* NextNeutralFromPool(){
+      while(_neutralParticlePool.size()==_nbNFromPool){
+	_neutralParticlePool.push_back(std::unique_ptr<CLAS12Neutral>{new CLAS12Neutral()});
+      }
+      
+      auto next=_neutralParticlePool.at(_nbNFromPool).get();
+      ++_nbNFromPool;
+      next->Clear();
+      return next;
+    }
+
     CLAS12Particle* ReplaceParticlePtr(Short_t pdg,CLAS12Particle* p0,CLAS12Particle* p1){
       //Replace with a p0 with a copy of p0 
       auto vec=GetParticleVector(pdg);
@@ -74,6 +87,7 @@ namespace chanser{
     
   private:
     std::vector<std::unique_ptr<CLAS12Particle>> _particlePool; //! pool of particle objects can use for each event
+    std::vector<std::unique_ptr<CLAS12Neutral>> _neutralParticlePool; //! same but for neutral particles
 
     std::vector<particles_ptrs*> _pidParticles;//!
     std::vector<Short_t> _pidCounts;//!
@@ -83,6 +97,7 @@ namespace chanser{
 
     
     UInt_t _nFromPool={0};
+    UInt_t _nbNFromPool={0};
 
     ClassDef(chanser::MaskedEventParticles,1); //class MaskedEventParticles
     

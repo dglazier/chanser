@@ -98,6 +98,9 @@ namespace chanser{
       
       if(veci.empty()==true) continue; //nothing to do in this sector
 
+      //Neutral particle, contains all secondaries in a sector
+      auto c12Neutral=NextNeutralFromPool();
+
       //will sort based on pair.first, now ranking==order in vector
       std::sort(veci.begin(), veci.end());
 
@@ -105,15 +108,9 @@ namespace chanser{
       //This has earliest time so we always keep it
       auto index = veci[0].second;
       static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(1);
-      _vec0.push_back(fd0s.at(index));
-      if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==22){
-	_vecGams.push_back(fd0s.at(index));
-      } else if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==2112){
-	_vecNeutrons.push_back(fd0s.at(index));
-      }
 
-      //only 1 particle, nothing else to do
-      if(veci.size()==1) continue; 
+      c12Neutral->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
+      c12Neutral->UseCandidate(0);
 
       //If we're not masking secondaries
       if(_maskSecondaries==0){
@@ -121,14 +118,16 @@ namespace chanser{
 	for(UInt_t entry=1;entry<veci.size();++entry) {
 	  auto index = veci[entry].second;
 	  static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(entry+1);
-	  _vec0.push_back(fd0s.at(index));
-	  if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==22){
-	    _vecGams.push_back(fd0s.at(index));
-	  } else if(static_cast<CLAS12Particle*>(fd0s.at(index))->CLAS12()->getPid()==2112){
-	    _vecNeutrons.push_back(fd0s.at(index));
-	  }
+	  c12Neutral->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
 	}
       }
+
+      _vec0.push_back(c12Neutral);
+      _vecNeutrons.push_back(c12Neutral);
+      if(_nID!=2112){
+	_vecGams.push_back(c12Neutral);
+      }
+
       isector++;
     }
 

@@ -47,6 +47,7 @@
 
 #pragma link C++ class chanser::CLAS12FinalState+;
 #pragma link C++ class chanser::CLAS12Particle+;
+#pragma link C++ class chanser::CLAS12Neutral+;
 
 //#pragma link C++ class chanser::+;
 
