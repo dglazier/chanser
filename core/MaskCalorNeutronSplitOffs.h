@@ -21,7 +21,7 @@ namespace chanser{
   public :
     MaskCalorNeutronSplitOffs()=default;
 
-  MaskCalorNeutronSplitOffs(Float_t r0,Float_t rp,Float_t rm):_r0min{r0},_rpmin{rp},_rnmin{r0}{};
+  MaskCalorNeutronSplitOffs(Float_t r0,Float_t rp,Float_t rm):_r0min{r0},_rpmin{rp},_rnmin{rm}{};
     
     virtual ~MaskCalorNeutronSplitOffs();//=default;
     MaskCalorNeutronSplitOffs(const MaskCalorNeutronSplitOffs& other) = delete; //Copy Constructor
