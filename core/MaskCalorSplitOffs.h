@@ -21,7 +21,7 @@ namespace chanser{
   public :
     MaskCalorSplitOffs()=default;
 
-  MaskCalorSplitOffs(Float_t r0,Float_t rp,Float_t rm,Short_t add):_r0min{r0},_rpmin{rp},_rnmin{r0},_addSplits{add}{};
+  MaskCalorSplitOffs(Float_t r0,Float_t rp,Float_t rm,Short_t add):_r0min{r0},_rpmin{rp},_rnmin{rm},_addSplits{add}{};
     
     virtual ~MaskCalorSplitOffs();//=default;
     MaskCalorSplitOffs(const MaskCalorSplitOffs& other) = delete; //Copy Constructor
