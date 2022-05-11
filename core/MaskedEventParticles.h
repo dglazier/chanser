@@ -54,7 +54,7 @@ namespace chanser{
     
     CLAS12Particle* NextFromPool(){
       while(_particlePool.size()==_nFromPool){
-	_particlePool.push_back(std::unique_ptr<CLAS12Particle>{new CLAS12Particle()});
+	      _particlePool.push_back(std::unique_ptr<CLAS12Particle>{new CLAS12Particle()});
       }
       
       auto next=_particlePool.at(_nFromPool).get();
@@ -65,7 +65,7 @@ namespace chanser{
     
     CLAS12Neutral* NextNeutralFromPool(){
       while(_neutralParticlePool.size()==_nbNFromPool){
-	_neutralParticlePool.push_back(std::unique_ptr<CLAS12Neutral>{new CLAS12Neutral()});
+	      _neutralParticlePool.push_back(std::unique_ptr<CLAS12Neutral>{new CLAS12Neutral()});
       }
       
       auto next=_neutralParticlePool.at(_nbNFromPool).get();
@@ -81,6 +81,16 @@ namespace chanser{
       p1->CopyParticle(p0); //including pdg and charge
       *it=p1;
       return p1;
+    }
+
+    //Varition of ReplaceParticlePtr, which does not copy
+    void ReplaceOnlyParticlePtr(Short_t pdg,CLAS12Particle* p0,CLAS12Particle* p1){
+      //Replace with a p0 with a copy of p0 
+      auto vec=GetParticleVector(pdg);
+      auto it = std::find(vec->begin(), vec->end(), p0 );
+
+      *it=p1;
+      return;
     }
  
     void Write(TObject& obj );
