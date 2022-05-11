@@ -44,13 +44,13 @@ namespace chanser{
     _vec0.clear();
 
     //Look for FD neutrals	
-   auto fdGams=ranges::filter(*_originalGams,CheckForFD);
-   auto fdNeuts=ranges::filter(*_originalNeuts,CheckForFD);
-   auto fd0s=ranges::filter(*_original0s,CheckForFD);
-   //Keep all non FD 
-   ranges::append(ranges::filter(*_originalGams,CheckForNotFD),_vecGams);
-   ranges::append(ranges::filter(*_originalNeuts,CheckForNotFD),_vecNeutrons);
-   ranges::append(ranges::filter(*_original0s,CheckForNotFD),_vec0);
+    auto fdGams=ranges::filter(*_originalGams,CheckForFD);
+    auto fdNeuts=ranges::filter(*_originalNeuts,CheckForFD);
+    auto fd0s=ranges::filter(*_original0s,CheckForFD);
+    //Keep all non FD 
+    ranges::append(ranges::filter(*_originalGams,CheckForNotFD),_vecGams);
+    ranges::append(ranges::filter(*_originalNeuts,CheckForNotFD),_vecNeutrons);
+    ranges::append(ranges::filter(*_original0s,CheckForNotFD),_vec0);
 
 
     //keep the hits with PCAL as possible real neutral candidates
@@ -72,15 +72,15 @@ namespace chanser{
       //IF PCAL hit then cannot be split off!!
       //Now check if hit in ECIN
       if(c12gam->cal(clas12::ECIN)->getEnergy()!=0){
-	hitPos.SetXYZ(c12gam->cal(clas12::ECIN)->getX(),
-		      c12gam->cal(clas12::ECIN)->getY(),
-		      c12gam->cal(clas12::ECIN)->getZ());
+        hitPos.SetXYZ(c12gam->cal(clas12::ECIN)->getX(),
+        c12gam->cal(clas12::ECIN)->getY(),
+        c12gam->cal(clas12::ECIN)->getZ());
       }
       //Now check if hit in ECOUT
       else if(c12gam->cal(clas12::ECOUT)->getEnergy()!=0){
-	hitPos.SetXYZ(c12gam->cal(clas12::ECOUT)->getX(),
-		      c12gam->cal(clas12::ECOUT)->getY(),
-		      c12gam->cal(clas12::ECOUT)->getZ());
+        hitPos.SetXYZ(c12gam->cal(clas12::ECOUT)->getX(),
+        c12gam->cal(clas12::ECOUT)->getY(),
+        c12gam->cal(clas12::ECOUT)->getZ());
       }
 
       Bool_t maskIt=kFALSE;
@@ -88,65 +88,64 @@ namespace chanser{
       
       ////////////////////////////////////////////////////////
       auto compareToOther =[&maskIt,&maskedParticles,&hitPos,gam,this]
-	(const Short_t charge=0,const Float_t rmin,TH1F& hR){
+      (const Short_t charge=0,const Float_t rmin,TH1F& hR){
 
-	CLAS12Particle*  other{nullptr};
-	UInt_t entry=0;
-	while((other=static_cast<CLAS12Particle*>
-	       (NextParticle(charge,entry)))!=nullptr){
-	  
-	  if(other==gam) continue; //don't compare to myself!
-	  if(charge==0 && ranges::contains(maskedParticles,other) ) continue;//don't compare to an already rejected cluster
+        CLAS12Particle*  other{nullptr};
+        UInt_t entry=0;
+        while((other=static_cast<CLAS12Particle*>(NextParticle(charge,entry)))!=nullptr){
+        
+          if(other==gam) continue; //don't compare to myself!
+          if(charge==0 && ranges::contains(maskedParticles,other) ) continue;//don't compare to an already rejected cluster
 
-	  //FD neutral split off parent must have PCAL hit 
-	  Position otherPos;
-	  if(charge==0){
-	    otherPos.SetXYZ(other->CLAS12()->cal(clas12::PCAL)->getX(),
-			    other->CLAS12()->cal(clas12::PCAL)->getY(),
-			    other->CLAS12()->cal(clas12::PCAL)->getZ());
-	  }//charged parent tracks can use trajectory
-	  else{
-	    otherPos.SetXYZ(other->CLAS12()->traj(clas12::ECAL,clas12::PCAL)->getX(),
-			    other->CLAS12()->traj(clas12::ECAL,clas12::PCAL)->getY(),
-			    other->CLAS12()->traj(clas12::ECAL,clas12::PCAL)->getZ());
+          //FD neutral split off parent must have PCAL hit 
+          Position otherPos;
+          if(charge==0){
+            otherPos.SetXYZ(other->CLAS12()->cal(clas12::PCAL)->getX(),
+                other->CLAS12()->cal(clas12::PCAL)->getY(),
+                other->CLAS12()->cal(clas12::PCAL)->getZ());
+          }//charged parent tracks can use trajectory
+          else{
+            otherPos.SetXYZ(other->CLAS12()->traj(clas12::ECAL,clas12::PCAL)->getX(),
+                other->CLAS12()->traj(clas12::ECAL,clas12::PCAL)->getY(),
+                other->CLAS12()->traj(clas12::ECAL,clas12::PCAL)->getZ());
 
-	  }
-	  if(otherPos.R()==0){
-	    continue;
-	  }	
-
-	  auto diffTh= ROOT::Math::VectorUtil::Angle(otherPos,hitPos)*TMath::RadToDeg(); //now difference relative to gamma
-	  if( diffTh<rmin ){
-	    maskIt=kTRUE;
-	    maskedParticles.push_back(gam); //so don't remove both
-
-	    if(charge==0&&_addSplits){
-
-        //modifying vector, so create new one so other finalstates not effected
-        if(ranges::contains(maskedParticles,other) == false){
-
-            if (std::find(_vecGams.begin(), _vecGams.end(), other) != _vecGams.end()){
-              auto oldother = other;
-              other =  ReplaceParticlePtr(22,other,NextFromPool()); 
-              ReplaceOnlyParticlePtr(0,oldother,other); //also update _vec0
-            }
-            else{
-              other =  ReplaceParticlePtr(0,other,NextFromPool()); 
-            }
-
-            maskedParticles.push_back(other); 
           }
-                
-	      //give my energy to the other
-	      other->SetP4(gam->P4()+other->P4());
-	      other->SetDetector(1);
-	    }
-	  }
-	  if(TMath::IsNaN(diffTh)==kFALSE)hR.Fill(diffTh); //histogram distance between neutral clusters
-	  
-	  if(maskIt==kTRUE) return;
+          if(otherPos.R()==0){
+            continue;
+          }	
 
-	}
+          auto diffTh= ROOT::Math::VectorUtil::Angle(otherPos,hitPos)*TMath::RadToDeg(); //now difference relative to gamma
+          if( diffTh<rmin ){
+            maskIt=kTRUE;
+            maskedParticles.push_back(gam); //so don't remove both
+
+            if(charge==0&&_addSplits){
+
+              //modifying vector, so create new one so other finalstates not effected
+              if(ranges::contains(maskedParticles,other) == false){
+
+                  if (std::find(_vecGams.begin(), _vecGams.end(), other) != _vecGams.end()){
+                    auto oldother = other;
+                    other =  ReplaceParticlePtr(22,other,NextFromPool()); 
+                    ReplaceOnlyParticlePtr(0,oldother,other); //also update _vec0
+                  }
+                  else{
+                    other =  ReplaceParticlePtr(0,other,NextFromPool()); 
+                  }
+
+                  maskedParticles.push_back(other); 
+                }
+                      
+              //give my energy to the other
+              other->SetP4(gam->P4()+other->P4());
+              other->SetDetector(1);
+            }
+          }
+          if(TMath::IsNaN(diffTh)==kFALSE)hR.Fill(diffTh); //histogram distance between neutral clusters
+          
+          if(maskIt==kTRUE) return;
+
+        }
       };/////////////////////////////////////////////////////////
 
       //note all particles are contained in 0, -ve or _ve vecs
@@ -158,9 +157,9 @@ namespace chanser{
       
       //Don't mask it, put it back in vectors
       if( maskIt == kFALSE){
-	if(gam->PDG()==22)_vecGams.push_back(gam);
-	else  if(gam->PDG()==2112)_vecNeutrons.push_back(gam);	
-	_vec0.push_back(gam);
+        if(gam->PDG()==22)_vecGams.push_back(gam);
+        else  if(gam->PDG()==2112)_vecNeutrons.push_back(gam);	
+        _vec0.push_back(gam);
       }
     }
   
