@@ -122,12 +122,21 @@ namespace chanser{
 
 	    if(charge==0&&_addSplits){
 
-	      //modifying vector, so create new one so other finalstates not effected
-	      if(ranges::contains(maskedParticles,other) == false){
-		other =  ReplaceParticlePtr(22,other,NextFromPool()); 		
-		maskedParticles.push_back(other); 
-	      }
- 
+        //modifying vector, so create new one so other finalstates not effected
+        if(ranges::contains(maskedParticles,other) == false){
+
+            if (std::find(_vecGams.begin(), _vecGams.end(), other) != _vecGams.end()){
+              auto oldother = other;
+              other =  ReplaceParticlePtr(22,other,NextFromPool()); 
+              ReplaceOnlyParticlePtr(0,oldother,other); //also update _vec0
+            }
+            else{
+              other =  ReplaceParticlePtr(0,other,NextFromPool()); 
+            }
+
+            maskedParticles.push_back(other); 
+          }
+                
 	      //give my energy to the other
 	      other->SetP4(gam->P4()+other->P4());
 	      other->SetDetector(1);

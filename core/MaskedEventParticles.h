@@ -82,6 +82,16 @@ namespace chanser{
       *it=p1;
       return p1;
     }
+
+    //Varition of ReplaceParticlePtr, which does not copy
+    void ReplaceOnlyParticlePtr(Short_t pdg,CLAS12Particle* p0,CLAS12Particle* p1){
+      //Replace with a p0 with a copy of p0 
+      auto vec=GetParticleVector(pdg);
+      auto it = std::find(vec->begin(), vec->end(), p0 );
+
+      *it=p1;
+      return;
+    }
  
     void Write(TObject& obj );
     
