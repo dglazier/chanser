@@ -54,7 +54,7 @@ namespace chanser{
     
     CLAS12Particle* NextFromPool(){
       while(_particlePool.size()==_nFromPool){
-	_particlePool.push_back(std::unique_ptr<CLAS12Particle>{new CLAS12Particle()});
+	      _particlePool.push_back(std::unique_ptr<CLAS12Particle>{new CLAS12Particle()});
       }
       
       auto next=_particlePool.at(_nFromPool).get();
@@ -65,7 +65,7 @@ namespace chanser{
     
     CLAS12Neutral* NextNeutralFromPool(){
       while(_neutralParticlePool.size()==_nbNFromPool){
-	_neutralParticlePool.push_back(std::unique_ptr<CLAS12Neutral>{new CLAS12Neutral()});
+	      _neutralParticlePool.push_back(std::unique_ptr<CLAS12Neutral>{new CLAS12Neutral()});
       }
       
       auto next=_neutralParticlePool.at(_nbNFromPool).get();
