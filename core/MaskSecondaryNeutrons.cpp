@@ -119,8 +119,8 @@ namespace chanser{
       //both n and gammas as candidates
       //In that case I think we're only using vec0 anyways?
       
-      /*_vecNeutrons.push_back(c12Neutral);
-      if(_nID!=2112){
+      _vecNeutrons.push_back(c12Neutral);
+      /*if(_nID!=2112){
 	_vecGams.push_back(c12Neutral);
 	}*/
 
