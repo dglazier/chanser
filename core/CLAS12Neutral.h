@@ -35,6 +35,11 @@ namespace chanser{
 
     void UseCandidate(UInt_t i){
       SetCLAS12Particle(_candidates[i]->CLAS12());
+      float Px=_candidates[i]->P4().X();
+      float Py=_candidates[i]->P4().Y();
+      float Pz=_candidates[i]->P4().Z();
+      float M=0.93957;
+      SetXYZM(Px,Py,Pz,M);
       _indexInUse=i;
     }
 

@@ -10,14 +10,17 @@ namespace chanser{
   void FDn_pathCorrection::C12NeutronCorrection(BaseParticle* part) const noexcept{
     auto neutron = dynamic_cast<const CLAS12Neutral*>(part);
     //Just in case the wrong value for _useC12Neutral flag is used
-    if(!neutron->isValid()){ 
-      C12ParticleCorrection(dynamic_cast<chanser::CLAS12Particle*>(part));
-      return;
+    //If it's not a CLAS12Neutral we still want to apply it to the 
+    //particle as below
+    if(neutron->isValid()){ 
+      auto candidates=neutron->Candidates(); 
+      for(auto c12p:candidates){
+	C12ParticleCorrection(c12p);
+      }
     }
-    auto candidates=neutron->Candidates(); 
-    for(auto c12p:candidates){
-      C12ParticleCorrection(c12p);
-    }
+    //We also need the correction to be applied to the CLAS12Neutral
+    //containing the candidates
+    C12ParticleCorrection(dynamic_cast<chanser::CLAS12Particle*>(part));
   }//EndOf C12NeutronCorrection
 
   void FDn_pathCorrection::C12ParticleCorrection(CLAS12Particle* c12p) const noexcept{
