@@ -49,6 +49,8 @@ namespace chanser{
       auto fd0s=ranges::filter(*_original0,CheckForFD);
       //Keep all non FD 
       ranges::append(ranges::filter(*_original0,CheckForNotFD),_vec0);
+
+      //should I also be adding the notFD to neutrons, gammas?
       doCorrection(fd0s);
     }
     return kTRUE;
@@ -67,33 +69,22 @@ namespace chanser{
     int index=0;
     //First we loop over neutrals to find the time of each one produced
     for(auto const& neutral:fd0s){
-      auto c12N=static_cast<CLAS12Particle*>(neutral)->CLAS12();
+      auto c12N=static_cast<CLAS12Particle*>(neutral);
+      
+      //ordered PCAL if exists, then ECIN, then ECOUT
+      Double_t time=c12N->Time();
+      //if a neutral doesn't have a hit or a bad hit in the calorimeter.
+      if(time<=0){time=9999;}
 
-      Double_t PCal_Time = c12N->cal(clas12::PCAL)->getTime();
-      Double_t ECin_Time = c12N->cal(clas12::ECIN)->getTime();
-      Double_t ECout_Time = c12N->cal(clas12::ECOUT)->getTime();
-
-      Double_t PCal_Edep = c12N->cal(clas12::PCAL)->getEnergy();
-      Double_t ECin_Edep = c12N->cal(clas12::ECIN)->getEnergy();
-      Double_t ECout_Edep = c12N->cal(clas12::ECOUT)->getEnergy();
-
-      //if a neutral doesn't have a hit in the calorimeter.
-      Double_t time=9999;
-      int sector=c12N->getSector();
-
-      /*Check which calorimeter layers have a hit.
-	Take preference for layers closest to target.*/
-      if(PCal_Edep>0.01){time=PCal_Time;}
-      else if (ECin_Edep>0.01){time=ECin_Time;}
-      else if (ECout_Edep>0.01){time=ECout_Time;}
+      int sector=c12N->CLAS12()->getSector();
 
       sectTimeIndex[sector-1].push_back(std::make_pair(time,index));
-      
       index++;
     }//loop over neutrals
     
     auto isector=1;
 
+    //Loop over sectors and rank potential neutron clusters
     for(auto& veci:sectTimeIndex){
       
       if(veci.empty()==true) continue; //nothing to do in this sector
@@ -107,7 +98,6 @@ namespace chanser{
       //Have at least one entry, start with that
       //This has earliest time so we always keep it
       auto index = veci[0].second;
-      static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(1);
 
       c12Neutral->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
       c12Neutral->UseCandidate(0);
@@ -117,16 +107,22 @@ namespace chanser{
 	//then loop over and add them
 	for(UInt_t entry=1;entry<veci.size();++entry) {
 	  auto index = veci[entry].second;
-	  static_cast<CLAS12Particle*>(fd0s.at(index))->SetTimeRanking(entry+1);
 	  c12Neutral->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
 	}
       }
 
       _vec0.push_back(c12Neutral);
-      _vecNeutrons.push_back(c12Neutral);
+      
+
+      //Which do I push to? 
+      //If NID!=2112 then using NONE option so might have
+      //both n and gammas as candidates
+      //In that case I think we're only using vec0 anyways?
+      
+      /*_vecNeutrons.push_back(c12Neutral);
       if(_nID!=2112){
 	_vecGams.push_back(c12Neutral);
-      }
+	}*/
 
       isector++;
     }

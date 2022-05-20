@@ -68,7 +68,6 @@ namespace chanser{
     Short_t _pdgCode{0};           //PDG number
     Short_t _charge{0};
     Short_t _detector{0};//! some detector ID
-    Short_t _timeRanking{-1};
 
     Bool_t _useTruth{0};//
       
@@ -112,7 +111,6 @@ namespace chanser{
  
       
     void SetDetector(Short_t det){_detector=det;}
-    void SetTimeRanking(Short_t tr){_timeRanking=tr;}
     void SetTime(Double_t ti){_time=ti;};
     void SetMeasMass(Double_t ti){_measMass=ti;};
       
@@ -134,11 +132,10 @@ namespace chanser{
     Double_t Path()const {return _path;}
 
     //Functions required by FinalState
-    void ShiftTime(Float_t shift){_time+=shift;}
+    virtual void ShiftTime(Float_t shift){_time+=shift;}
     Double_t Time()const { return _time;}
     Double_t MeasMass()const { return _measMass;}
     Short_t Detector()const {return _detector;}
-    Short_t TimeRanking()const {return _timeRanking;}
     Short_t Status(){return 0;}
     void Clear();
     virtual void MinorClear();
@@ -216,7 +213,6 @@ namespace chanser{
     _time=0;
     _path=0;
     _detector=0;
-    _timeRanking=1;
     _truth=nullptr;
     NotTruth();
   }
@@ -236,7 +232,6 @@ namespace chanser{
     _time=part->Time();
     _path=part->Path();
     _detector=part->Detector();
-    _timeRanking=part->TimeRanking();
     NotTruth();
   }
   inline void chanser::BaseParticle::Add(const BaseParticle* hsp1, const BaseParticle* hsp2,Int_t pdg){
