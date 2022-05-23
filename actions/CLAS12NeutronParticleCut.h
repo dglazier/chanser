@@ -21,11 +21,22 @@ namespace chanser{
     CLAS12NeutronParticleCut(Bool_t useC12Neutron):_useC12Neutron{useC12Neutron}{};
 
     Bool_t ParticleCut(const chanser::BaseParticle* part) const noexcept override{
- 
-      if(dynamic_cast<const CLAS12Particle*>(part)->CLAS12()->getRegion()!=clas12::FD){
-	return true; //only FD n 
+
+      auto c12p=dynamic_cast<const CLAS12Particle*>(part);
+
+      //the function accepts a BaseParticle so better be sure...
+      if(c12p==nullptr) return true; 
+
+      if(c12p->CLAS12()->getRegion()!=clas12::FD){
+	return true; //only FD n
       }
       auto neutron = dynamic_cast<const CLAS12Neutron*>(part);
+
+       //I guess someone may use this with a CLAS12Particle neutron ? 
+      //Which wouldl then crash, 
+      //might actually want to print a warning here and exit processing.
+      if(neutron==nullptr) return false;
+
       return neutron->isValid()==_useC12Neutron;
     }
       
