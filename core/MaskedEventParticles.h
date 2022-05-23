@@ -9,7 +9,7 @@
 
 #include "EventParticles.h"
 #include "CLAS12Particle.h"
-#include "CLAS12Neutral.h"
+#include "CLAS12Neutron.h"
 
 #include <TFile.h>
 
@@ -63,12 +63,12 @@ namespace chanser{
       return next;
     }
     
-    CLAS12Neutral* NextNeutralFromPool(){
-      while(_neutralParticlePool.size()==_nbNFromPool){
-	      _neutralParticlePool.push_back(std::unique_ptr<CLAS12Neutral>{new CLAS12Neutral()});
+    CLAS12Neutron* NextNeutronFromPool(){
+      while(_neutronParticlePool.size()==_nbNFromPool){
+	      _neutronParticlePool.push_back(std::unique_ptr<CLAS12Neutron>{new CLAS12Neutron()});
       }
       
-      auto next=_neutralParticlePool.at(_nbNFromPool).get();
+      auto next=_neutronParticlePool.at(_nbNFromPool).get();
       ++_nbNFromPool;
       next->Clear();
       return next;
@@ -97,7 +97,7 @@ namespace chanser{
     
   private:
     std::vector<std::unique_ptr<CLAS12Particle>> _particlePool; //! pool of particle objects can use for each event
-    std::vector<std::unique_ptr<CLAS12Neutral>> _neutralParticlePool; //! same but for neutral particles
+    std::vector<std::unique_ptr<CLAS12Neutron>> _neutronParticlePool; //! same but for neutral particles
 
     std::vector<particles_ptrs*> _pidParticles;//!
     std::vector<Short_t> _pidCounts;//!

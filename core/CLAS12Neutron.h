@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////
 ///
-///Class:		CLAS12Neutral
+///Class:		CLAS12Neutron
 ///Description:
 ///              Class for neutral particles, helps with secondary neutrons mask
 ///Author:
@@ -14,13 +14,13 @@
 namespace chanser{
 
   
-  class CLAS12Neutral : public CLAS12Particle {
+  class CLAS12Neutron : public CLAS12Particle {
 
 
   public :
-    CLAS12Neutral()=default;
-    virtual ~CLAS12Neutral()=default;
-  CLAS12Neutral(TString pdgname):CLAS12Particle(pdgname){}  	        //Constructor
+    CLAS12Neutron()=default;
+    virtual ~CLAS12Neutron()=default;
+  CLAS12Neutron(TString pdgname):CLAS12Particle(pdgname){}  	        //Constructor
 
     static constexpr UInt_t invalidIndex=999999;
     
@@ -43,7 +43,7 @@ namespace chanser{
       _indexInUse=i;
     }
 
-    UInt_t whichNeutral() const{
+    UInt_t whichNeutron() const{
       return _indexInUse;
     }
 
@@ -63,21 +63,21 @@ namespace chanser{
     
   };
 
-  inline void chanser::CLAS12Neutral::MinorClear(){
+  inline void chanser::CLAS12Neutron::MinorClear(){
     _candidates.clear();
     _indexInUse=invalidIndex;
      CLAS12Particle::MinorClear();
   }
 
 
-  inline void chanser::CLAS12Neutral::CopyTransient(const BaseParticle* part){
+  inline void chanser::CLAS12Neutron::CopyTransient(const BaseParticle* part){
     //clear to force clean vector
     _candidates.clear();
     _indexInUse=invalidIndex;
 
-    /*Some CLAS12Neutrals may still be CLAS12Particles if they haven't
+    /*Some CLAS12Neutrons may still be CLAS12Particles if they haven't
       gone through the MaskSecondaryNeutrons or aren't in FD*/
-    auto c12n=dynamic_cast<const CLAS12Neutral*>(part);
+    auto c12n=dynamic_cast<const CLAS12Neutron*>(part);
     if(c12n!=nullptr){
       _candidatePool.resize(c12n->Candidates().size());
       int i=0;
@@ -87,7 +87,7 @@ namespace chanser{
 	AddCandidate(&_candidatePool[i]);
 	i++;
       }
-      UseCandidate(c12n->whichNeutral());
+      UseCandidate(c12n->whichNeutron());
     }
     CLAS12Particle::CopyTransient(part);
   }

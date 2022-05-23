@@ -90,7 +90,7 @@ namespace chanser{
       if(veci.empty()==true) continue; //nothing to do in this sector
 
       //Neutral particle, contains all secondaries in a sector
-      auto c12Neutral=NextNeutralFromPool();
+      auto c12Neutron=NextNeutronFromPool();
 
       //will sort based on pair.first, now ranking==order in vector
       std::sort(veci.begin(), veci.end());
@@ -99,19 +99,19 @@ namespace chanser{
       //This has earliest time so we always keep it
       auto index = veci[0].second;
 
-      c12Neutral->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
-      c12Neutral->UseCandidate(0);
+      c12Neutron->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
+      c12Neutron->UseCandidate(0);
 
       //If we're not masking secondaries
       if(_maskSecondaries==0){
 	//then loop over and add them
 	for(UInt_t entry=1;entry<veci.size();++entry) {
 	  auto index = veci[entry].second;
-	  c12Neutral->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
+	  c12Neutron->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
 	}
       }
 
-      _vec0.push_back(c12Neutral);
+      _vec0.push_back(c12Neutron);
       
 
       //Which do I push to? 
@@ -119,9 +119,9 @@ namespace chanser{
       //both n and gammas as candidates
       //In that case I think we're only using vec0 anyways?
       
-      _vecNeutrons.push_back(c12Neutral);
+      _vecNeutrons.push_back(c12Neutron);
       /*if(_nID!=2112){
-	_vecGams.push_back(c12Neutral);
+	_vecGams.push_back(c12Neutron);
 	}*/
 
       isector++;

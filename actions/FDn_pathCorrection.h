@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseCorrection.h"
 #include "CLAS12Base.h"
-#include "CLAS12Neutral.h"
+#include "CLAS12Neutron.h"
 #include "CLAS12Particle.h"
 #include "clas12defs.h"
 
@@ -12,11 +12,11 @@ namespace chanser{
   public:
     FDn_pathCorrection()=default;
 
-    FDn_pathCorrection(Bool_t useC12Neutral):_useC12Neutral{useC12Neutral}{
+    FDn_pathCorrection(Bool_t useC12Neutron):_useC12Neutron{useC12Neutron}{
       _useDefault=true;
     };
     
-  FDn_pathCorrection(Double_t corPCAL,Double_t corECIN,Double_t corECOUT,Bool_t useC12Neutral):_useC12Neutral{useC12Neutral}{
+  FDn_pathCorrection(Double_t corPCAL,Double_t corECIN,Double_t corECOUT,Bool_t useC12Neutron):_useC12Neutron{useC12Neutron}{
       _corLayer.push_back(corPCAL);
       _corLayer.push_back(corECIN);
       _corLayer.push_back(corECOUT);
@@ -33,7 +33,7 @@ namespace chanser{
    private:
 
     tablevals_t _corLayer;
-    Bool_t _useC12Neutral{false};
+    Bool_t _useC12Neutron{false};
     Bool_t _useDefault{true};
    
     void Print(Option_t* option = "")const final{

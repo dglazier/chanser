@@ -11,7 +11,7 @@
 #include "TLorentzVector.h"
 #include "MaskedEventParticles.h"
 #include "CLAS12Particle.h"
-#include "CLAS12Neutral.h"
+#include "CLAS12Neutron.h"
 #include "clas12defs.h" //from clas12root
 
 #include <TH1F.h>
