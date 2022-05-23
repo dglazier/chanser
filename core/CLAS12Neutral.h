@@ -58,6 +58,7 @@ namespace chanser{
 
   private :
     std::vector<CLAS12Particle*> _candidates; //DST neutrals combined into single neutral
+    std::vector<CLAS12Particle> _candidatePool;
     UInt_t _indexInUse{invalidIndex};
     
   };
@@ -78,10 +79,13 @@ namespace chanser{
       gone through the MaskSecondaryNeutrons or aren't in FD*/
     auto c12n=dynamic_cast<const CLAS12Neutral*>(part);
     if(c12n!=nullptr){
+      _candidatePool.resize(c12n->Candidates().size());
+      int i=0;
+      //New candidates copied over to avoid double correcting
       for(auto candidate:c12n->Candidates()){
-	CLAS12Particle * newC12p = new CLAS12Particle();
-	newC12p->CopyTransient(candidate);
-	AddCandidate(newC12p);
+        _candidatePool[i].CopyTransient(candidate);
+	AddCandidate(&_candidatePool[i]);
+	i++;
       }
       UseCandidate(c12n->whichNeutral());
     }
