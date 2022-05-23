@@ -50,7 +50,6 @@ namespace chanser{
       //Keep all non FD 
       ranges::append(ranges::filter(*_original0,CheckForNotFD),_vec0);
 
-      //should I also be adding the notFD to neutrons, gammas?
       doCorrection(fd0s);
     }
     return kTRUE;
@@ -101,6 +100,10 @@ namespace chanser{
 
       c12Neutron->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
       c12Neutron->UseCandidate(0);
+      //If we're allowing for photons we also keep a copy in vec0 for combis
+      if(_nID!=2112){
+	_vec0.push_back(fd0s.at(index));
+      }
 
       //If we're not masking secondaries
       if(_maskSecondaries==0){
@@ -108,21 +111,20 @@ namespace chanser{
 	for(UInt_t entry=1;entry<veci.size();++entry) {
 	  auto index = veci[entry].second;
 	  c12Neutron->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
+	  //If we're allowing for photons we also keep a copy in vec0 for combis
+	  if(_nID!=2112){
+	    _vec0.push_back(fd0s.at(index));
+	  }
 	}
       }
 
-      _vec0.push_back(c12Neutron);
-      
-
-      //Which do I push to? 
-      //If NID!=2112 then using NONE option so might have
-      //both n and gammas as candidates
-      //In that case I think we're only using vec0 anyways?
-      
-      _vecNeutrons.push_back(c12Neutron);
-      /*if(_nID!=2112){
-	_vecGams.push_back(c12Neutron);
-	}*/
+      //If using NONE, push back to vec0
+      //otherwise only ranking neutrons so push back to vecNeutrons
+      if(_nID!=2112){
+	_vec0.push_back(c12Neutron);
+      } else {
+	_vecNeutrons.push_back(c12Neutron);
+      }
 
       isector++;
     }

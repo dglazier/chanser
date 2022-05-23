@@ -11,6 +11,7 @@
 #pragma link C++ class chanser::ParticleCutsManager+;
 #pragma link C++ class chanser::ParticleCuts+;
 #pragma link C++ class chanser::CLAS12ParticleCut+;
+#pragma link C++ class chanser::CLAS12NeutronParticleCut+;
 #pragma link C++ class chanser::CLAS12Base+;
 #pragma link C++ class chanser::TwoParticleVertexCut+;
 #pragma link C++ class chanser::ParticleDataManager+;
