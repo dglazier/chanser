@@ -61,7 +61,7 @@ namespace chanser{
   }
   void  FinalState::ConfigureIters(Topology *tt){
    
-   _currTopo=tt;
+    _currTopo=tt;
     _currIter=nullptr;
     AutoIter();
     _currTopo->Iter().ConfigureIters();
@@ -508,14 +508,15 @@ namespace chanser{
   
     //get the pointers to the particles of this species
     vector<BaseParticle* > species_parts;
-    
+    vector<TString> part_names;
     for(const auto& particle_conf:configs_pid){
       species_parts.push_back(particle_conf.Particle());
+      part_names.push_back(particle_conf.GetName());
     }
     
     //Connect actual FinalState particles to iterator
     //These particle will be updated for each combitorial
-    return AddSelectToSelected(diter0,species_parts.size(),&species_parts);
+    return AddSelectToSelected(diter0,species_parts.size(),&species_parts,part_names);
     
   }
   void FinalState::InnerSelect(ParticleIter* recursiter,Int_t pid){
@@ -532,19 +533,23 @@ namespace chanser{
    
     auto loopIter=recursiter;
     for(const auto& pdg:pdgs){
+      //std::cout<<"DEBUG FinalState::InnerSelect "<<pdg<<" left "<<Nleft<<std::endl;
       if(Nleft<=0) cout<<"None left but still PDGs"<<Nleft<<" "<<pdg<< " "<<pdgs.size()<<endl;
       //get particles with this pdg
       auto configs_pdg=filterDetParticleConfigsByPdg(configs_pid,pdg);
       //get a vector of their base particle pointers
       vector<BaseParticle* > pdg_parts;
+      vector<TString> part_names;
       for(const auto& particle_conf : configs_pdg){
 	pdg_parts.push_back(particle_conf.Particle());
+	part_names.push_back(particle_conf.GetName());
       }
       auto Npdg=pdg_parts.size(); //number to select
       
       Nleft-=Npdg; //Number remaining
+      //std::cout<<"DEBUG FinalState::InnerSelect "<<pdg<<" left "<<Nleft<<" npdg "<<Npdg<<std::endl;
       //select particles with this pdg
-      auto selIter=AddSelectToSelected(loopIter,Npdg,&pdg_parts);
+      auto selIter=AddSelectToSelected(loopIter,Npdg,&pdg_parts,part_names);
       if(Nleft>0){
 	//get the remaining particles
 	//this just assigns the remaining BaseParticle ptrs
@@ -558,26 +563,41 @@ namespace chanser{
      
       auto parLoopIter=selIter;
       for(auto& name:parent_names){
+	//std::cout<<"DEBUG FinalState::InnerSelect parent "<<name<<" left "<<Nleft<<" npdg "<<Npdg<<std::endl;
 
       	//get particles with this pdg and this parent (generally should be 1!)
       	auto configs_parent=filterDetParticleConfigsByParent(configs_pdg,name);
       	//get a vector of their base particle pointers
       	vector<BaseParticle* > child_parts;
-      	for(const auto& particle_conf : configs_parent){
+	vector<TString> child_names;
+       	for(const auto& particle_conf : configs_parent){
+	  //std::cout<<"DEBUG FinalState::InnerSelect parent adding child "<<particle_conf.GetName()<<std::endl;
       	  child_parts.push_back(particle_conf.Particle());
+	  child_names.push_back(particle_conf.GetName());
+	  removeFromVector(particle_conf.Particle(),pdg_parts);
+	  removeFromVector(TString(particle_conf.GetName()),part_names);
       	}
       	auto Nchild=child_parts.size();
       	auto Nleft_after_parent=Npdg-Nchild;
-  
+	//	std::cout<<"DEBUG FinalState::InnerSelect parent left after  "<<Nleft_after_parent<<" "<<pdg_parts.size()<<endl;
     	//select particle for this parent pdg from the particles with this pdg
-      	auto parIter=AddSelectToSelected(parLoopIter,Nchild,&child_parts);
-      	if(Nleft_after_parent>0){
+      	auto parIter=AddSelectToSelected(parLoopIter,Nchild,&child_parts,child_names);
+	if(Nleft_after_parent>0){
       	  //get the remaining particles
       	  //this just assigns the remaining BaseParticle ptrs
-      	  auto premIter=AddSelectToRemainder(parIter,Nleft_after_parent);
+	  auto premIter=AddSelectToRemainder(parIter,Nleft_after_parent);
 	  parLoopIter=premIter; //left over childern for next parent (if there is one)
-      	}
+	}
       }
+      //sweep up remaining particles and select them
+      if(pdg_parts.size()>0){
+	//get the remaining particles
+	//this just assigns the remaining BaseParticle ptrs
+	vector<BaseParticle* > rem_parts;
+	vector<TString> rem_names;
+	auto selectRem =AddSelectToSelected(parLoopIter,pdg_parts.size(),&pdg_parts,part_names);
+      }
+      
       
     }
      

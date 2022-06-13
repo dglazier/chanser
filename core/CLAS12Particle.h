@@ -43,6 +43,7 @@ namespace chanser{
   inline void chanser::CLAS12Particle::CopyTransient(const BaseParticle* part){
     // std::cout<<"chanser::CLAS12Particle::CopyParticle("<<std::endl;
     _c12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
+    // std::cout<<"DEBUG CLAS12Particle::CopyParticle "<<_c12Particle<<" "<<part->PDG()<<std::endl;
     BaseParticle::CopyTransient(part);
   }
   
