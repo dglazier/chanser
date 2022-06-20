@@ -197,7 +197,7 @@ namespace chanser{
   inline Short_t chanser::BaseParticle::FindCharge()const{
     
     if(_pdgCode==chanser::UndefinedPDG) return 1;
-    else if(_pdgCode==chanser::UndefinedPDG) return -1;
+    else if(_pdgCode==(-chanser::UndefinedPDG)) return -1;
 
     TParticlePDG *part=TDatabasePDG::Instance()->GetParticle(_pdgCode);
     if(part){
@@ -231,6 +231,7 @@ namespace chanser{
   }
   
   inline void chanser::BaseParticle::CopyTransient(const BaseParticle* part){
+    //   std::cout<<"chanser::BaseParticle::CopyTransient mypdg "<<PDG()<<" "<<part->PDG()<<" "<<P4()<<std::endl;
     SetP4(part->P4());
     SetVertex(part->Vertex());
   
