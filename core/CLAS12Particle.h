@@ -30,8 +30,9 @@ namespace chanser{
     
   };
   inline void chanser::CLAS12Particle::MinorClear(){
-     _c12Particle=nullptr;
-     BaseParticle::MinorClear();
+    //std::cout<<"chanser::CLAS12Particle::MinorCLear"<<std::endl;
+    _c12Particle=nullptr;
+    BaseParticle::MinorClear();
   }
   inline void chanser::CLAS12Particle::CopyParticle(const BaseParticle* part,Bool_t andPDG){
     
@@ -43,6 +44,7 @@ namespace chanser{
   inline void chanser::CLAS12Particle::CopyTransient(const BaseParticle* part){
     // std::cout<<"chanser::CLAS12Particle::CopyParticle("<<std::endl;
     _c12Particle=static_cast<const CLAS12Particle*>(part)->CLAS12();
+    //std::cout<<"DEBUG CLAS12Particle::CopyParticle "<<_c12Particle<<" "<<part->PDG()<<std::endl;
     BaseParticle::CopyTransient(part);
   }
   
@@ -52,6 +54,7 @@ namespace chanser{
 
     //Get momentum and vertex from pbank
     auto pbank=p->par();
+    //  std::cout<<"CLAS12Particle::SetCLAS12Particle charge "<<pbank->getCharge()<<" "<<pbank->getPid()<<" c12particle "<<_c12Particle<<" "<<p->getPid()<<std::endl;
     _charge=pbank->getCharge();
     SetXYZT(pbank->getPx(),pbank->getPy(),pbank->getPz(),pbank->getP());
     SetVertex(pbank->getVx()/100,pbank->getVy()/100,pbank->getVz()/100);//change to m

@@ -53,10 +53,13 @@ namespace chanser{
       //check if this particle is OK from users check particle
       particles_ptrs* vecParts=_mapPDGtoParticle.at(part->PDG());
       //add this particle to its particle species vector
-      if(vecParts&&part->PDG()!=0)vecParts->push_back(part); //some events have PDG=0, just include these in charge0 vec
+      auto ppdg=part->PDG();
+      if(vecParts&&(ppdg!=0||ppdg!=UndefinedPDG||ppdg!=-UndefinedPDG))
+	vecParts->push_back(part); //some events have PDG=0, just include these in charge0 vec
       //add particle to charge ID vector
       auto chpar= _chargetoParticle[part->Charge()+1];
       chpar->push_back(part);
+      // cout<<"DEBUG EventParticles::ReadEvent  "<<" chpar "<<chpar<<" vecParts "<<vecParts<<" "<<part->PDG()<<" "<<part->Charge()<<endl;
       if(vecParts->size()==_maxPart) {return kFALSE;}
       if(chpar->size()==_maxPart) {return kFALSE;} //this should overide previous line ?! And max parts is just on charge
     }

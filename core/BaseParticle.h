@@ -107,6 +107,12 @@ namespace chanser{
     void TakePDGMassFromE(){Double_t rho0=_p4.P();Double_t rho=sqrt(_p4.E()*_p4.E()-_pdgMass*_pdgMass);rho/=rho0;_p4.SetXYZT(_p4.X()*rho,_p4.Y()*rho,_p4.Z()*rho,_p4.E());}; //preserves energy
    
     void SetTruth(const TruthParticle* part){ _truth=part;}
+    void SetTruthP4(HSLorentzVector p4 ){
+      const_cast<TruthParticle*>(_truth)->_p4.SetE(p4.E());
+      const_cast<TruthParticle*>(_truth)->_p4.SetPx(p4.Px());
+      const_cast<TruthParticle*>(_truth)->_p4.SetPy(p4.Py());
+      const_cast<TruthParticle*>(_truth)->_p4.SetPz(p4.Pz());
+    }
     const TruthParticle* Truth()const noexcept{ return _truth;}
  
       
@@ -178,9 +184,10 @@ namespace chanser{
   };
 
   inline void  chanser::BaseParticle::SetPDGcode(Int_t code){
+    _pdgMass=0;
     _pdgCode=code;
     if(!_pdgCode) return;
-    if(_pdgCode==UndefinedPDG||_pdgCode==-UndefinedPDG) return;
+    if(_pdgCode==UndefinedPDG||_pdgCode==(-UndefinedPDG)) return;
     
     auto partpdg=TDatabasePDG::Instance()->GetParticle(_pdgCode);
     if(partpdg){
@@ -192,7 +199,7 @@ namespace chanser{
   inline Short_t chanser::BaseParticle::FindCharge()const{
     
     if(_pdgCode==chanser::UndefinedPDG) return 1;
-    else if(_pdgCode==chanser::UndefinedPDG) return -1;
+    else if(_pdgCode==(-chanser::UndefinedPDG)) return -1;
 
     TParticlePDG *part=TDatabasePDG::Instance()->GetParticle(_pdgCode);
     if(part){
@@ -226,6 +233,7 @@ namespace chanser{
   }
   
   inline void chanser::BaseParticle::CopyTransient(const BaseParticle* part){
+    //   std::cout<<"chanser::BaseParticle::CopyTransient mypdg "<<PDG()<<" "<<part->PDG()<<" "<<P4()<<std::endl;
     SetP4(part->P4());
     SetVertex(part->Vertex());
   

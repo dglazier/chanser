@@ -69,9 +69,16 @@ namespace chanser{
     _eventTopo.reserve(pids.size());
     //loop over event particle ids and reconfigure them
     //for these topologies
+    // std::cout<<"DEBUG  TopologyManager::CheckForValidTopos ";
     for(const auto& pid:pids){
+      // if(_useChargePID==kFALSE&&(pid==UndefinedPDG||pid==-UndefinedPDG||pid==0))
+      // 	 continue;
+      
       _eventTopo.emplace_back(ParticleID(pid));
+      // std::cout<<" ( "<<pid<<" "<<ParticleID(pid)<< " ) ";//DEBUG
     }
+    //std::cout<<std::endl;//DEBUG
+    
     std::sort(_eventTopo.begin(),_eventTopo.begin()+_eventTopo.size());
  
     //now check to see if this topology matches any of our predefines ones

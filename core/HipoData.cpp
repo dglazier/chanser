@@ -8,8 +8,13 @@ namespace chanser{
     _c12=nullptr;
 
     std::cout<<"HipoData::SetFile "<< filename<<std::endl;
-    _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
+    if(_myC12.get()==nullptr)
+      _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
+    else  //copy any configurations
+      _myC12.reset(new clas12::clas12reader{*_myC12.get(),filename.Data(),{0}});
+
     _c12=_myC12.get(); //for using
+   
     if(!_c12) return kFALSE; 
     Init();
     return kTRUE;
@@ -61,9 +66,11 @@ namespace chanser{
     //keep going until we get an event that has particles
     while(_c12->getReader().next()){
 
-      if(FetchPids())
+      if(FetchPids()){
 	return kTRUE;
+      }
     }
+    
     //check for more files
     if(_nFile<_chainOfFiles.GetNtrees()){
       NextFile();
@@ -82,7 +89,7 @@ namespace chanser{
    
     if(_entry%100000==0) std::cout<<"HipoData::InitEvent() "<<_entry<<std::endl;
       
-    if(!_c12->preCheckPids().empty()){ //got one
+    if(!_c12->preCheckPidsOrCharge().empty()){ //got one
       return kTRUE;
     }
     return kFALSE;    
@@ -126,7 +133,7 @@ namespace chanser{
       Nparts++;
       CLAS12Particle* particle= (&_particlePool2.at(Nparts-1));
       particle->Clear();//clear pervious data
-
+      // std::cout<<"DEBUG  HipoData::FillParticles() "<<Nparts<<" "<<particle<<" "<<c12p<<std::endl;
       //attach this particle
       particle->SetCLAS12Particle(c12p);
 
@@ -137,8 +144,7 @@ namespace chanser{
   //////////////////////////////////////////////////////////////////
   ///
   void HipoData::FillTruth(){
- 
-    auto mcpbank=_c12->mcparts();
+     auto mcpbank=_c12->mcparts();
       
     const Int_t  Ngen=mcpbank->getRows();
     
@@ -237,6 +243,7 @@ namespace chanser{
     //cache data from ccdb
     auto ccdb=_c12->ccdb();
     if(ccdb){
+      std::cout<<"DEBUG HipoData got ccdb "<<std::endl;
       /////////////////////////////////////////////////
       //target
       //can't get this data from ccdb, so put it in an anadb
@@ -253,8 +260,10 @@ namespace chanser{
       int rfId = rfStat2>rfStat1 ? 1 : 0;
       _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
  
+      std::cout<<"DEBUG HipoData got ccdb "<<_runInfo._rfBucketLength<<" "<<rfStat1<<" "<<rfStat2<<std::endl;
     }
- 
+       std::cout<<"DEBUG HipoData NOT got ccdb "<<std::endl;
+
     auto table = _runInfo.GetAnaDB().GetTable(period,
 					      "TARGET_POSITION"
 					      ,{3}); //x,y,z pos
