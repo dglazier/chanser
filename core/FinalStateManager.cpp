@@ -173,7 +173,7 @@ namespace chanser{
       ChangeRun();
     }
  
-    // std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
+    //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
       //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<" "<<fs->FinalDirectory()<<" "<<&_eventParts<<" generated "<<fs->IsGenerated()<<" "<<_data->IsLund()<<std::endl;
@@ -181,16 +181,17 @@ namespace chanser{
       //fulfilled by this event
       if(!fs->CheckForValidTopos(eventTopo))
 	continue;
-      //std::cout<<"FinalStateManager::ProcessEvent() valid"<<std::endl;
+      //std::cout<<"FinalStateManager::ProcessEvent() valid, doneRead ?"<<doneRead<<std::endl;
       if(!doneRead){ //only read once per event
 	//got a valid event, read all data
 	_data->ReadEvent();
 	doneRead=kTRUE;
- 	//std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
-	//organise the particle vectors for the event
-	if(!_eventParts.ReadEvent(_data->GetParticles()))
-	  break; //something wrong with event disegard it
       }
+      //std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
+      //organise the particle vectors for the event
+      if(!_eventParts.ReadEvent(_data->GetParticles()))
+	break; //something wrong with event disegard it
+    
 
       //process this final state
       fs->ProcessEvent();

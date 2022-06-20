@@ -32,16 +32,18 @@ namespace chanser{
   }
  
   Bool_t EventTruthAction::CheckEventTruth(baseparticle_ptrs parts){
+    //cout<<" EventTruthAction::CheckEventTruth "<<parts.size()<<endl;
     Bool_t isTrue=kTRUE;
     for(auto& p: parts){
       isTrue*=CheckParticleTruth(p);
     }
-    return isTrue;
+    //cout<<" EventTruthAction::CheckEventTruth true ? "<<isTrue<<endl;
+   return isTrue;
   }
   Bool_t EventTruthAction::CheckParticleTruth(BaseParticle* p){
     //loop over truth vectors to see if this particle has its best match
     //first only use truth particle with same PDG code as p
-    // cout<<" EventTruthAction::CheckParticleTruth "<<p <<" "<<_truth->size()<<endl;
+    //cout<<" EventTruthAction::CheckParticleTruth "<<p <<" "<<_truth->size()<<endl;
     Int_t id=p->PDG();
     /*  auto samePids=ranges::filter(*_truth,[id](const TruthParticle* truth)
 	{return truth->_pdgCode==id;});*/
@@ -54,7 +56,7 @@ namespace chanser{
       });
     ////////////////////////////////////////
 
-    //  cout<<(*matched)->_pdgCode<<" "<<(*matched)->_p4.P()<<" "<<p->PDG()<<" "<<p->Truth()->_p4.P()<<endl;
+    // cout<<(*matched)->_pdgCode<<" "<<(*matched)->_p4.P()<<" "<<p->PDG()<<" "<<p->Truth()->_p4.P()<<endl;
     //is the nearest one, the particle's truth ?
     return *matched==p->Truth() ? kTRUE:kFALSE;
       

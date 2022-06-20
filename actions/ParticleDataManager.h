@@ -65,7 +65,7 @@ namespace chanser{
   protected:
       
     void MakeOutDir(){
-   
+      std::cout<<"ParticleDataManager MakeOutDir "<<_outDir<<std::endl;
       gSystem->Exec(Form("mkdir -p %s",_outDir.Data()));
     }
    

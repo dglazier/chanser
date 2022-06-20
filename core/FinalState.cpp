@@ -317,7 +317,7 @@ namespace chanser{
     }
 
     auto validTopos =_topoMan.ValidTopos();
-    
+    if(validTopos.empty()==false)cout<<"DEBUG FinalState::ProcessEvent() got a topo "<<endl<<endl;
     for(auto* topo : validTopos){
       InvalidateParticles(); //set P4 to zero, so we do not use previously set
       _currTopo=topo;
@@ -330,7 +330,7 @@ namespace chanser{
       if(singleCombination) continue;
       //Now iterate over others
       auto piter=_currTopo->Iter();
-      //cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl<<endl; 
+      cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl<<endl; 
       while(piter.NextCombitorial0()){
 	FSProcess();
 	if(_rejectEvent==kFALSE) _goodEvent++;

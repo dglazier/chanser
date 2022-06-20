@@ -98,8 +98,7 @@ namespace chanser{
     double rfCorr = std::fmod(deltatr , _rfBucketLength) - _rfBucketLength/2;
     auto stime=ptime + rfCorr - _targetPosition/TMath::C()*1E9;
     
-
-    
+     
     return stime;
   }
 
@@ -120,7 +119,7 @@ namespace chanser{
 	_fastest.SetXYZT(0,0,0,0);
 	CLAS12Particle* fastptr={nullptr};
 	for(auto* phigh : _possibleParticle){
-	  if( phigh->P4().P() > _fastest.P()){
+	    if( phigh->P4().P() > _fastest.P()){
 	    _fastest=phigh->P4();
 	    fastptr=phigh;
 	  }

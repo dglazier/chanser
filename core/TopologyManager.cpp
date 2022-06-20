@@ -71,8 +71,11 @@ namespace chanser{
     //for these topologies
     // std::cout<<"DEBUG  TopologyManager::CheckForValidTopos ";
     for(const auto& pid:pids){
+      // if(_useChargePID==kFALSE&&(pid==UndefinedPDG||pid==-UndefinedPDG||pid==0))
+      // 	 continue;
+      
       _eventTopo.emplace_back(ParticleID(pid));
-      //  std::cout<<" "<<ParticleID(pid);//DEBUG
+      // std::cout<<" ( "<<pid<<" "<<ParticleID(pid)<< " ) ";//DEBUG
     }
     //std::cout<<std::endl;//DEBUG
     

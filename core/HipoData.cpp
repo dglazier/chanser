@@ -89,7 +89,7 @@ namespace chanser{
    
     if(_entry%100000==0) std::cout<<"HipoData::InitEvent() "<<_entry<<std::endl;
       
-    if(!_c12->preCheckPids().empty()){ //got one
+    if(!_c12->preCheckPidsOrCharge().empty()){ //got one
       return kTRUE;
     }
     return kFALSE;    
@@ -133,7 +133,7 @@ namespace chanser{
       Nparts++;
       CLAS12Particle* particle= (&_particlePool2.at(Nparts-1));
       particle->Clear();//clear pervious data
-
+      // std::cout<<"DEBUG  HipoData::FillParticles() "<<Nparts<<" "<<particle<<" "<<c12p<<std::endl;
       //attach this particle
       particle->SetCLAS12Particle(c12p);
 
@@ -144,8 +144,7 @@ namespace chanser{
   //////////////////////////////////////////////////////////////////
   ///
   void HipoData::FillTruth(){
- 
-    auto mcpbank=_c12->mcparts();
+     auto mcpbank=_c12->mcparts();
       
     const Int_t  Ngen=mcpbank->getRows();
     

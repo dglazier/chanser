@@ -174,6 +174,8 @@ namespace chanser{
     Short_t WasGoodEvent(){return _goodEvent;}
 
     void SetCheckCombitorials(){_checkCombi=1;}
+
+    Bool_t UsingTruth()const {return _usingTruth;}
     
   protected :
 
@@ -220,7 +222,8 @@ namespace chanser{
     
     const EventParticles* GetEventParticles(){return _eventParts;}
 
-      
+    void InvalidateParticles();
+    
     Long64_t _counter=0;
 
     TopologyManager _topoMan;//!
@@ -280,6 +283,7 @@ namespace chanser{
     Short_t _isPermutating0=0;//!
     Short_t _rejectEvent=0;//!
     Short_t _hasTruth=0;//!
+    Short_t _usingTruth=0;//!
     Short_t _itersConfigured=0;//!
     Short_t _ownsActions=1;//!
     Short_t _goodEvent=0;//!

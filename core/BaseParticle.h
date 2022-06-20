@@ -183,9 +183,10 @@ namespace chanser{
   };
 
   inline void  chanser::BaseParticle::SetPDGcode(Int_t code){
+    _pdgMass=0;
     _pdgCode=code;
     if(!_pdgCode) return;
-    if(_pdgCode==UndefinedPDG||_pdgCode==-UndefinedPDG) return;
+    if(_pdgCode==UndefinedPDG||_pdgCode==(-UndefinedPDG)) return;
     
     auto partpdg=TDatabasePDG::Instance()->GetParticle(_pdgCode);
     if(partpdg){
