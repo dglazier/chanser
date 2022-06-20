@@ -47,6 +47,14 @@ namespace chanser{
     }
 
   }
+  //////////////////////////////////////////////////////////////////
+  //reset particles to 0,0,0,0
+  void FinalState::InvalidateParticles(){
+    // std::cout<<"FinalState::InvalidateParticles()"<<std::endl;
+     for(auto& cp: _pconfigs){
+       cp.Particle()->P4p()->SetXYZT(0,0,0,0);
+     }
+  }
  
   //////////////////////////////////////////////////////////////////
   void  FinalState::AddTopology(const TString names,const VoidFuncs funcE){
@@ -311,6 +319,7 @@ namespace chanser{
     auto validTopos =_topoMan.ValidTopos();
     
     for(auto* topo : validTopos){
+      InvalidateParticles(); //set P4 to zero, so we do not use previously set
       _currTopo=topo;
       _currTopoID=_currTopo->ID();
       //First combination
@@ -394,10 +403,12 @@ namespace chanser{
       //fill truth tree data
     SetOutEvent(_outEvent.GetTruth( ));
     UseTruth();
+    _usingTruth=kTRUE;
     Kinematics();
  
     //revert back to real tree data
     NotTruth();
+    _usingTruth=kFALSE;
     SetOutEvent(_outEvent.GetReal( ));
   }
   
@@ -468,6 +479,7 @@ namespace chanser{
       _currIter->SetNextInnerIter(diter);
 
     }
+    std::cout<<"DEBUG FinalState::CreateParticleIter "<<parts<<" "<<Nsel<<endl;
     diter->SetParticles(parts);
     diter->SetNSel(Nsel);
 
@@ -504,6 +516,7 @@ namespace chanser{
     //create a Particle Iterator for this species (InnerParticle)
     //need to give the vector of particles for this species
     //and the number to select from it
+    std::cout<<"DEBUG FinalState::CreateParticleIter for "<<pid<<endl;
     ParticleIter* diter0=CreateParticleIter(_eventParts->GetParticleVector(pid),configs_pid.size());
   
     //get the pointers to the particles of this species
