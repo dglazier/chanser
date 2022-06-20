@@ -9,6 +9,7 @@
 
 #include "EventParticles.h"
 #include "CLAS12Particle.h"
+#include "CLAS12Neutron.h"
 
 #include <TFile.h>
 
@@ -52,12 +53,27 @@ namespace chanser{
     particle_ptr NextParticle(Short_t pid,UInt_t& entry);
     
     CLAS12Particle* NextFromPool(){
-      while(_particlePool.size()==_nFromPool)
-	_particlePool.push_back(std::move(CLAS12Particle()));
-      auto& next=_particlePool[_nFromPool];
+      while(_particlePool.size()==_nFromPool){
+	      _particlePool.push_back(std::unique_ptr<CLAS12Particle>{new CLAS12Particle()});
+      }
+      
+      auto next=_particlePool.at(_nFromPool).get();
       ++_nFromPool;
-      return &next;
+      next->Clear();
+      return next;
     }
+    
+    CLAS12Neutron* NextNeutronFromPool(){
+      while(_neutronParticlePool.size()==_nbNFromPool){
+	      _neutronParticlePool.push_back(std::unique_ptr<CLAS12Neutron>{new CLAS12Neutron()});
+      }
+      
+      auto next=_neutronParticlePool.at(_nbNFromPool).get();
+      ++_nbNFromPool;
+      next->Clear();
+      return next;
+    }
+
     CLAS12Particle* ReplaceParticlePtr(Short_t pdg,CLAS12Particle* p0,CLAS12Particle* p1){
       //Replace with a p0 with a copy of p0 
       auto vec=GetParticleVector(pdg);
@@ -66,11 +82,22 @@ namespace chanser{
       *it=p1;
       return p1;
     }
+
+    //Varition of ReplaceParticlePtr, which does not copy
+    void ReplaceOnlyParticlePtr(Short_t pdg,CLAS12Particle* p0,CLAS12Particle* p1){
+      //Replace with a p0 with a copy of p0 
+      auto vec=GetParticleVector(pdg);
+      auto it = std::find(vec->begin(), vec->end(), p0 );
+
+      *it=p1;
+      return;
+    }
  
     void Write(TObject& obj );
     
   private:
-    std::vector<CLAS12Particle> _particlePool; //! pool of particle objects can use for each event
+    std::vector<std::unique_ptr<CLAS12Particle>> _particlePool; //! pool of particle objects can use for each event
+    std::vector<std::unique_ptr<CLAS12Neutron>> _neutronParticlePool; //! same but for neutral particles
 
     std::vector<particles_ptrs*> _pidParticles;//!
     std::vector<Short_t> _pidCounts;//!
@@ -80,6 +107,7 @@ namespace chanser{
 
     
     UInt_t _nFromPool={0};
+    UInt_t _nbNFromPool={0};
 
     ClassDef(chanser::MaskedEventParticles,1); //class MaskedEventParticles
     

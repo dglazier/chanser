@@ -87,6 +87,7 @@ namespace chanser{
     //use the truth P4
     void UseTruth() {_useTruth=kTRUE;}
     void NotTruth() {_useTruth=kFALSE;}
+    Bool_t IsTruth() {return _useTruth;}
     
     //Setting functions
     void SetPDGcode(Int_t code);
@@ -137,7 +138,7 @@ namespace chanser{
     Double_t Path()const {return _path;}
 
     //Functions required by FinalState
-    void ShiftTime(Float_t shift){_time+=shift;}
+    virtual void ShiftTime(Float_t shift){_time+=shift;}
     Double_t Time()const { return _time;}
     Double_t MeasMass()const { return _measMass;}
     Short_t Detector()const {return _detector;}

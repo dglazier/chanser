@@ -21,6 +21,7 @@
 #pragma link C++ class chanser::MaskCalorSplitOffs+;
 #pragma link C++ class chanser::MaskCalorNeutronSplitOffs+;
 #pragma link C++ class chanser::MaskRadPhotons+;
+#pragma link C++ class chanser::MaskSecondaryNeutrons+;
 #pragma link C++ class chanser::FinalStateManager+;
 #pragma link C++ class chanser::DataManager+;
 #pragma link C++ class chanser::HipoData+;
@@ -47,6 +48,7 @@
 
 #pragma link C++ class chanser::CLAS12FinalState+;
 #pragma link C++ class chanser::CLAS12Particle+;
+#pragma link C++ class chanser::CLAS12Neutron+;
 
 //#pragma link C++ class chanser::+;
 
