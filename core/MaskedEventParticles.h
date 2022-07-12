@@ -34,6 +34,7 @@ namespace chanser{
     virtual void PrintMask() const;
     virtual Bool_t ReReadEvent(){
       _nFromPool=0; //local particle object counter
+      _nbNFromPool=0;
       return kTRUE;
     };
     virtual void SetPidVectors();
@@ -67,7 +68,6 @@ namespace chanser{
       while(_neutronParticlePool.size()==_nbNFromPool){
 	      _neutronParticlePool.push_back(std::unique_ptr<CLAS12Neutron>{new CLAS12Neutron()});
       }
-      
       auto next=_neutronParticlePool.at(_nbNFromPool).get();
       ++_nbNFromPool;
       next->Clear();
