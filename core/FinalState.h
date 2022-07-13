@@ -93,10 +93,29 @@ namespace chanser{
     BaseParticle* GetParticle(const TString name) const;
     ParticleConfig GetParticleConfig(const TString name) const;
     
-    Bool_t CheckForValidTopos(const std::vector<short> eventPids){
-      if(_isGenerated) return kTRUE;
+    Bool_t CheckForValidTopos0(const std::vector<short>& eventPids){
       return _topoMan.CheckForValidTopos(eventPids);
     }
+    Bool_t CheckForValidTopos(const std::vector<short>& eventPids){
+      if(_isGenerated) return kTRUE;
+      //check if this final state has a particle mask
+      if(_maskedParticles.empty()==false){
+	for(auto& mask : _maskedParticles) {
+	  mask->ReReadEvent(); //create EventParticle vectors
+	  mask->PidCounter(); //reassign topology pids after masking
+	}
+	return _topoMan.CheckForValidTopos(_maskedParticles.back()->Pids());
+      }
+      
+      //if so recheck if event still valid when mask applied
+      //only use last mask wich has cummulative effect of others
+      //  if(CheckForValidTopos( )==kFALSE)
+      //	return kFALSE;//going to ignore event
+     return CheckForValidTopos0(eventPids);
+    }	
+    
+    
+  
     Bool_t NeedTopos(){return _topoMan.ValidTopos().size()==0;}
       
     void SetHasTruth(){_hasTruth=kTRUE;}

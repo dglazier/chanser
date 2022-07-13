@@ -51,9 +51,10 @@ namespace chanser{
   //////////////////////////////////////////////////////////////
   ///Next file
   Bool_t HipoData::NextFile(){
-    if(_chainOfFiles.GetListOfFiles()->GetEntries()<_nFile)
+    std::cout<<"HipoData::NextFile() "<<_chainOfFiles.GetListOfFiles()->GetEntries()<<" "<<_nFile<<std::endl;
+    if(_chainOfFiles.GetListOfFiles()->GetEntries()<=_nFile)
       return kFALSE;
-    
+
     SetFile(_chainOfFiles.GetListOfFiles()->At(_nFile)->GetTitle());
     _nFile++;
     Notify();//let FinalStateManager call change run
@@ -64,8 +65,9 @@ namespace chanser{
   //Can now get Pid list for this event
   Bool_t HipoData::InitEvent(){
     //keep going until we get an event that has particles
+    Bool_t needAnother=kTRUE;
     while(_c12->getReader().next()){
-
+      
       if(FetchPids()){
 	return kTRUE;
       }
@@ -73,6 +75,7 @@ namespace chanser{
     
     //check for more files
     if(_nFile<_chainOfFiles.GetNtrees()){
+      if(_c12!=nullptr)_accCharge+=_c12->getRunBeamCharge();
       NextFile();
       return InitEvent();
     }
@@ -90,7 +93,7 @@ namespace chanser{
     if(_entry%100000==0) std::cout<<"HipoData::InitEvent() "<<_entry<<std::endl;
       
     if(!_c12->preCheckPidsOrCharge().empty()){ //got one
-      return kTRUE;
+       return kTRUE;
     }
     return kFALSE;    
   }
@@ -98,7 +101,9 @@ namespace chanser{
   ///
   Bool_t HipoData::ReadEvent(Long64_t entry){
       
-    _c12->readEvent();//OK to read event from disk
+    if(_c12->readEvent()==kFALSE)//Try to read event from disk
+      return kFALSE; //perhaps QA not right
+
     //_dataType=_c12->runconfig()->getType(); //needs written in gemc
       
     _c12->sort();
@@ -243,7 +248,6 @@ namespace chanser{
     //cache data from ccdb
     auto ccdb=_c12->ccdb();
     if(ccdb){
-      std::cout<<"DEBUG HipoData got ccdb "<<std::endl;
       /////////////////////////////////////////////////
       //target
       //can't get this data from ccdb, so put it in an anadb
@@ -260,10 +264,8 @@ namespace chanser{
       int rfId = rfStat2>rfStat1 ? 1 : 0;
       _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
  
-      std::cout<<"DEBUG HipoData got ccdb "<<_runInfo._rfBucketLength<<" "<<rfStat1<<" "<<rfStat2<<std::endl;
     }
-       std::cout<<"DEBUG HipoData NOT got ccdb "<<std::endl;
-
+    
     auto table = _runInfo.GetAnaDB().GetTable(period,
 					      "TARGET_POSITION"
 					      ,{3}); //x,y,z pos
@@ -286,5 +288,17 @@ namespace chanser{
     _eventInfo._BeamHel=_c12->event()->getHelicity();
     _eventInfo._NEvent=_c12->runconfig()->getEvent();
   }
-    
+  ///////////////////////////////////////////////////////////////
+  Double_t HipoData::SumChargeFromQA(){
+    Double_t sumCharge=0;
+    Init();
+      sumCharge+=_c12->sumChargeFromQA();
+    while(NextFile()==kTRUE)
+      sumCharge+=_c12->sumChargeFromQA();
+
+
+    _nFile=0; //in case want to use fthe files again
+    return sumCharge;
+  }
+   
 }

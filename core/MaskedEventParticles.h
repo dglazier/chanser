@@ -106,8 +106,8 @@ namespace chanser{
     std::unique_ptr<TFile> _outFile={nullptr};//!
 
     
-    UInt_t _nFromPool={0};
-    UInt_t _nbNFromPool={0};
+    UInt_t _nFromPool={0}; //general particle pool
+    UInt_t _nbNFromPool={0};  //neutron particle pool
 
     ClassDef(chanser::MaskedEventParticles,1); //class MaskedEventParticles
     

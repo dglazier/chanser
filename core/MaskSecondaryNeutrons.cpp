@@ -50,7 +50,8 @@ namespace chanser{
       //Keep all non FD 
       ranges::append(ranges::filter(*_original0,CheckForNotFD),_vec0);
 
-      doCorrection(fd0s);
+      if(fd0s.empty()!=true)doCorrection(fd0s);
+     
     }
     return kTRUE;
   }
@@ -66,6 +67,7 @@ namespace chanser{
     vector<vecTimeIndex> sectTimeIndex(6); //1 vector for each sector
 
     int index=0;
+
     //First we loop over neutrals to find the time of each one produced
     for(auto const& neutral:fd0s){
       auto c12N=static_cast<CLAS12Particle*>(neutral);
@@ -80,24 +82,23 @@ namespace chanser{
       sectTimeIndex[sector-1].push_back(std::make_pair(time,index));
       index++;
     }//loop over neutrals
-    
+   
     auto isector=1;
 
     //Loop over sectors and rank potential neutron clusters
     for(auto& veci:sectTimeIndex){
-      
       if(veci.empty()==true) continue; //nothing to do in this sector
 
       //Neutral particle, contains all secondaries in a sector
       auto c12Neutron=NextNeutronFromPool();
-
+ 
       //will sort based on pair.first, now ranking==order in vector
       std::sort(veci.begin(), veci.end());
-
+  
       //Have at least one entry, start with that
       //This has earliest time so we always keep it
       auto index = veci[0].second;
-
+     
       c12Neutron->AddCandidate(static_cast<CLAS12Particle*>(fd0s.at(index)));
       c12Neutron->UseCandidate(0);
       //If we're allowing for photons we also keep a copy in vec0 for combis

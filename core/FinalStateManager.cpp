@@ -162,36 +162,57 @@ namespace chanser{
 
     
     auto eventTopo = _data->eventPids();
+    //DEBUG
+    // std::cout<<"New event Topo "<<endl;
+    //  for(auto& pidVal:eventTopo)
+    //   std::cout<<" "<<pidVal;
+    // std::cout<<endl;
+    //ENDDEBUG
+    
     Bool_t doneRead=kFALSE;
     
     //If Notify is called when a new file is opened, _changeRun will be true
     if(_changeRun==true){
       //normally event is only read if FinalState requires it
       //in case we have a new run just read the event now
-      _data->ReadEvent();
+      auto okEvent = _data->ReadEvent();
       doneRead=kTRUE;
       ChangeRun();
-    }
+
+      //if this event is no good (e.g. failed QA) just return now
+      if(okEvent==kFALSE)
+	return;
+   }
  
-    //std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
+    // std::cout<<"FinalStateManager::ProcessEvent() # particles "<<eventTopo.size()<<std::endl;
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
       //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<" "<<fs->FinalDirectory()<<" "<<&_eventParts<<" generated "<<fs->IsGenerated()<<" "<<_data->IsLund()<<std::endl;
+
       //See if this final state had any topologies
       //fulfilled by this event
-      if(!fs->CheckForValidTopos(eventTopo))
-	continue;
+      if(!fs->CheckForValidTopos0(eventTopo))
+       	continue;
       //std::cout<<"FinalStateManager::ProcessEvent() valid, doneRead ?"<<doneRead<<std::endl;
       if(!doneRead){ //only read once per event
 	//got a valid event, read all data
-	_data->ReadEvent();
+	if(_data->ReadEvent()==kFALSE){
+	  goodEvent=kFALSE;
+	  return;
+	}
 	doneRead=kTRUE;
       }
       //std::cout<<"FinalStateManager::ProcessEvent() read event "<<endl;
       //organise the particle vectors for the event
       if(!_eventParts.ReadEvent(_data->GetParticles()))
 	break; //something wrong with event disegard it
-    
+
+      //Now recheck topologies after applying masks
+      //fulfilled by this event
+      //We must have already passes the most general topology check
+      //This means we should aonly run masks in incusive mode
+      if(!fs->CheckForValidTopos(eventTopo))
+      	continue;
 
       //process this final state
       fs->ProcessEvent();

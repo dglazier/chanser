@@ -115,7 +115,7 @@ namespace chanser{
 
     //finally set the local pointer to the
     //EventParicles for this final state
-    _eventParts=currEventP;
+     _eventParts=currEventP;
   }
   
   ///////////////////////////////////////////////////
@@ -286,18 +286,18 @@ namespace chanser{
       pt->InitDataEvent();	
     }
 
-    //check if this final state has a particle mask
-    if(_maskedParticles.empty()==false){
-      for(auto& mask : _maskedParticles) {
-	mask->ReReadEvent();
-	mask->PidCounter();
-      }	
+    // //check if this final state has a particle mask
+    // if(_maskedParticles.empty()==false){
+    //   for(auto& mask : _maskedParticles) {
+    // 	mask->ReReadEvent();
+    // 	mask->PidCounter();
+    //   }	
       
-      //if so recheck if event still valid when mask applied
-      //only use last mask wich has cummulative effect of others
-      if(CheckForValidTopos( _maskedParticles.back()->Pids() )==kFALSE)
-	return kFALSE;//going to ignore event
-    }	
+    //   //if so recheck if event still valid when mask applied
+    //   //only use last mask wich has cummulative effect of others
+    //   if(CheckForValidTopos( _maskedParticles.back()->Pids() )==kFALSE)
+    // 	return kFALSE;//going to ignore event
+    // }	
     
     
     return kTRUE;
@@ -319,7 +319,8 @@ namespace chanser{
     auto validTopos =_topoMan.ValidTopos();
     //if(validTopos.empty()==false)cout<<"DEBUG FinalState::ProcessEvent() got a topo "<<endl<<endl;
     for(auto* topo : validTopos){
-      InvalidateParticles(); //set P4 to zero, so we do not use previously set
+      // cout<<"DEBUG FinalState::ProcessEvent() got a topo "<<topo->ID()<<endl;
+       InvalidateParticles(); //set P4 to zero, so we do not use previously set
       _currTopo=topo;
       _currTopoID=_currTopo->ID();
       //First combination
@@ -330,12 +331,13 @@ namespace chanser{
       if(singleCombination) continue;
       //Now iterate over others
       auto piter=_currTopo->Iter();
-      //   cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl<<endl; 
+      // cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl; 
       while(piter.NextCombitorial0()){
 	FSProcess();
 	if(_rejectEvent==kFALSE) _goodEvent++;
       }
     }
+    // std::cout<<"DEBUG exit FinalState::ProcessEvent() "<<std::endl;exit(0);
     _TotPerm+=_nPerm;
     _nEvents++;
   }
@@ -479,7 +481,7 @@ namespace chanser{
       _currIter->SetNextInnerIter(diter);
 
     }
-    std::cout<<"DEBUG FinalState::CreateParticleIter "<<parts<<" "<<Nsel<<endl;
+    //  std::cout<<"DEBUG FinalState::CreateParticleIter "<<parts<<" "<<Nsel<<endl;
     diter->SetParticles(parts);
     diter->SetNSel(Nsel);
 
@@ -516,7 +518,7 @@ namespace chanser{
     //create a Particle Iterator for this species (InnerParticle)
     //need to give the vector of particles for this species
     //and the number to select from it
-    std::cout<<"DEBUG FinalState::CreateParticleIter for "<<pid<<endl;
+    //  std::cout<<"DEBUG FinalState::CreateParticleIter for "<<pid<<endl;
     ParticleIter* diter0=CreateParticleIter(_eventParts->GetParticleVector(pid),configs_pid.size());
   
     //get the pointers to the particles of this species
