@@ -19,11 +19,14 @@
 #pragma link C++ class chanser::EventParticles+;
 #pragma link C++ class chanser::MaskedEventParticles+;
 #pragma link C++ class chanser::MaskCalorSplitOffs+;
+#pragma link C++ class chanser::MaskCalorNeutronSplitOffs+;
 #pragma link C++ class chanser::MaskRadPhotons+;
+#pragma link C++ class chanser::MaskSecondaryNeutrons+;
 #pragma link C++ class chanser::FinalStateManager+;
 #pragma link C++ class chanser::DataManager+;
 #pragma link C++ class chanser::HipoData+;
 #pragma link C++ class chanser::HipoTruth+;
+#pragma link C++ class chanser::LundData+;
 #pragma link C++ class chanser::Topology+;
 #pragma link C++ class chanser::TopologyManager+;
 #pragma link C++ class chanser::ParticleConfig+;
@@ -45,6 +48,7 @@
 
 #pragma link C++ class chanser::CLAS12FinalState+;
 #pragma link C++ class chanser::CLAS12Particle+;
+#pragma link C++ class chanser::CLAS12Neutron+;
 
 //#pragma link C++ class chanser::+;
 

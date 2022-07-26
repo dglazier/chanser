@@ -81,8 +81,8 @@ namespace chanser{
     
   Bool_t ParticleIter::DoCombitorial(){
   
-    // cout<<"ParticleIter::DoCombitorial() nsel "<<_nSel<<" "<<_allParticles<<" "<<this<<endl;
-    //cout<<"ParticleIter::DoCombitorial() allparticles size "<<_allParticles->size()<<endl;
+    //  cout<<"DEBUG ParticleIter::DoCombitorial() nsel "<<_nSel<<" "<<_allParticles<<" "<<this<<" seliter "<<_selIter<<" remiter "<<_remIter<<endl;
+    //cout<<"DEBUG ParticleIter::DoCombitorial() allparticles size "<<GetName()<<" "<<_allParticles->size()<<" not empty "<<(!_selected.empty())<<endl;
     if(_allParticles->size()<_nSel){
       return kFALSE;
     }
@@ -92,7 +92,8 @@ namespace chanser{
     //return if have been given particles and already have selected
     if(_nSel==_allParticles->size()&&!_selected.empty())
       return kFALSE;
-     switch (_type) {
+    // cout<<"DEBUG ParticleIter::DoCombitorial() do switch "<<endl;
+    switch (_type) {
       //case select 1 and no remainder
     case IterType::Single :
       {
@@ -135,14 +136,20 @@ namespace chanser{
 	}
 	else moreToCome= kFALSE; //no more combinations
       }
-    }//end swith(_type)
-
+    }//end switch(_type)
+    // cout<<"DEBUG ParticleIter::DoCombitorial() done switch "<<_selected.size()<<endl;
+ 
     if(_selIter){
+      //cout<<"DEBUG ParticleIter::DoCombitorial() selIter "<<_selIter<<" "<<_selected.size()<<endl;
       _selIter->SetParticles(&_selected);
     }
     if(_remIter){
-      _remIter->SetParticles(&_remainder);
+      //cout<<"DEBUG ParticleIter::DoCombitorial() remIter "<<_remIter<<" "<<_remainder.size()<<endl;
+    _remIter->SetParticles(&_remainder);
     }
+    
+    // cout<<"DEBUG ParticleIter::DoCombitorial() did not pass on particles ?"<<endl;
+      
        
  
     if(!moreToCome) {_isFinished = kTRUE;return kFALSE;}
@@ -157,8 +164,10 @@ namespace chanser{
     if(_isConfigured) return;
     _isConfigured=kTRUE;
       
-    //cout<<"Configure "<<_selIter<<" "<<_remIter<<" "<<_innerIter<<endl;
-    // if(_allParticles)cout<<"          "<<_nSel<<" "<<_evParts.size()<<" "<<_allParticles->size()<<endl;
+    //  cout<<"ParticleIter::ConfigureIters() "<<_selIter<<" "<<_remIter<<" "<<_innerIter<<endl;
+    //if(_allParticles)cout<<"ParticleIter::ConfigureIters()    all       "<<_nSel<<" "<<_evParts.size()<<" "<<_allParticles->size()<<endl;
+
+    
     if(_selIter){
       SetNextInnerIter(_selIter);
       if(_remIter){
@@ -166,7 +175,7 @@ namespace chanser{
       }
     }
     else if(_remIter){
-      //cout<<" ParticleIter::ConfigureIters() no _selIter......investigate"<<endl;
+      cout<<" ParticleIter::ConfigureIters() no _selIter......investigate"<<endl;
       SetNextInnerIter(_remIter);
     }
 
@@ -215,11 +224,12 @@ namespace chanser{
     //Copy the event data for this combo of this particle
     for(UInt_t isel=0;isel<_evParts.size();isel++){
       if(isel<_selected.size()){
-	//	std::cout<<"sort "<< _selected[isel]->PDG()<<" "<<_selected[isel] <<"   "<<_selected[isel]->Detector()<<" "<<_evParts[isel]<<std::endl;
+	//std::cout<<"DEBUG ParticleIter::SortEvent() "<< _selected[isel]->PDG()<<" "<<_selected[isel] <<"   "<<_selected[isel]->Detector()<<" "<<_evParts[isel]<<std::endl;
 	_evParts[isel]->CopyTransient(_selected[isel]);
 	_evParts[isel]->SetVectPDG();
       }
       else{
+	//	std::cout<<"DEBUG ParticleIter::SortEvent() "<<_selected.size()<<" "<<isel<<std::endl;
 	_evParts[isel]->P4p()->SetXYZT(0,0,0,0);
 	_skipThis=1; //iterator not properly reset, try another event and it should be OK
       }

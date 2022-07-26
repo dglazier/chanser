@@ -47,7 +47,9 @@ namespace chanser{
     
     void SetSelIter(ParticleIter* com){_selIter=com;_selIter->SetPDG(_PDG);}
     void SetRemIter(ParticleIter* com){_remIter=com;_remIter->SetPDG(_PDG);_remIter->SetName(Form("Select from %s remainder",GetName().Data()));}
-    
+
+    const ParticleIter* GetSelIter(){return _selIter;}
+    const ParticleIter* GetRemIter(){return _remIter;}
     //  void AddEventParticle(BaseParticle* part){_evParts.push_back(part);};
     //void AddEventParticles(BaseParticle* part0=nullptr,BaseParticle* part1=nullptr,BaseParticle* part2=nullptr,BaseParticle* part3=nullptr,BaseParticle* part4=nullptr,BaseParticle* part5=nullptr,BaseParticle* part6=nullptr,BaseParticle* part7=nullptr,BaseParticle* part8=nullptr,BaseParticle* part9=nullptr);
     void SetEventParticles(const vector<BaseParticle*> parts){_evParts=parts;};

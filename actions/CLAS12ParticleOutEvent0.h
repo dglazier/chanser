@@ -66,10 +66,9 @@ namespace chanser{
 
   ///////////////////////////////////////////////////////////////
   inline void CLAS12ParticleOutEvent0::FillData(){
-    
     //move the c12p object to this particle for getting detector data
     auto c12p=_part->CLAS12();
-    
+   
     auto r2d=TMath::RadToDeg();
  
     P     =  _part->P4p()->P();

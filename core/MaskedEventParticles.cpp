@@ -61,14 +61,20 @@ namespace chanser{
       AddPids(_pids[i],_pidParticles[i]);
     }
     std::sort(_pidCounts.begin(),_pidCounts.end());
+    // cout<<"MaskedEventParticles::PidCounter() "<<_vecGams.size()<<" "<<_vecNeutrons.size()<<" "<<_vec0.size()<<" "<<GetParticleVector(10000)->size()<<" "<<GetParticleVector(-10000)->size()<<" "<<GetParticleVector(0)->size()<<endl;
+
   }
   
   void  MaskedEventParticles::AddPids(const Short_t pid,const particles_ptrs* vec){
     auto const addN=vec->size();
     auto const nextIndex=_pids.size();
+    if((pid==UndefinedPDG)||(pid==-UndefinedPDG))
+      return;//don't double count charge IDs!
+    // cout<<"MaskedEventParticles::AddPids() "<< pid<<" "<<addN<<endl;
     _pidCounts.reserve(nextIndex+addN);
-    for(auto i=nextIndex;i<nextIndex+addN;++i)
-      _pidCounts.emplace_back(pid);
+    for(auto i=nextIndex;i<nextIndex+addN;++i){
+       _pidCounts.emplace_back(pid);
+    }
     
   }
   particle_ptr MaskedEventParticles::NextParticle(Short_t pid,UInt_t& entry){
@@ -83,13 +89,17 @@ namespace chanser{
   #include <TDirectory.h>
   void MaskedEventParticles::ReadyFile(TString outDir){
     auto saveDir=gDirectory;
-    _outFile.reset(TFile::Open(outDir+Class_Name() +".root","recreate"));
+    _outFile.reset(TFile::Open(outDir+ClassName() +".root","recreate"));
     saveDir->cd();
   }
   
   void  MaskedEventParticles::Write(TObject& obj ){
     if(_outFile.get()==nullptr) return;
-    
+    //std::cout<<"MaskedEventParticles::Write "<<_outFile->GetTitle()<<" "<<Class()->GetName()<<" "<<ClassName()<<" "<<endl;
+    if(_outFile->IsWritable()==false){
+      Warning("MaskedEventParticles::Write"," file not writeable, probably unclean exit from root");
+      return;
+    }
     auto saveDir=gDirectory;
     _outFile->cd();
     obj.Write();

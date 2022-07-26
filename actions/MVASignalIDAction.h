@@ -36,10 +36,10 @@ namespace chanser{
     MVASignalIDAction(const TString& dirname,const TString& meth,const TString& topo);
     
     virtual ~MVASignalIDAction()=default;
-    MVASignalIDAction(const MVASignalIDAction& other) = default; //Copy Constructor
+    MVASignalIDAction(const MVASignalIDAction& other) = delete; //Copy Constructor
     MVASignalIDAction(MVASignalIDAction&& other) = default; //Move Constructor
       
-    MVASignalIDAction& operator=(const MVASignalIDAction& other)=default;
+    MVASignalIDAction& operator=(const MVASignalIDAction& other)=delete;
     MVASignalIDAction& operator=(MVASignalIDAction&& other)=default;
 
     void PrintAction() override;

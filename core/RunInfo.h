@@ -16,7 +16,7 @@ namespace chanser{
    public :
     
     void SetCLAS12(clas12::clas12reader* c12){_c12=c12;}
-    clas12::clas12reader* CLAS12(){return _c12;}
+    clas12::clas12reader* CLAS12() const{return _c12;}
     
     Double_t _TargetCentre={0};
     Double_t _BeamEnergy={0};

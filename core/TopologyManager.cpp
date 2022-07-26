@@ -69,14 +69,22 @@ namespace chanser{
     _eventTopo.reserve(pids.size());
     //loop over event particle ids and reconfigure them
     //for these topologies
+    // std::cout<<"DEBUG  TopologyManager::CheckForValidTopos ";
     for(const auto& pid:pids){
+      // if(_useChargePID==kFALSE&&(pid==UndefinedPDG||pid==-UndefinedPDG||pid==0))
+      // 	 continue;
+      
       _eventTopo.emplace_back(ParticleID(pid));
+      //   std::cout<<" ( "<<pid<<" "<<ParticleID(pid)<< " ) ";//DEBUG
     }
+    // std::cout<<std::endl;//DEBUG
+    
     std::sort(_eventTopo.begin(),_eventTopo.begin()+_eventTopo.size());
  
     //now check to see if this topology matches any of our predefines ones
     _validTopos.clear();
     for(size_t i=0;i<_nTopo;++i){
+  
       if(!CheckTopo(i))
 	continue; //This event does not apply to this topology
       _validTopos.push_back(&_topos[i]);    
@@ -152,7 +160,7 @@ namespace chanser{
 	
       Int_t thiscount = std::count (_eventTopo.begin(), _eventTopo.end(), acti);
       Int_t topocount = std::count (actual.begin(), actual.end(), acti);
- 
+      // std::cout<<"DEBUG CheckInclusiveTopo "<<!(thiscount<topocount)<<" "<<thiscount<<" < "<<topocount<<" for "<<acti<<std::endl;
       if(thiscount<topocount)//Not sufficient of this type, not this topo
 	return kFALSE;
       //Check if this is an allowed inclusive particle

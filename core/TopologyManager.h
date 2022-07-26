@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "clas12defs.h"
 #include <TString.h>
 #include <TDatabasePDG.h>
 #include <vector>
@@ -57,7 +58,8 @@ namespace chanser{
     ///Convert particle PDG code to the particle charge
     Short_t ParticleID(const Short_t pdg) {
       if(!_useChargePID) return pdg;
-      if(std::find(_confPids.begin(), _confPids.end(), pdg) == _confPids.end()) ConfigParticleID(pdg); //could remove this and just configure know particles
+      if(std::find(_confPids.begin(), _confPids.end(), pdg) == _confPids.end())
+	ConfigParticleID(pdg); //could remove this and just configure know particles
 
       return _pdg2pid.at(pdg);
     }
@@ -75,6 +77,9 @@ namespace chanser{
     Bool_t CheckInclusiveTopo(const size_t itopo) const;
        
     Short_t PDGtoCharge(Short_t pdg) const{
+      if(pdg==clas12::UndefPDG)return 1;
+      if(pdg==-clas12::UndefPDG)return -1;
+      
       TParticlePDG* pp=TDatabasePDG::Instance()->GetParticle(pdg);
       if(!pp)return 0;
       Short_t charge=pp->Charge();

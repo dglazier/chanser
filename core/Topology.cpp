@@ -19,7 +19,10 @@ namespace chanser{
     //Set the pointers to the FinalState functions
     Exec=funcE;
     
-  
+    if(!Exec){
+      Fatal("Topology::Topology",Form("Did not get a topology function for %s\n\t check the topology given in Create AddTopology(topoString) matched that in the final state class .cpp _doToTopo(topoString)",topo.Data()),"");
+    }
+    
     //split the string into an array of particles
     TObjArray* OptList = topo.Tokenize(":");
 

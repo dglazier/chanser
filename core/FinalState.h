@@ -45,11 +45,11 @@ namespace chanser{
       
     virtual ~FinalState(); //need to delete ActionManagers
       
-    FinalState(const FinalState& other) = default; //Copy Constructor
-    FinalState(FinalState&& other) = default; //Move Constructor
+    FinalState(const FinalState& other) = delete; //Copy Constructor
+    FinalState(FinalState&& other) = delete; //Move Constructor
       
-    FinalState& operator=(const FinalState& other)=default;
-    FinalState& operator=(FinalState&& other)=default;
+    FinalState& operator=(const FinalState& other)=delete;
+    FinalState& operator=(FinalState&& other)=delete;
 
     void Print(Option_t* option = "")const override;
     
@@ -93,10 +93,29 @@ namespace chanser{
     BaseParticle* GetParticle(const TString name) const;
     ParticleConfig GetParticleConfig(const TString name) const;
     
-    Bool_t CheckForValidTopos(const std::vector<short> eventPids){
-      if(_isGenerated) return kTRUE;
+    Bool_t CheckForValidTopos0(const std::vector<short>& eventPids){
       return _topoMan.CheckForValidTopos(eventPids);
     }
+    Bool_t CheckForValidTopos(const std::vector<short>& eventPids){
+      if(_isGenerated) return kTRUE;
+      //check if this final state has a particle mask
+      if(_maskedParticles.empty()==false){
+	for(auto& mask : _maskedParticles) {
+	  mask->ReReadEvent(); //create EventParticle vectors
+	  mask->PidCounter(); //reassign topology pids after masking
+	}
+	return _topoMan.CheckForValidTopos(_maskedParticles.back()->Pids());
+      }
+      
+      //if so recheck if event still valid when mask applied
+      //only use last mask wich has cummulative effect of others
+      //  if(CheckForValidTopos( )==kFALSE)
+      //	return kFALSE;//going to ignore event
+     return CheckForValidTopos0(eventPids);
+    }	
+    
+    
+  
     Bool_t NeedTopos(){return _topoMan.ValidTopos().size()==0;}
       
     void SetHasTruth(){_hasTruth=kTRUE;}
@@ -153,7 +172,7 @@ namespace chanser{
     actionman_ptrs& getPostTopoActions() {return _postTopoAction;}
     actionman_ptrs& getPostKinActions(){return _postKinAction;}
       
-    void EndAndWrite();
+    virtual void EndAndWrite();
     virtual TString GetUSER(){return "";};
     const TString& GetOutputDir(){return _outputDir;}
 
@@ -174,6 +193,8 @@ namespace chanser{
     Short_t WasGoodEvent(){return _goodEvent;}
 
     void SetCheckCombitorials(){_checkCombi=1;}
+
+    Bool_t UsingTruth()const {return _usingTruth;}
     
   protected :
 
@@ -220,7 +241,8 @@ namespace chanser{
     
     const EventParticles* GetEventParticles(){return _eventParts;}
 
-      
+    void InvalidateParticles();
+    
     Long64_t _counter=0;
 
     TopologyManager _topoMan;//!
@@ -280,6 +302,7 @@ namespace chanser{
     Short_t _isPermutating0=0;//!
     Short_t _rejectEvent=0;//!
     Short_t _hasTruth=0;//!
+    Short_t _usingTruth=0;//!
     Short_t _itersConfigured=0;//!
     Short_t _ownsActions=1;//!
     Short_t _goodEvent=0;//!

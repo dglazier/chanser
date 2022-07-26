@@ -11,6 +11,7 @@
 #pragma link C++ class chanser::ParticleCutsManager+;
 #pragma link C++ class chanser::ParticleCuts+;
 #pragma link C++ class chanser::CLAS12ParticleCut+;
+#pragma link C++ class chanser::CLAS12NeutronParticleCut+;
 #pragma link C++ class chanser::CLAS12Base+;
 #pragma link C++ class chanser::TwoParticleVertexCut+;
 #pragma link C++ class chanser::ParticleDataManager+;
@@ -25,6 +26,7 @@
 #pragma link C++ class chanser::ParticleCorrection+;
 #pragma link C++ class chanser::FTel_pol4_ECorrection+;
 #pragma link C++ class chanser::FTel_VzCorrection+;
+#pragma link C++ class chanser::FDn_pathCorrection+;
 #pragma link C++ class chanser::EventTruthAction+;
 #pragma link C++ class chanser::MVASignalIDAction+;
 

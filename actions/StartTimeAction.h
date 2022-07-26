@@ -94,10 +94,10 @@ namespace chanser{
   StartTimeAction(TString name,C12StartTime* st):ActionManager(name),_stu{st}{};
     
     virtual ~StartTimeAction()=default;
-    StartTimeAction(const StartTimeAction& other) = default; //Copy Constructor
+    StartTimeAction(const StartTimeAction& other) = delete; //Copy Constructor
     StartTimeAction(StartTimeAction&& other) = default; //Move Constructor
       
-    StartTimeAction& operator=(const StartTimeAction& other)=default;
+    StartTimeAction& operator=(const StartTimeAction& other)=delete;
     StartTimeAction& operator=(StartTimeAction&& other)=default;
 
     void PrintAction() override;
