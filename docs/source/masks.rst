@@ -114,9 +114,6 @@ Diagnostic histograms are saved in the ouput directory with filename .root to le
 Masking Secondary Neutron Clusters
 **********************************
 
-
-At the bottom with title “Masking Secondary Neutrons:”
-
 When neutrons interact with a detector they can create secondary particles which will be assigned a neutral ID if they produce a hit in the calorimeters. These secondary neutrals can be due to either real physical processes, for example pi0 production when the neutrons interact with material in the detector (could be the calorimeters or the FTOF), or these can be due to issues in the reconstruction algorithm which creates two clusters when there should only be a single cluster. However, the original neutron hit generally occurs at an earlier time than the hits in the calorimeter associated with these secondaries, whether they occur in the same or subsequent calorimeter layers.
 
 
@@ -179,7 +176,7 @@ Secondly, you’ll need to account for the fact that the CLAS12Neutron contains 
 Note standard cuts may not always work for this as they will only be applied to the lead neutron.
 
 
-Below is a schematic of the overall process, where the circles denote particles, lozenges represent actions applied to the particles, and the rectangles denote the class applying the action. The lines denote the flow of particles through the algorithm as these are ranked, with the dashed lines indicating that photons might not be acted upon here if the ALL topology option was used.
+Below is a schematic of the overall process, where the circles denote particles, lozenges represent actions applied to the particles, and the rectangles denote the class applying the action. The lines denote the flow of particles through the algorithm as these are ranked, with the dashed lines indicating that photons might not be acted upon here if the NONE topology option was used.
 
 
 .. image:: ../pics/MaskSecondaryNeutrons.png 
