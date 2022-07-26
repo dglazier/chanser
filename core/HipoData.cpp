@@ -90,11 +90,11 @@ namespace chanser{
     _c12->clearEvent();
     _entry++;
    
-    if(_entry%100000==0) std::cout<<"HipoData::InitEvent() "<<_entry<<std::endl;
+    if(_entry%100000==0) std::cout<<"HipoData::FetchPids() "<<_entry<<std::endl;
       
-    if(!_c12->preCheckPidsOrCharge().empty()){ //got one
-       return kTRUE;
-    }
+   if(!_c12->preCheckPidsOrCharge().empty()){ //got one
+     return kTRUE;
+   }
     return kFALSE;    
   }
   /////////////////////////////////////////////////////////////////
@@ -289,16 +289,16 @@ namespace chanser{
     _eventInfo._NEvent=_c12->runconfig()->getEvent();
   }
   ///////////////////////////////////////////////////////////////
-  Double_t HipoData::SumChargeFromQA(){
-    Double_t sumCharge=0;
-    Init();
-      sumCharge+=_c12->sumChargeFromQA();
-    while(NextFile()==kTRUE)
-      sumCharge+=_c12->sumChargeFromQA();
+  // Double_t HipoData::SumChargeFromQA(){
+  //   Double_t sumCharge=0;
+  //   Init();
+  //     sumCharge+=_c12->sumChargeFromQA();
+  //   while(NextFile()==kTRUE)
+  //     sumCharge+=_c12->sumChargeFromQA();
 
 
-    _nFile=0; //in case want to use fthe files again
-    return sumCharge;
-  }
+  //   _nFile=0; //in case want to use fthe files again
+  //   return sumCharge;
+  // }
    
 }

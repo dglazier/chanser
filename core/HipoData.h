@@ -77,7 +77,7 @@ namespace chanser{
     void SetRunPeriod(TString period){_runPeriod=period;}
 
     Double_t GetAccumulatedCharge()const {return _accCharge;}
-    Double_t SumChargeFromQA();
+    //  Double_t SumChargeFromQA();
 
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
