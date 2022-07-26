@@ -6,7 +6,7 @@ namespace chanser{
     for(auto& out : _outputs){//loop over particles
       out->FillData();
      }
-    _tree->Fill();
+     _tree->Fill();
   }
    
 }

@@ -47,6 +47,14 @@ namespace chanser{
     }
 
   }
+  //////////////////////////////////////////////////////////////////
+  //reset particles to 0,0,0,0
+  void FinalState::InvalidateParticles(){
+    // std::cout<<"FinalState::InvalidateParticles()"<<std::endl;
+     for(auto& cp: _pconfigs){
+       cp.Particle()->P4p()->SetXYZT(0,0,0,0);
+     }
+  }
  
   //////////////////////////////////////////////////////////////////
   void  FinalState::AddTopology(const TString names,const VoidFuncs funcE){
@@ -61,7 +69,7 @@ namespace chanser{
   }
   void  FinalState::ConfigureIters(Topology *tt){
    
-   _currTopo=tt;
+    _currTopo=tt;
     _currIter=nullptr;
     AutoIter();
     _currTopo->Iter().ConfigureIters();
@@ -107,7 +115,7 @@ namespace chanser{
 
     //finally set the local pointer to the
     //EventParicles for this final state
-    _eventParts=currEventP;
+     _eventParts=currEventP;
   }
   
   ///////////////////////////////////////////////////
@@ -278,18 +286,18 @@ namespace chanser{
       pt->InitDataEvent();	
     }
 
-    //check if this final state has a particle mask
-    if(_maskedParticles.empty()==false){
-      for(auto& mask : _maskedParticles) {
-	mask->ReReadEvent();
-	mask->PidCounter();
-      }	
+    // //check if this final state has a particle mask
+    // if(_maskedParticles.empty()==false){
+    //   for(auto& mask : _maskedParticles) {
+    // 	mask->ReReadEvent();
+    // 	mask->PidCounter();
+    //   }	
       
-      //if so recheck if event still valid when mask applied
-      //only use last mask wich has cummulative effect of others
-      if(CheckForValidTopos( _maskedParticles.back()->Pids() )==kFALSE)
-	return kFALSE;//going to ignore event
-    }	
+    //   //if so recheck if event still valid when mask applied
+    //   //only use last mask wich has cummulative effect of others
+    //   if(CheckForValidTopos( _maskedParticles.back()->Pids() )==kFALSE)
+    // 	return kFALSE;//going to ignore event
+    // }	
     
     
     return kTRUE;
@@ -309,8 +317,10 @@ namespace chanser{
     }
 
     auto validTopos =_topoMan.ValidTopos();
-    
+    //if(validTopos.empty()==false)cout<<"DEBUG FinalState::ProcessEvent() got a topo "<<endl<<endl;
     for(auto* topo : validTopos){
+      // cout<<"DEBUG FinalState::ProcessEvent() got a topo "<<topo->ID()<<endl;
+       InvalidateParticles(); //set P4 to zero, so we do not use previously set
       _currTopo=topo;
       _currTopoID=_currTopo->ID();
       //First combination
@@ -321,12 +331,13 @@ namespace chanser{
       if(singleCombination) continue;
       //Now iterate over others
       auto piter=_currTopo->Iter();
-      //cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl<<endl; 
+      // cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl; 
       while(piter.NextCombitorial0()){
 	FSProcess();
 	if(_rejectEvent==kFALSE) _goodEvent++;
       }
     }
+    // std::cout<<"DEBUG exit FinalState::ProcessEvent() "<<std::endl;exit(0);
     _TotPerm+=_nPerm;
     _nEvents++;
   }
@@ -394,10 +405,12 @@ namespace chanser{
       //fill truth tree data
     SetOutEvent(_outEvent.GetTruth( ));
     UseTruth();
+    _usingTruth=kTRUE;
     Kinematics();
  
     //revert back to real tree data
     NotTruth();
+    _usingTruth=kFALSE;
     SetOutEvent(_outEvent.GetReal( ));
   }
   
@@ -468,6 +481,7 @@ namespace chanser{
       _currIter->SetNextInnerIter(diter);
 
     }
+    //  std::cout<<"DEBUG FinalState::CreateParticleIter "<<parts<<" "<<Nsel<<endl;
     diter->SetParticles(parts);
     diter->SetNSel(Nsel);
 
@@ -504,18 +518,20 @@ namespace chanser{
     //create a Particle Iterator for this species (InnerParticle)
     //need to give the vector of particles for this species
     //and the number to select from it
+    //  std::cout<<"DEBUG FinalState::CreateParticleIter for "<<pid<<endl;
     ParticleIter* diter0=CreateParticleIter(_eventParts->GetParticleVector(pid),configs_pid.size());
   
     //get the pointers to the particles of this species
     vector<BaseParticle* > species_parts;
-    
+    vector<TString> part_names;
     for(const auto& particle_conf:configs_pid){
       species_parts.push_back(particle_conf.Particle());
+      part_names.push_back(particle_conf.GetName());
     }
     
     //Connect actual FinalState particles to iterator
     //These particle will be updated for each combitorial
-    return AddSelectToSelected(diter0,species_parts.size(),&species_parts);
+    return AddSelectToSelected(diter0,species_parts.size(),&species_parts,part_names);
     
   }
   void FinalState::InnerSelect(ParticleIter* recursiter,Int_t pid){
@@ -532,19 +548,23 @@ namespace chanser{
    
     auto loopIter=recursiter;
     for(const auto& pdg:pdgs){
+      //std::cout<<"DEBUG FinalState::InnerSelect "<<pdg<<" left "<<Nleft<<std::endl;
       if(Nleft<=0) cout<<"None left but still PDGs"<<Nleft<<" "<<pdg<< " "<<pdgs.size()<<endl;
       //get particles with this pdg
       auto configs_pdg=filterDetParticleConfigsByPdg(configs_pid,pdg);
       //get a vector of their base particle pointers
       vector<BaseParticle* > pdg_parts;
+      vector<TString> part_names;
       for(const auto& particle_conf : configs_pdg){
 	pdg_parts.push_back(particle_conf.Particle());
+	part_names.push_back(particle_conf.GetName());
       }
       auto Npdg=pdg_parts.size(); //number to select
       
       Nleft-=Npdg; //Number remaining
+      //std::cout<<"DEBUG FinalState::InnerSelect "<<pdg<<" left "<<Nleft<<" npdg "<<Npdg<<std::endl;
       //select particles with this pdg
-      auto selIter=AddSelectToSelected(loopIter,Npdg,&pdg_parts);
+      auto selIter=AddSelectToSelected(loopIter,Npdg,&pdg_parts,part_names);
       if(Nleft>0){
 	//get the remaining particles
 	//this just assigns the remaining BaseParticle ptrs
@@ -558,26 +578,41 @@ namespace chanser{
      
       auto parLoopIter=selIter;
       for(auto& name:parent_names){
+	//std::cout<<"DEBUG FinalState::InnerSelect parent "<<name<<" left "<<Nleft<<" npdg "<<Npdg<<std::endl;
 
       	//get particles with this pdg and this parent (generally should be 1!)
       	auto configs_parent=filterDetParticleConfigsByParent(configs_pdg,name);
       	//get a vector of their base particle pointers
       	vector<BaseParticle* > child_parts;
-      	for(const auto& particle_conf : configs_parent){
+	vector<TString> child_names;
+       	for(const auto& particle_conf : configs_parent){
+	  //std::cout<<"DEBUG FinalState::InnerSelect parent adding child "<<particle_conf.GetName()<<std::endl;
       	  child_parts.push_back(particle_conf.Particle());
+	  child_names.push_back(particle_conf.GetName());
+	  removeFromVector(particle_conf.Particle(),pdg_parts);
+	  removeFromVector(TString(particle_conf.GetName()),part_names);
       	}
       	auto Nchild=child_parts.size();
       	auto Nleft_after_parent=Npdg-Nchild;
-  
+	//	std::cout<<"DEBUG FinalState::InnerSelect parent left after  "<<Nleft_after_parent<<" "<<pdg_parts.size()<<endl;
     	//select particle for this parent pdg from the particles with this pdg
-      	auto parIter=AddSelectToSelected(parLoopIter,Nchild,&child_parts);
-      	if(Nleft_after_parent>0){
+      	auto parIter=AddSelectToSelected(parLoopIter,Nchild,&child_parts,child_names);
+	if(Nleft_after_parent>0){
       	  //get the remaining particles
       	  //this just assigns the remaining BaseParticle ptrs
-      	  auto premIter=AddSelectToRemainder(parIter,Nleft_after_parent);
+	  auto premIter=AddSelectToRemainder(parIter,Nleft_after_parent);
 	  parLoopIter=premIter; //left over childern for next parent (if there is one)
-      	}
+	}
       }
+      //sweep up remaining particles and select them
+      if(pdg_parts.size()>0){
+	//get the remaining particles
+	//this just assigns the remaining BaseParticle ptrs
+	vector<BaseParticle* > rem_parts;
+	vector<TString> rem_names;
+	auto selectRem =AddSelectToSelected(parLoopIter,pdg_parts.size(),&pdg_parts,part_names);
+      }
+      
       
     }
      

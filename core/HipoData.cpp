@@ -8,8 +8,13 @@ namespace chanser{
     _c12=nullptr;
 
     std::cout<<"HipoData::SetFile "<< filename<<std::endl;
-    _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
+    if(_myC12.get()==nullptr)
+      _myC12.reset(new clas12::clas12reader(filename.Data(),{0})); //for ownership
+    else  //copy any configurations
+      _myC12.reset(new clas12::clas12reader{*_myC12.get(),filename.Data(),{0}});
+
     _c12=_myC12.get(); //for using
+   
     if(!_c12) return kFALSE; 
     Init();
     return kTRUE;
@@ -46,9 +51,10 @@ namespace chanser{
   //////////////////////////////////////////////////////////////
   ///Next file
   Bool_t HipoData::NextFile(){
-    if(_chainOfFiles.GetListOfFiles()->GetEntries()<_nFile)
+    std::cout<<"HipoData::NextFile() "<<_chainOfFiles.GetListOfFiles()->GetEntries()<<" "<<_nFile<<std::endl;
+    if(_chainOfFiles.GetListOfFiles()->GetEntries()<=_nFile)
       return kFALSE;
-    
+
     SetFile(_chainOfFiles.GetListOfFiles()->At(_nFile)->GetTitle());
     _nFile++;
     Notify();//let FinalStateManager call change run
@@ -59,13 +65,17 @@ namespace chanser{
   //Can now get Pid list for this event
   Bool_t HipoData::InitEvent(){
     //keep going until we get an event that has particles
+    Bool_t needAnother=kTRUE;
     while(_c12->getReader().next()){
-
-      if(FetchPids())
+      
+      if(FetchPids()){
 	return kTRUE;
+      }
     }
+    
     //check for more files
     if(_nFile<_chainOfFiles.GetNtrees()){
+      if(_c12!=nullptr)_accCharge+=_c12->getRunBeamCharge();
       NextFile();
       return InitEvent();
     }
@@ -82,8 +92,8 @@ namespace chanser{
    
     if(_entry%100000==0) std::cout<<"HipoData::InitEvent() "<<_entry<<std::endl;
       
-    if(!_c12->preCheckPids().empty()){ //got one
-      return kTRUE;
+    if(!_c12->preCheckPidsOrCharge().empty()){ //got one
+       return kTRUE;
     }
     return kFALSE;    
   }
@@ -91,7 +101,9 @@ namespace chanser{
   ///
   Bool_t HipoData::ReadEvent(Long64_t entry){
       
-    _c12->readEvent();//OK to read event from disk
+    if(_c12->readEvent()==kFALSE)//Try to read event from disk
+      return kFALSE; //perhaps QA not right
+
     //_dataType=_c12->runconfig()->getType(); //needs written in gemc
       
     _c12->sort();
@@ -126,7 +138,7 @@ namespace chanser{
       Nparts++;
       CLAS12Particle* particle= (&_particlePool2.at(Nparts-1));
       particle->Clear();//clear pervious data
-
+      // std::cout<<"DEBUG  HipoData::FillParticles() "<<Nparts<<" "<<particle<<" "<<c12p<<std::endl;
       //attach this particle
       particle->SetCLAS12Particle(c12p);
 
@@ -137,8 +149,7 @@ namespace chanser{
   //////////////////////////////////////////////////////////////////
   ///
   void HipoData::FillTruth(){
- 
-    auto mcpbank=_c12->mcparts();
+     auto mcpbank=_c12->mcparts();
       
     const Int_t  Ngen=mcpbank->getRows();
     
@@ -254,7 +265,7 @@ namespace chanser{
       _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
  
     }
- 
+    
     auto table = _runInfo.GetAnaDB().GetTable(period,
 					      "TARGET_POSITION"
 					      ,{3}); //x,y,z pos
@@ -277,5 +288,17 @@ namespace chanser{
     _eventInfo._BeamHel=_c12->event()->getHelicity();
     _eventInfo._NEvent=_c12->runconfig()->getEvent();
   }
-    
+  ///////////////////////////////////////////////////////////////
+  Double_t HipoData::SumChargeFromQA(){
+    Double_t sumCharge=0;
+    Init();
+      sumCharge+=_c12->sumChargeFromQA();
+    while(NextFile()==kTRUE)
+      sumCharge+=_c12->sumChargeFromQA();
+
+
+    _nFile=0; //in case want to use fthe files again
+    return sumCharge;
+  }
+   
 }

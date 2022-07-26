@@ -75,7 +75,10 @@ namespace chanser{
     void LoadAnaDB(const string& name){ _runInfo.LoadAnaDB(name );}
 
     void SetRunPeriod(TString period){_runPeriod=period;}
-    
+
+    Double_t GetAccumulatedCharge()const {return _accCharge;}
+    Double_t SumChargeFromQA();
+
   protected:
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
     size_t _nFile={0};
@@ -104,5 +107,7 @@ namespace chanser{
     
     std::unique_ptr<clas12::clas12writer> _myWriter; //if created here
 
+
+    Double_t _accCharge=0;
   };
 }
