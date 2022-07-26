@@ -15,6 +15,7 @@ Welcome to chanser's documentation!
    actions.rst
    masks.rst
    anadb.rst
+   clas12db.rst
    standardactions.rst
    simulations.rst
    machinelearning.rst
