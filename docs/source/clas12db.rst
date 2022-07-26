@@ -18,7 +18,7 @@ Example of running qadb with Run script
 ::
 
     HipoData hdata;
-    hdata.SetFile("/hdd/jlab/clas12data/skim3_005644.hipo");
+    hdata.AddFile("/hdd/jlab/clas12data/skim3_005644.hipo");
     ...
     ...
     hdata.Reader()->db()->qadb_requireOkForAsymmetry(true);
