@@ -188,6 +188,12 @@ namespace chanser{
     Bool_t goodEvent=kFALSE;
     for(auto& fs:_finalStates){
       //std::cout<<"FinalStateManager::ProcessEvent() "<<fs->GetName()<<" "<<fs->FinalDirectory()<<" "<<&_eventParts<<" generated "<<fs->IsGenerated()<<" "<<_data->IsLund()<<std::endl;
+      if(fs->IsGenerated()){
+	_data->ReadEvent();
+	_eventParts.ReadEvent(_data->GetParticles());
+	fs->ProcessEvent( );
+        goodEvent=kTRUE;
+      }
 
       //See if this final state had any topologies
       //fulfilled by this event
