@@ -51,10 +51,6 @@ namespace chanser{
     ranges::append(ranges::filter(*_originalNeuts,CheckForNotFD),_vecNeutrons);
     ranges::append(ranges::filter(*_original0s,CheckForNotFD),_vec0);
 
-    ranges::append(ranges::filter(*_originalGams,CheckForFD),_vecGams);
-    ranges::append(ranges::filter(*_originalNeuts,CheckForFD),_vecNeutrons);
-    ranges::append(ranges::filter(*_original0s,CheckForFD),_vec0);
-    return true;
 
     //keep the hits with PCAL as possible real neutral candidates
     auto notpcalGams=ranges::filter(fdGams,CheckForPCAL);
