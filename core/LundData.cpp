@@ -35,7 +35,7 @@ namespace chanser{
   }
   
   Bool_t LundData::InitEvent(){
-    //   std::cout<<"LundData::InitEvent()"<<std::endl;
+    //std::cout<<"LundData::InitEvent()"<<std::endl;
     getline(_txtIn,_sline);
     
     if(_txtIn.eof()){
@@ -62,7 +62,7 @@ namespace chanser{
     
     std::stringstream streamline(_sline);
     streamline>>_Nparts>>dummy>>dummy>>dummy>>dummy>>dummy>>_Ebeam>>dummy>>dummy>>dummy;
-    //   std::cout<<"LundData::ReadEvent "<<_Nparts<<std::endl;
+    //std::cout<<"LundData::ReadEvent "<<_Nparts<<std::endl;
     //now read in each particle and assign to Particles
     Int_t index,type,pid,parent,daughter;
     Float_t charge,px,py,pz,energy,mass,vx,vy,vz;
@@ -72,11 +72,12 @@ namespace chanser{
     while(_truthPool.size()<_Nparts)
       _truthPool.push_back(std::move(TruthParticle()));
 
+   
     for(UInt_t i=0;i<_Nparts;i++){
       getline(_txtIn,_sline);
       streamlinep.str(_sline);//set sline as string in stream
       streamlinep>>index>>charge>>type>>pid>>parent>>daughter>>px>>py>>pz>>energy>>mass>>vx>>vy>>vz; //get values from stream
-      //std::cout<<"LundData::ReadEvent "<<index<<" "<<charge<<" "<<type <<" "<<pid<<" "<<energy<<std::endl;
+       //std::cout<<"LundData::ReadEvent "<<index<<" "<<charge<<" "<<type <<" "<<pid<<" "<<energy<<std::endl;
       TruthParticle* particle= &_truthPool.at(i);
       particle->_p4.SetXYZT(px,py,pz,energy);
       particle->_vertex.SetXYZ(vx,vy,vz);
@@ -84,7 +85,7 @@ namespace chanser{
       _eventTruth.emplace_back(particle);
       streamlinep.clear();
     }
-    
+   
     return kTRUE;
   }
   void LundData::FillRunInfo(){
