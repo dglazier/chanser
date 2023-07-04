@@ -35,7 +35,9 @@ namespace chanser{
     HSLorentzVector fMes_d2;
     HSLorentzVector fBar_d1;
     HSLorentzVector fBar_d2;
-    
+    HSLorentzVector fMesD1_d1; //daughter of fMes_d1
+    HSLorentzVector fMesD1_d2;//daughter of fMes_d1
+   
     HSMomentum fCMBoost;
     
     Double_t fCosTh=0;
@@ -124,8 +126,8 @@ namespace chanser{
     ////Set Decay Products of Iosbar decay
     /////// Needed to calculate isobar helicity frame in 3body
     void SetMesonDecayIsobar(const HSLorentzVector& e1, const HSLorentzVector& e2){
-      fMes_e1=e1;
-      fMes_e2=e2;
+      fMesD1_d1=e1;
+      fMesD1_d2=e2;
     }
     HSLorentzVector ParticleXYZM(Double_t X,Double_t Y,Double_t Z,Double_t M){HSLorentzVector p4;p4.SetXYZT(X,Y,Z,sqrt(M*M+X*X+Y*Y+Z*Z)); return p4;}
     
@@ -173,6 +175,7 @@ namespace chanser{
     void PhotoCMDecay();
     void LambdaDecay();
     void PolPhotoCMDecay();
+      void MesonDecayIsobarHelicity();
   };
   
   inline Double_t Kinematics::t0(const HSLorentzVector& p0,const HSLorentzVector& p1){
@@ -279,8 +282,9 @@ namespace chanser{
     HSMomentum xV=yV.Cross(zV).Unit();
 
     
-    HSLorentzVector decD1=boost(fMes_e1,decBoost);
-    HSLorentzVector isoD1=boost(fMes_e1,isoBoost);
+    HSLorentzVector decD1=boost(fMesD1_d1,decBoost);
+    HSLorentzVector isoD1=boost(fMesD1_d1,isoBoost);
+    
     HSMomentum angles(isoD1.Vect().Dot(xV),isoD1.Vect().Dot(yV),isoD1.Vect().Dot(zV));
     fCosTh=CosThetaVector(&angles);
     fPhi=angles.Phi();
