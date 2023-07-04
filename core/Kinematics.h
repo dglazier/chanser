@@ -120,7 +120,13 @@ namespace chanser{
       fBar_d1=HSLorentzVector(d1.X(),d1.Y(),d1.Z(),d1.T());
       fBar_d2=HSLorentzVector(d2.X(),d2.Y(),d2.Z(),d2.T());
     }
-    
+    ///////////////////////////////////////////////////////////
+    ////Set Decay Products of Iosbar decay
+    /////// Needed to calculate isobar helicity frame in 3body
+    void SetMesonDecayIsobar(const HSLorentzVector& e1, const HSLorentzVector& e2){
+      fMes_e1=e1;
+      fMes_e2=e2;
+    }
     HSLorentzVector ParticleXYZM(Double_t X,Double_t Y,Double_t Z,Double_t M){HSLorentzVector p4;p4.SetXYZT(X,Y,Z,sqrt(M*M+X*X+Y*Y+Z*Z)); return p4;}
     
     
