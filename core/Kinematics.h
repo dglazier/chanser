@@ -257,7 +257,28 @@ namespace chanser{
     fCosTh=CosThetaVector(&angles);
     fPhi=angles.Phi();
   }
-  
+   ////////////////////////////////////////////////////////
+  //// for 3-body helicity frame
+  //// z axis along the isobar momentum in the GJ frame
+  ////////////////////////////////////////////////////////
+  inline void Kinematics::MesonDecayIsobarHelicity(){
+    HSMomentum decBoost=fMes.BoostToCM();
+    HSLorentzVector decGamma=boost(fGamma,decBoost);
+    HSMomentum isoBoost=fMes_d1.BoostToCM();
+
+    HSLorentzVector iso_HF=boost(fMes_d2,decBoost);
+
+    HSMomentum zV=-iso_HF.Vect().Unit();
+    HSMomentum yV=decGamma.Vect().Cross(zV).Unit();
+    HSMomentum xV=yV.Cross(zV).Unit();
+
+    
+    HSLorentzVector decD1=boost(fMes_e1,decBoost);
+    HSLorentzVector isoD1=boost(fMes_e1,isoBoost);
+    HSMomentum angles(isoD1.Vect().Dot(xV),isoD1.Vect().Dot(yV),isoD1.Vect().Dot(zV));
+    fCosTh=CosThetaVector(&angles);
+    fPhi=angles.Phi();
+  }
   //////////////////////////////////////////////////////
   ///z-axis along -meson in baryon rest frame
   inline void Kinematics::BaryonDecayHelicity(){
