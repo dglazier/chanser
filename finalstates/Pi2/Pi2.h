@@ -12,13 +12,16 @@
 #include "TreeDataPi2.h"
 
 
-namespace dglazier{
+namespace username{
 
   using Particle=chanser::CLAS12Particle;
 
-  class Pi2 : public chanser::CLAS12FinalState{
+  class Pi2 final : public chanser::CLAS12FinalState{
 
-       
+    static constexpr Double_t Mprot=0.938272;
+    static constexpr Double_t Mpion=0.13957000;
+    static constexpr Double_t Melec=0.00051099891;
+    
   public :
     Pi2()=default;
       
@@ -45,10 +48,10 @@ namespace dglazier{
 
     void DerivedChangeRun() final {
       auto ebeam=GetRunInfo()->_BeamEnergy;
-      auto mele = 0.00051099891;
-      //     ebeam=10.6;
+       //     ebeam=10.6; //Fall 2018
+       //     ebeam=10.2; //Spring 2019
       std::cout<<"Change beam energy to :"<<ebeam<<std::endl;
-      _beam.SetXYZT(0,0,ebeam,TMath::Sqrt(ebeam*ebeam + mele*mele));
+      _beam.SetXYZT(0,0,ebeam,TMath::Sqrt(ebeam*ebeam + Melec*Melec));
     }
 
   protected :
@@ -60,7 +63,7 @@ namespace dglazier{
   private:
     //constructor private so only create unique_ptr
     //using Pi2::Make(...)
-    //auto fs = dglazier::Pi2::Make("NONE","ALL");
+    //auto fs = username::Pi2::Make("NONE","ALL");
   Pi2(TString ch,TString inc) : chanser::CLAS12FinalState(std::move(ch),std::move(inc)){
       //Give object class name - namespace
       //Used for compiling and loading
@@ -88,8 +91,8 @@ namespace dglazier{
 
    
     
-    const TString _USER="dglazier";
-    ClassDefOverride(dglazier::Pi2,1); //class Pi2
+    const TString _USER="username";
+    ClassDefOverride(username::Pi2,1); //class Pi2
   }; //end Pi2
   
 }

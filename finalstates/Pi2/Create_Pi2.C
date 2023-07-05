@@ -1,10 +1,13 @@
 {
-  auto useEBPidFor = "ALL"; //or "NONE"
+  auto useEBPidFor = "NONE"; //or "NONE"
   auto useInclusiveFilterFor = "ALL";
   
-  auto FS = dglazier::Pi2::Make(useEBPidFor,useInclusiveFilterFor);
+  auto FS = username::Pi2::Make(useEBPidFor,useInclusiveFilterFor);
   
   FS->AddTopology("Electron:Proton:Pip:Pim");
+  FS->AddTopology("Electron:Proton:Pim");
+  FS->AddTopology("Electron:Proton:Pip");
+  FS->AddTopology("Electron:Pip:Pim");
   
   //FS->MaskParticles(new MaskRadPhotons(10,0.5,1,kTRUE) );//currently only works with inclusive =="ALL"
   //  FS->MaskParticles(new MaskCalorSplitOffs(50,50,50,1) );//currently only works with inclusive =="ALL"
@@ -23,11 +26,11 @@
   ParticleDataManager pdm{"particle",1};
   pdm.SetParticleOut(new CLAS12ParticleOutEvent0);
   //pdm.SetParticleOut("e-",new MVA_El_Data);
-  //  FS->RegisterPostKinAction(pdm);
+  FS->RegisterPostKinAction(pdm);
 
   
    ////
-  /*
+  
   ParticleCutsManager pcm2{"DTCuts2",1};
   pcm2.AddParticleCut("e-",new EventBuilderCut); //Use EB for elecron ID
   //pcm2.AddParticleCut("e-",new  DeltaTimeVerCut(2));
@@ -53,15 +56,10 @@
   pcmEB.AddParticleCut("pi+",new EventBuilderCut);
   pcmEB.AddParticleCut("pi-",new EventBuilderCut);
   FS->RegisterPostTopoAction(pcmEB);
-  */
+  
  
   ///StartTime
-  // StartTimeAction st("StartTime",new C12StartTimeFromHighMomentum("Electron:Pip:Pim"));
   StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
-  //FS->RegisterPreTopoAction(st);  //PRETOPO
-  //StartTimeAction st("StartTime",new C12StartTime()); 
-  // StartTimeAction st("StartTime",new C12StartTimeFromEBFTB());
-  //  StartTimeAction st("StartTime",new C12StartTimeFromVtFTB());
   FS->RegisterPreTopoAction(st);  //PRETOPO
 
 
@@ -76,7 +74,7 @@
   RGA(FS.get());
   
   ////Write to file for later processing
-  FS->WriteToFile("Pi2_ALL_ALL_Test.root");
+  FS->WriteToFile("Pi2_NONE_ALL.root");
   
   //FS->Print();
   //Delete the final state rather than let ROOT try

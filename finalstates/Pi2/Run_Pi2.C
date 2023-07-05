@@ -1,16 +1,15 @@
 {
 
-  clas12databases::SetCCDBLocalConnection("/hdd/Dropbox/clas12/clas12root/RunRoot/ccdb.sqlite");
-  clas12databases::SetRCDBRootConnection("/hdd/Dropbox/clas12/clas12root/RunRoot/rcdb.root");
+  clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
+  clas12databases::SetRCDBRootConnection("rcdb.root");
 
    HipoData hdata;
-   hdata.AddFile("/hdd/dglazier/dump/data/worker_0.0filtered.hipo");
-   // hdata.AddFile("/hdd/jlab/clas12data/skim14_005038.hipo");
-   // hdata.SetFile("/home/dglazier/fastdata/skim3_005652.hipo");
-   //hdata.LoadAnaDB("$CHANSER/rga_actions/anadb/RGA_ACTIONS_PASS1.db");
+   hdata.AddFile("/hdd/jlab/clas12data/pass2/DVPipPimP_*.hipo");
+
    hdata.LoadAnaDB("$CHANSER/anadbs/RunPeriodPass1.db");
+   hdata.LoadAnaDB("$CHANSER/rga_actions/anadb/RGA_ACTIONS_PASS1.db");
    hdata.SetRunPeriod("fall_2018");
-   // hdata.SetFile("/work/jlab/clas12data/adamtsim/EptoXto2pi_54.hipo");
+
    hdata.Reader()->useFTBased();	
 
 
@@ -22,16 +21,12 @@
   fsm.LoadData(&hdata);
 
   ////load one or more FinalStates 
-  fsm.LoadFinalState("Pi2","Pi2_ALL_ALL_NoRGA.root");
-  // fsm.LoadFinalState("Pi2","Pi2_ALL_ALL_STel_Mask.root");
-  // fsm.LoadFinalState("Pi2","Pi2_NONE_ALL_STel_Mask.root");
-  // fsm.LoadFinalState("Pi2","Pi2_NONE_ALL_STel_UnMask.root");
-  // fsm.LoadFinalState("Pi2","Pi2_ALL_ALL_STel_UnMask.root");
-  //fsm.LoadFinalState("Pi2","Pi2_ALL_ALL_STel_DoubleMask.root");
+  fsm.LoadFinalState("Pi2","Pi2_ALL_ALL.root");
+  fsm.LoadFinalState("Pi2","Pi2_NONE_ALL.root");
 
   //Max number of particles of any 1 species
   //Whole event disgarded if this not met.
-  //fsm.GetEventParticles().SetMaxParticles(8);
+  fsm.GetEventParticles().SetMaxParticles(10);
 
   // fsm.CheckCombitorials();
   

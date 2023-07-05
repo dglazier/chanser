@@ -3,9 +3,9 @@
 
 #include "BaseOutEvent.h"
 
-#pragma link C++ class dglazier::TreeDataPi2;
+#pragma link C++ class username::TreeDataPi2;
 
-namespace dglazier{
+namespace username{
 
   class TreeDataPi2 : public chanser::BaseOutEvent{
 

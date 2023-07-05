@@ -1,7 +1,7 @@
   
 #include "Pi2.h"
  
-namespace dglazier{
+namespace username{
   
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  
   void Pi2::Define(){
@@ -34,13 +34,16 @@ namespace dglazier{
     _doToTopo["Electron:Proton:Pip:Pim"]=[&](){
       //TOPOLOGY Define your topology dedendent code in here
       ///////+++++++++++++++++++++++++++++++++++///////
+      //should be nothing missing here
       auto miss= _beam + _target - _electron.P4() - _proton.P4() -_pip.P4()-_pim.P4();
+      //potential cut on FT only electrons
       // if(_electron.CLAS12()->getRegion()!=1000){RejectEvent(); return;}
 
       TD->MissMass=miss.M();
       TD->MissMass2=miss.M2();
 
-      //if(TMath::Abs(TD->MissMass2)>0.2) {RejectEvent(); return;}
+      //loose missing mass cut
+      if(TMath::Abs(TD->MissMass2)>1) {RejectEvent(); return;}
       
       TD->MissP=miss.P();
       TD->MissE=miss.E();
@@ -51,13 +54,90 @@ namespace dglazier{
       miss= _beam + _target -_electron.P4() -_pim.P4() -_proton.P4();
       TD->MissMassPPim=miss.M2();
 
+      //no trigger in simulation so best here
       TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
       ///////------------------------------------///////
     };
 
 
-    if(HasTruth()) HalveBunchTime();
-  }
+    //Set Possible Topologies
+    _doToTopo["Electron:Pip:Pim"]=[&](){
+      //TOPOLOGY Define your topology dedendent code in here
+      ///////+++++++++++++++++++++++++++++++++++///////
+      //miss is the proton
+      auto miss= _beam + _target - _electron.P4() -_pip.P4()-_pim.P4();
+      _proton.FixP4(miss);
+      //potential cut on FT only electrons
+      // if(_electron.CLAS12()->getRegion()!=1000){RejectEvent(); return;}
+
+      TD->MissMass=miss.M();
+      TD->MissMass2=miss.M2();
+
+       //loose missing mass cut
+      if(TMath::Abs(TD->MissMass-Mprot)>1) {RejectEvent(); return;}
+      
+      TD->MissP=miss.P();
+      TD->MissE=miss.E();
+      TD->MissMass2Pi=miss.M();
+      TD->MissMassPPip=0; //does not exist
+      TD->MissMassPPim=0; //does not exist
+
+      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
+      ///////------------------------------------///////
+    };
+    //Set Possible Topologies
+    _doToTopo["Electron:Proton:Pip"]=[&](){
+      //TOPOLOGY Define your topology dedendent code in here
+      ///////+++++++++++++++++++++++++++++++++++///////
+      //miss is the pi-
+      auto miss= _beam + _target - _electron.P4() -_pip.P4()-_proton.P4();
+      _pim.FixP4(miss);
+      //potential cut on FT only electrons
+      // if(_electron.CLAS12()->getRegion()!=1000){RejectEvent(); return;}
+
+      TD->MissMass=miss.M();
+      TD->MissMass2=miss.M2();
+
+       //loose missing mass cut
+      if(TMath::Abs(TD->MissMass2)>1) {RejectEvent(); return;}
+      
+      TD->MissP=miss.P();
+      TD->MissE=miss.E();
+      TD->MissMass2Pi=0;//does not exist
+      TD->MissMassPPip=miss.M(); 
+      TD->MissMassPPim=0; //does not exist
+
+      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
+      ///////------------------------------------///////
+    };
+  //Set Possible Topologies
+    _doToTopo["Electron:Proton:Pim"]=[&](){
+      //TOPOLOGY Define your topology dedendent code in here
+      ///////+++++++++++++++++++++++++++++++++++///////
+      //miss is the pi+
+      auto miss= _beam + _target - _electron.P4() -_pim.P4()-_proton.P4();
+      _pip.FixP4(miss);
+      //potential cut on FT only electrons
+      // if(_electron.CLAS12()->getRegion()!=1000){RejectEvent(); return;}
+
+      TD->MissMass=miss.M();
+      TD->MissMass2=miss.M2();
+
+       //loose missing mass cut
+      if(TMath::Abs(TD->MissMass2)>1) {RejectEvent(); return;}
+      
+      TD->MissP=miss.P();
+      TD->MissE=miss.E();
+      TD->MissMass2Pi=0;//does not exist
+      TD->MissMassPPip=0; //does not exist
+      TD->MissMassPPim=miss.M();
+
+      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
+      ///////------------------------------------///////
+    };
+
+
+   }
 
  
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  
@@ -92,8 +172,7 @@ namespace dglazier{
     _kinCalc.MesonDecayGJ();
     TD->MesonCosThGJ=_kinCalc.CosTheta();
     TD->MesonPhiGJ=_kinCalc.Phi();
-    //    std::cout<<"                                            Pi2 "<< TD->MesonCosThGJ<<" "<<TD->MesonPhiGJ<<std::endl;
-    // cout<<"event particles "<<GetEventParticles()<<" "<<GetEventParticles()->GetParticleVector(22)->size()<<" "<<FinalDirectory()<<" "<<_electron.P4().E()<<" "<<_electron.PDG()<<" "<<_electron.Detector()<<endl;
+ 
   }
     
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  
