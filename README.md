@@ -1,4 +1,5 @@
 CLAS12 HIPO Analyser
+NOTE PLEASE USE dev branch
 
 ## Installation
 
