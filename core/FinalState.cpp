@@ -485,7 +485,7 @@ namespace chanser{
     diter->SetParticles(parts);
     diter->SetNSel(Nsel);
 
-    diter->Print(1);
+    //diter->Print(1);
     return diter;
   }
   //////////////////////////////////////////////////////////////////

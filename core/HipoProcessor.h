@@ -36,7 +36,9 @@ namespace chanser{
     FinalStateManager& Manager(){return _fsm;}
 
     void AddOption(TString opt,TString val){_options->Add(new TNamed(opt,val));};
-    
+    void ProcessAll(Long64_t NRecsToProcess=0);
+
+    Long64_t GetNRecords()const { return  _NChainRecords;}
   protected:
     
     void    MergeFinalOutput();
@@ -63,6 +65,7 @@ namespace chanser{
     std::unique_ptr<TNamed> _baseDir={nullptr};//!
 
 
+    Long64_t _NChainRecords;//!
     TString _codeDir; //!
     Bool_t _boss{kFALSE};//!
     Bool_t _FSNotInitialsed{kTRUE};//!

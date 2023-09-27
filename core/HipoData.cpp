@@ -37,7 +37,7 @@ namespace chanser{
     if(runN==11||runN==10){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
-
+    std::cout<<" HipoData::Init(), db "<<_c12->db()<<std::endl;
     //On PROOF databases will be set from HipoSelector to HipoChain db
     if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
 
@@ -203,7 +203,6 @@ namespace chanser{
       _runInfo._fieldSetting="OUTBEND";
     else  _runInfo._fieldSetting="NOBEND";
 
-
  
   }
   ///////////////////////////////////////////////////////////////
@@ -245,6 +244,8 @@ namespace chanser{
     if(rcdb){
     _runInfo._BeamEnergy  = rcdb->current().beam_energy/1000;//to GeV
     }
+
+
     //cache data from ccdb
     auto ccdb=_c12->ccdb();
     if(ccdb){
@@ -255,20 +256,25 @@ namespace chanser{
       //_runInfo._TargetCentre=-0.03;
        /////////////////////////////////////////////////
       //rf
-      int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
-      int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
+  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
+  int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
+  int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
+  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
 
-      // There are two rows in rf/config here we find the one with status=1
-      // if (rfStat1<=0 && rfStat2<=0)
-      // throw new RuntimeException("Couldn't find non-positive RF status in CCDB");
-      int rfId = rfStat2>rfStat1 ? 1 : 0;
-      _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
- 
+  // There are two rows in rf/config here we find the one with status=1
+  // if (rfStat1<=0 && rfStat2<=0)
+  // throw new RuntimeException("Couldn't find non-positive RF status in CCDB");
+  int rfId = rfStat2>rfStat1 ? 1 : 0;
+  _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
+  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
+  
     }
-    
+  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
+   
     auto table = _runInfo.GetAnaDB().GetTable(period,
 					      "TARGET_POSITION"
 					      ,{3}); //x,y,z pos
+ std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
     if(table.IsValid()){
       std::vector<double> tarPos(3);
       table.Fill(tarPos);
@@ -277,6 +283,7 @@ namespace chanser{
     else{
       Warning("HipoData::FillRunInfoExp()",Form(" no TARGET_POSITION db entry for %s",period.data()),"");
     }
+ std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
 
   }
   ///////////////////////////////////////////////////////////////

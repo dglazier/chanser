@@ -4,15 +4,18 @@
 #include <TSystem.h>
 #include <TProofServ.h>
 #include <TProof.h>
+#include <TStopwatch.h>
+#include <TBenchmark.h>
 
 namespace chanser{
   
  
   HipoProcessor::HipoProcessor(clas12root::HipoChain* chain,TString fsfile,TString base) :
     HipoSelector{chain},_baseDir(new TNamed{"FSBASEDIR",base.Data()}),_boss{kTRUE} {
+      _NChainRecords = chain->GetNRecords();
       //if chanser_FinalStates exists with .so files then things
       //will probably screw up...
-      //gSystem->Exec("rm -rf chanser_FinalStates/");
+    gSystem->Exec("rm -rf chanser_FinalStates/");
 
     //prepare extra options list
     _options.reset(new TList{});
@@ -213,7 +216,11 @@ namespace chanser{
       	continue; 
       Info("HipoProcessor::LoadFinalStates",fss.data(),fis.data());
       _listOfFinalStates->Add(new TNamed(fss,fis));
-      _codeDir= TString("chanser_FinalStates/")+gProof->GetSessionTag();
+      if(gProof!=nullptr)
+	_codeDir= TString("chanser_FinalStates/")+gProof->GetSessionTag();
+      else
+	_codeDir= TString("chanser_FinalStates/");
+	
       Archive::ExtractFinalState(fis,fss,_codeDir); //finalstate name, filename (full path)
     }
     //Do any compilation that is needed
@@ -263,7 +270,46 @@ namespace chanser{
     if(opt!=nullptr){
       _hipo.SetRunPeriod(opt->GetTitle());
     }
- 
+    
+  }
+
+  ////////////////////////////////////////////////
+  ///Some configuration option can be passes as envirment variables
+  void HipoProcessor::ProcessAll(Long64_t NRecsToProcess){
+    if(NRecsToProcess==0||NRecsToProcess>GetNRecords())
+      NRecsToProcess=GetNRecords();
+
+    TList input;
+    SetInputList(&input);
+    //TSelector Algorithm
+    Begin(nullptr);
+    SlaveBegin(nullptr);
+
+    TStopwatch watch;
+    watch.Start();
+    gBenchmark->Start("Processor");
+    Info("HipoProcessor::ProcessAll","Going to process %lld Records",NRecsToProcess);
+    Int_t nStatus=static_cast<Int_t>(NRecsToProcess/100);
+    if( nStatus==0)nStatus=1;
+    for(int i=0;i<NRecsToProcess;++i){
+      Process(i);
+      if(i%(nStatus)==0){
+	watch.Stop();
+    	auto realrate = static_cast<Double_t>(nStatus)/watch.RealTime();
+	auto cpurate = static_cast<Double_t>(nStatus)/watch.CpuTime();
+   	Info("ProcessAll","\nt Have Done %d/%lld records so far",i,NRecsToProcess);
+	Info("ProcessAll","\n\tCurrent Real Rate : %lf recs/sec \t Cpu Rate : %lf recs/sec, Cpu Efficiency : %lf",realrate,cpurate, watch.CpuTime()/watch.RealTime());
+	watch.Start();
+
+	if(i/(nStatus)>5) nStatus = 10*nStatus;
+      }
+    }
+      
+    SlaveTerminate();
+    Terminate();
+    gBenchmark->Stop("Processor");
+    gBenchmark->Print("Processor");
+  
   }
 
 }

@@ -193,7 +193,7 @@ namespace chanser{
 	    getline( infile, field);
 	    item=field;
 
-	    //std::cout<<"period "<<period<< " add item "<<item<<std::endl;
+	    std::cout<<"AnaDB::LoadDBFile period "<<period<< " add item "<<item<<std::endl;
 
 	    tablevals_t vals;
 	    string dataline;
@@ -205,7 +205,7 @@ namespace chanser{
 	    }
 
 	    lastLine=dataline;
-	    // std::cout<<" size of vals "<< vals.size() <<" "<<lastLine<<std::endl;
+	    std::cout<<"AnaDB::LoadDBFile size of vals "<< vals.size() <<" "<<lastLine<<std::endl;
 	   
 	    
 	    AddPeriodEntry(period,item,vals);

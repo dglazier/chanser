@@ -19,14 +19,14 @@ namespace chanser{
   ///nGroups of nSelected from parts
   ParticleIter* AddSelectToSelected(ParticleIter* diter,Int_t nSelected,vector<BaseParticle*> *parts,const vector<TString>& names){
     if(nSelected>diter->GetNSel()) cout<<"WARNING AutoIterUtils::AddSelectToSelected : trying to select more particles than exist in original iterator "<<" of "<<nSelected<<" "<< diter->GetNSel()<<endl;
-    cout<<" AddSelectToSelected groups "<<" selected "<<nSelected<<" particles "<<parts->size()<<endl;
-    std::cout<<"Selecting particles : ";
+    //  cout<<" AddSelectToSelected groups "<<" selected "<<nSelected<<" particles "<<parts->size()<<endl;
+    //std::cout<<"Selecting particles : ";
     TString fullname;
     for(const auto& name:names){
-      std::cout<<name<<" ";
+      //   std::cout<<name<<" ";
       fullname+=name;
     }
-    std::cout<<std::endl;
+    //std::cout<<std::endl;
     
     ParticleIter *new_iter=AddSelectX(nSelected,parts);
     //  new_iter->SetName(fullname);
