@@ -34,13 +34,20 @@ namespace chanser{
      //current hack for finding if simulated data
     //Only works if run number from gemc ==11  !!!!
     auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
+    _runNumber = runN;
+    
     if(runN==11||runN==10){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
     std::cout<<" HipoData::Init(), db "<<_c12->db()<<std::endl;
     //On PROOF databases will be set from HipoSelector to HipoChain db
-    if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
-
+    //if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
+    if(_oldRun!=_runNumber){ //only needed if we change run
+      //wihtout this things slow on ifarm when running on full DSTs
+      //which consist of lots of small files with the same run#
+      if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
+    }
+    
     _eventInfo.SetCLAS12( _c12 );
     _runInfo.SetCLAS12( _c12 );
     
@@ -57,7 +64,13 @@ namespace chanser{
 
     SetFile(_chainOfFiles.GetListOfFiles()->At(_nFile)->GetTitle());
     _nFile++;
-    Notify();//let FinalStateManager call change run
+    
+    //only notify if run changed
+    if(_oldRun!=_runNumber){
+      Notify();//let FinalStateManager call change run
+      _oldRun=_runNumber;
+    }
+    
     return kTRUE;
   }
   /////////////////////////////////////////////////////////////////////

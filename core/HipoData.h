@@ -83,6 +83,8 @@ namespace chanser{
     clas12::clas12reader* _c12=nullptr;  //passed from myC12 or external source
     size_t _nFile={0};
     TChain _chainOfFiles;
+    Int_t _runNumber=0;
+    Int_t _oldRun=0;
 
   private :
 

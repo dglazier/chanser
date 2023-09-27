@@ -75,6 +75,8 @@ namespace chanser{
     Notify();
     
     gBenchmark->Start("FinalStateManager::ProcessAll");
+    TStopwatch watch;
+    watch.Start();
 
     //read event
     Long64_t  counter=0;
@@ -83,7 +85,12 @@ namespace chanser{
       ProcessEvent();
       counter++;
       if(counter>Nmax) break;
-    }
+      if(counter%100000==0){
+	watch.Stop();
+	cout<<"Event rate real "<<1E5/watch.RealTime()<<" Event rate cpu "<<1E5/watch.CpuTime()<<" cpu/real "<< watch.CpuTime()/watch.RealTime()<<endl;
+	watch.Start();
+      }
+   }
 
     cout<<" FinalStateManager::ProcessAll() "<<counter<< " events processed from "<<_data->NEventsRead()<<" in file"<<endl;
     
