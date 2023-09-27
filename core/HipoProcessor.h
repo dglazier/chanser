@@ -44,6 +44,8 @@ namespace chanser{
     void    MergeFinalOutput();
     void    ApplyOptions();
     
+    Int_t _runNumber=0;
+    Int_t _oldRun=0;
   private:
 
     //Data members should be objects

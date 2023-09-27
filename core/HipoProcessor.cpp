@@ -107,7 +107,13 @@ namespace chanser{
 
     // run and final states now initialised
     // update final states run dependent information
-    _fsm.Notify();
+    //only notify if run changed
+    auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
+    _runNumber = runN; 
+    if(_oldRun!=_runNumber){
+      _fsm.Notify();//let FinalStateManager call change run
+      _oldRun=_runNumber;
+    } 
     
     return kTRUE;
   }
@@ -291,6 +297,8 @@ namespace chanser{
     Info("HipoProcessor::ProcessAll","Going to process %lld Records",NRecsToProcess);
     Int_t nStatus=static_cast<Int_t>(NRecsToProcess/100);
     if( nStatus==0)nStatus=1;
+    Bool_t changedNStatus=false;
+    
     for(int i=0;i<NRecsToProcess;++i){
       Process(i);
       if(i%(nStatus)==0){
@@ -301,7 +309,10 @@ namespace chanser{
 	Info("ProcessAll","\n\tCurrent Real Rate : %lf recs/sec \t Cpu Rate : %lf recs/sec, Cpu Efficiency : %lf",realrate,cpurate, watch.CpuTime()/watch.RealTime());
 	watch.Start();
 
-	if(i/(nStatus)>5) nStatus = 10*nStatus;
+	if((i/(nStatus)>5)&&(changedNStatus==false)){
+	  nStatus = 10*nStatus;
+	  changedNStatus=true;
+	}
       }
     }
       

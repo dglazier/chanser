@@ -31,12 +31,12 @@ namespace chanser{
 	exit(0);
       }
     }
-     //current hack for finding if simulated data
-    //Only works if run number from gemc ==11  !!!!
-    auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
+     auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
     _runNumber = runN;
     
-    if(runN==11||runN==10){
+    //current hack for finding if simulated data
+   //Only works if run number from gemc ==11  !!!!
+     if(runN==11||runN==10){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
     std::cout<<" HipoData::Init(), db "<<_c12->db()<<std::endl;
