@@ -295,7 +295,7 @@ namespace chanser{
     watch.Start();
     gBenchmark->Start("Processor");
     Info("HipoProcessor::ProcessAll","Going to process %lld Records",NRecsToProcess);
-    Int_t nStatus=static_cast<Int_t>(NRecsToProcess/100);
+    Int_t nStatus=static_cast<Int_t>(NRecsToProcess/500);
     if( nStatus==0)nStatus=1;
     Bool_t changedNStatus=false;
     
@@ -309,10 +309,10 @@ namespace chanser{
 	Info("ProcessAll","\n\tCurrent Real Rate : %lf recs/sec \t Cpu Rate : %lf recs/sec, Cpu Efficiency : %lf",realrate,cpurate, watch.CpuTime()/watch.RealTime());
 	watch.Start();
 
-	if((i/(nStatus)>5)&&(changedNStatus==false)){
-	  nStatus = 10*nStatus;
-	  changedNStatus=true;
-	}
+	//	if((i/(nStatus)>5)&&(changedNStatus==false)){
+	//  nStatus = 10*nStatus;
+	//  changedNStatus=true;
+	//	}
       }
     }
       
