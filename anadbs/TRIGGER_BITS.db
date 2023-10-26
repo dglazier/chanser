@@ -1,0 +1,19 @@
+PERIOD=fall_2018 SIM
+TRIGGER_BITS
+%TrigElect 10
+%TrigMeson 24
+
+PERIOD=fall_2018 EXP
+TRIGGER_BITS
+%TrigElect 12
+%TrigMeson 25
+
+PERIOD=spring_2019 SIM
+TRIGGER_BITS
+%TrigElect 10
+%TrigMeson 24
+
+PERIOD=spring_2019 EXP
+TRIGGER_BITS
+%TrigElect 10
+%TrigMeson 24
