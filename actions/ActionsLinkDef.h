@@ -29,5 +29,7 @@
 #pragma link C++ class chanser::FDn_pathCorrection+;
 #pragma link C++ class chanser::EventTruthAction+;
 #pragma link C++ class chanser::MVASignalIDAction+;
+#pragma link C++ class chanser::TriggerAction+;
+#pragma link C++ class chanser::MCMatchAction+;
 
 #endif
