@@ -82,6 +82,7 @@ namespace chanser{
       particle->_p4.SetXYZT(px,py,pz,energy);
       particle->_vertex.SetXYZ(vx,vy,vz);
       particle->_pdgCode=pid;
+      particle->_index=i;
       _eventTruth.emplace_back(particle);
       streamlinep.clear();
     }

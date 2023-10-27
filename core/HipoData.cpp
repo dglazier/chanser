@@ -183,6 +183,7 @@ namespace chanser{
       particle->_p4.SetXYZT(px,py,pz,sqrt(static_cast<Double_t>((px*px+py*py+pz*pz+pm*pm))));
       particle->_vertex.SetXYZ(mcpbank->getVx() ,mcpbank->getVy() ,mcpbank->getVz());
       particle->_pdgCode=mcpbank->getPid();
+      particle->_index=mcpbank->getIndex();
       _eventTruth.emplace_back(particle);
     }
 

@@ -333,7 +333,7 @@ namespace chanser{
       auto piter=_currTopo->Iter();
       // cout<<"FinalState::ProcessEvent() process another combi going in...."<<endl<<endl; 
       while(piter.NextCombitorial0()){
-	FSProcess();
+  	FSProcess();
 	if(_rejectEvent==kFALSE) _goodEvent++;
       }
     }
@@ -447,7 +447,7 @@ namespace chanser{
   //////////////////////////////////////////////////////////////
   ///Print permuations to screen for debugging
   void FinalState::CheckCombitorial(){
-    cout<<" Printing Perm "<<_nPerm<<" of topology "<<endl;
+    cout<<" Printing Perm "<<_nPerm<<" of topology "<<_currTopo->ID()<<endl;
     for(UInt_t i=0;i<_pconfigs.size();i++){
       auto *part=_pconfigs[i].Particle();
       //if(IsMissing(part))continue;

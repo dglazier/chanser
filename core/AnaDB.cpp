@@ -5,7 +5,7 @@ namespace chanser{
 
   using namespace std;
 
-  AnaDBTable::AnaDBTable(const tablevals_t& vals,const  std::vector<size_t> shape){
+  AnaDBTable::AnaDBTable(const tablevals_t& vals,const  std::vector<size_t> shape,const tablestrings_t& tags){
     //make sure total number of entries defined
     //by shape is same as size of value vector
     uint shape_entries=1;
@@ -17,6 +17,7 @@ namespace chanser{
     }
     _vals = vals;
     _shape=shape;
+    _tags = tags;
   }
  
   float AnaDBTable::GetEntry(const std::vector<size_t>& entry) const{
@@ -197,18 +198,22 @@ namespace chanser{
 
 	    tablevals_t vals;
 	    string dataline;
+	    tablestrings_t tags;
 	    while(StartsWith(dataline,"PERIOD=")==false){
 	      getline( infile, dataline );
-	      ReadVals(dataline,vals);
+	      string tagline;
+	      ReadVals(dataline,vals,tagline);
+	      if(vals.empty()!=kTRUE&&tagline.empty()!=kTRUE)
+		tags.push_back(tagline);
 	      if(infile.good()==false)
 		break;
 	    }
 
 	    lastLine=dataline;
-	    std::cout<<"AnaDB::LoadDBFile size of vals "<< vals.size() <<" "<<lastLine<<std::endl;
+	    // std::cout<<"AnaDB::LoadDBFile size of vals "<< vals.size() <<" "<<lastLine<<std::endl;
 	   
 	    
-	    AddPeriodEntry(period,item,vals);
+	    AddPeriodEntry(period,item,vals,tags);
 	    
 	    if(infile.good()==false)
 	      break;
@@ -235,17 +240,28 @@ namespace chanser{
     infile.close();
   }
 
-  void AnaDB::AddPeriodEntry(const string& period,const string& item,const tablevals_t& vals){
+  void AnaDB::AddPeriodEntry(const string& period,const string& item,const tablevals_t& vals,const tablestrings_t& tags){
     
     auto& periodTable=_db.at(period);
     if(periodTable.find(item)!=periodTable.end())
       cout<<" AnaDB::AddPeriodEntry Warning entry " <<item<<" already exists in "<<period<<" will ignore this one "<<std::endl;
     else{
       periodTable[item]=vals;
-      std::cout<<period<<" add item "<<item<<" "<<periodTable.size()<<std::endl;
-      
+      //std::cout<<period<<" add item "<<item<<" "<<periodTable.size()<<std::endl;      
     }
-	
+
+    //any line tags
+    auto& periodTags=_dbtags.at(period);
+    if(periodTags.find(item)!=periodTags.end())
+      cout<<" AnaDB::AddPeriodEntry Warning entry " <<item<<" already exists in "<<period<<" tags will ignore this one "<<std::endl;
+    else{
+      periodTags[item]=tags;
+      // std::cout<<period<<" add item "<<item<<" with "<<tags.size()<<" tags , now have "<<periodTags.size()<<std::endl;
+      // for(auto& tag:tags)
+      // 	std::cout<<tag<<std::endl;
+    }
+
+    
   }
   ////////////////////////////////////////////////////////////////////
   
@@ -263,17 +279,34 @@ namespace chanser{
     // Check the entire string was consumed and if either failbit or badbit is set
     return iss.eof() && !iss.fail(); 
   }
+  bool IsString( const string& myString ) {
+    std::istringstream iss(myString);
+    string f;
+    iss >> noskipws >> f; // noskipws considers leading whitespace invalid
+    // Check the entire string was consumed and if either failbit or badbit is set
+    return iss.eof() && !iss.fail(); 
+  }
   
-  void ReadVals(const string& line,tablevals_t& vals){
+  void ReadVals(const string& line,tablevals_t& vals,string& tag){
     stringstream ss( line );
     string entry;
     while( getline( ss, entry,' ') ){
-      // if(StartsWith(entry,"#")==false)
+      
       if(IsFloat(entry)==true){
 	vals.push_back(atof(entry.data()));
       }
-
     }
+     
+      std::string s = line;
+      entry = s.substr(0, s.find(' '));
+      entry = entry.substr(0, entry.find('\t'));
+      //Look for entries whcih start with % to indicate a tag that should be saved
+      if(entry[0]=='%'){
+	entry.erase(0,1);//remove %
+	tag = entry;
+      }
+      
+    
   }
   void ReplaceEnvVars(string& path){
 

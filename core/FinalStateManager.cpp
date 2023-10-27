@@ -223,7 +223,7 @@ namespace chanser{
       //organise the particle vectors for the event
       if(!_eventParts.ReadEvent(_data->GetParticles()))
 	break; //something wrong with event disegard it
-
+      //_eventParts.Print();//DEBUG
       //Now recheck topologies after applying masks
       //fulfilled by this event
       //We must have already passes the most general topology check

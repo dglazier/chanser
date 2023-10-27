@@ -49,6 +49,7 @@ namespace chanser{
     HSLorentzVector _p4;  //4-vector 
     HSPosition _vertex;     //particle vertex position
     Short_t _pdgCode{0};           //PDG number
+    Short_t _index{0};           //Order in Lund file
 
     ClassDef(chanser::TruthParticle,1); //class TruthParticle
       
