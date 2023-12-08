@@ -9,11 +9,12 @@ namespace chanser{};
 using namespace chanser;
 
 void Load(){
+  cout<<"Chaner Load "<<endl;
   gSystem->Load("libEG");
   gSystem->Load("$CLAS12ROOT/lib/libHipo4");
   gSystem->Load("$CLAS12ROOT/lib/libClas12Banks");
   gSystem->Load("$CLAS12ROOT/lib/libClas12Root");
-
+  
   TString CHANSER=gSystem->Getenv("CHANSER");
   TString classes=gSystem->Getenv("CHANSER_CLASSES");
   TString core=CHANSER+"/core";
@@ -57,7 +58,7 @@ void Load(){
       gROOT->ProcessLine(Form("using namespace %s;",user.Data()));
     }
   }
-
+  cout<<"Chanser Load All done "<<endl;
   TDatabasePDG *pdgDB = TDatabasePDG::Instance();
   //name,title,mass,stable,width,charge,type.code
   pdgDB->AddParticle("deuteron","deuteron", 1.875612, kTRUE,0, 1, "Baryon", 45);  
