@@ -48,7 +48,11 @@ namespace chanser{
       SetRun(GetRun());
       FinalState::ChangeRun();
     }
-  
+    Bool_t FurtherInitEvent() override {
+      _beamHel=GetEventInfo()->_BeamHel;
+      return kTRUE;
+    };
+    
     void AddFinalOutput(hipo::ntuple_writer* nt) override;
     void AddFinalOutput(TTree* tree) override;
     void SetRun(Int_t run){_runNumber=run;}
@@ -67,6 +71,7 @@ namespace chanser{
     //Float_t _sTimePeak =   44.205;
     
     Int_t _runNumber=0;//!
+    Int_t _beamHel=0;//!
     
     ClassDefOverride(chanser::CLAS12FinalState,2); 
   };
@@ -89,11 +94,13 @@ namespace chanser{
   inline void CLAS12FinalState::AddFinalOutput(hipo::ntuple_writer* nt){
     FinalState::AddFinalOutput(nt);
     nt->linkItemFunc("FSInfo","Run/I",&_runNumber);
+    nt->linkItemFunc("FSInfo","BeamHel/I",&_beamHel);
   }
   /////FinalState variables for root tree output
   inline void CLAS12FinalState::AddFinalOutput(TTree* tree){
     FinalState::AddFinalOutput(tree);
     tree->Branch("Run",&_runNumber,"Run/I");
+    tree->Branch("BeamHel",&_beamHel,"BeamHel/I");
   }
 
 }

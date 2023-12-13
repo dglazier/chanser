@@ -117,10 +117,13 @@ namespace chanser{
     
     //add final state configuration name directory
     _finalDirectory= outdir+GetName()+'_'+gSystem->BaseName(InputFileName());
-    _outputDir=_finalDirectory+"__"+WorkerName()+'/';
-    
+    if(WorkerName()!="")_outputDir=_finalDirectory+"__"+WorkerName()+'/';
+    else _outputDir=_finalDirectory+'/';
+      
     gSystem->Exec(Form("mkdir -p %s",_finalDirectory.Data()));
     gSystem->Exec(Form("mkdir -p %s",_outputDir.Data()));
+    //and copy input configuration file to output directory
+    gSystem->Exec(Form("cp %s.root %s/.",InputFileName().Data(),_finalDirectory.Data()));
     
     //Now contruct output event
     //this can include truth data if simulation
@@ -297,6 +300,7 @@ namespace chanser{
   void FinalState::ProcessEvent(){
  
     if(InitEvent()==kFALSE) return;
+    if(FurtherInitEvent()==kFALSE) return;
     
     if(_hasTruth) InitTruth();
 

@@ -204,6 +204,7 @@ namespace chanser{
     void FSProcess();
  
     Bool_t InitEvent();
+    virtual Bool_t FurtherInitEvent() {return kTRUE;} ///called after InitEvent
     
     void AddTopology(const TString names,const VoidFuncs funcE);
 
