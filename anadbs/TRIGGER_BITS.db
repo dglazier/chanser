@@ -1,19 +1,45 @@
 PERIOD=fall_2018 SIM
 TRIGGER_BITS
-%TrigElect 10
-%TrigMeson 24
+%TrigElect 0
+%TrigMeson 25
+%TrigFTFDCD 24
+%TrigFTAll 27
+%TrigMuon1 19
+%TrigMuon2 20
+%TrigMuon3 21
 
 PERIOD=fall_2018 EXP
 TRIGGER_BITS
-%TrigElect 12
+%TrigElect 0
 %TrigMeson 25
+%TrigFTFDCD 24
+%TrigFTAll 27
+%TrigMuon1 19
+%TrigMuon2 20
+%TrigMuon3 21
 
 PERIOD=spring_2019 SIM
 TRIGGER_BITS
-%TrigElect 10
-%TrigMeson 24
+%TrigElect 0
+%TrigMeson 21
+%TrigFTFDCD 20
+%TrigFTAll 23
+%TrigMuon1 7
+%TrigMuon2 8
+%TrigMuon3 9
+%TrigMuon4 10
+%TrigMuon5 11
+%TrigMuon6 12
 
 PERIOD=spring_2019 EXP
 TRIGGER_BITS
-%TrigElect 10
-%TrigMeson 24
+%TrigElect 0
+%TrigMeson 21
+%TrigFTFDCD 20
+%TrigFTAll 23
+%TrigMuon1 7
+%TrigMuon2 8
+%TrigMuon3 9
+%TrigMuon4 10
+%TrigMuon5 11
+%TrigMuon6 12

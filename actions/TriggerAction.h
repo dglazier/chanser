@@ -16,7 +16,9 @@ namespace chanser{
   public:
     TriggerAction()=default;
     ///Must give an output directory for saving trees to
-    TriggerAction(TString name,std::vector<string> trigNames):ActionManager(name), _names{trigNames} {};
+    TriggerAction(TString name,std::vector<string> trigNames):ActionManager(name), _names{trigNames} {
+      
+    };
     
     virtual ~TriggerAction()=default;
     TriggerAction(const TriggerAction& other) = default; //Copy Constructor
@@ -42,7 +44,7 @@ namespace chanser{
 
   private:
 
-    static constexpr UInt_t _nTriggers=2; //!
+    UInt_t _nTriggers=2; //!
     std::vector<Int_t> _branchVals=std::vector<Int_t>(_nTriggers); //! Fired or not (number should = nTriggers)
 
     std::vector<Int_t> _trigBit=std::vector<Int_t>(_nTriggers);//! which trigger bit to check 

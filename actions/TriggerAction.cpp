@@ -10,7 +10,12 @@ namespace chanser{
   }
   ///////////////////////////////////////////////////////////////
   void TriggerAction::Configure(FinalState* fs){
-
+    //only streaming names from root file
+    _nTriggers=_names.size();
+    _branchVals.resize(_nTriggers);
+    _trigBit.resize(_nTriggers);
+    //PrintAction();
+    
     //initalise CLAS12Base
     SetC12(dynamic_cast<CLAS12FinalState*>(fs));
     
@@ -46,7 +51,7 @@ namespace chanser{
 	  std::cerr<<"WARNING, TriggerAction::ChangeRun() trigger name in .db file ="<<tags[i]<<", differs from that given in constructor = "<<_names[i]<<std::endl;
 	}
 	_trigBit[i]=val[0][i];
-	std::cout<<"TriggerAction::ChangeRun() " <<tags[i]<<" "<<_trigBit[i]<<std::endl;
+	//std::cout<<"TriggerAction::ChangeRun() " <<tags[i]<<" "<<_trigBit[i]<<std::endl;
       } 
      
     }//ifvalid

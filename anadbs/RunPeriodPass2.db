@@ -1,4 +1,4 @@
 include $CHANSER/anadbs/TARGET_POSITION_Pass2.db
-include $CHANSER/anadbs/RF_BUCKET_LENGTH_Pass2.db
+###include $CHANSER/anadbs/RF_BUCKET_LENGTH_Pass2.db
 include $CHANSER/anadbs/FDN_PATHCORRECTION.db
 include $CHANSER/anadbs/TRIGGER_BITS.db
