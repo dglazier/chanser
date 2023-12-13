@@ -133,7 +133,7 @@ namespace chanser{
     
     for(const auto& fs : _finalStates){
       fs->Init(_baseOutDir);
-      fs->Print();
+      //fs->Print();
     }
     
   }

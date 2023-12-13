@@ -61,7 +61,7 @@ namespace chanser{
       
     virtual void Init(const TString& baseDir); //takes name of output dir
 
-    void ChangeRun();//for run dependent stuff
+    virtual void ChangeRun();//for run dependent stuff
     virtual void DerivedChangeRun() {}//for run dependent stuff in derived class
 
     
@@ -148,8 +148,8 @@ namespace chanser{
     virtual  BaseOutEvent* GetOutEvent() noexcept{return nullptr;}
        
     hipo::ntuple_writer* FinalHipo()const noexcept{return _outEvent.FinalHipo();}
-    void AddFinalOutput(hipo::ntuple_writer* nt);
-    void AddFinalOutput(TTree* tree);
+    virtual void AddFinalOutput(hipo::ntuple_writer* nt);
+    virtual void AddFinalOutput(TTree* tree);
     
     void SetWorkerName(TString name){_workerName=name;}
     const TString& WorkerName(){return _workerName;}
@@ -195,6 +195,7 @@ namespace chanser{
     void SetCheckCombitorials(){_checkCombi=1;}
 
     Bool_t UsingTruth()const {return _usingTruth;}
+
     
   protected :
 
@@ -308,7 +309,7 @@ namespace chanser{
     Short_t _goodEvent=0;//!
     Short_t _checkCombi=0;//!
     
-    ClassDefOverride(chanser::FinalState,1); //class FinalState
+    ClassDefOverride(chanser::FinalState,2); //class FinalState
   };
 
  

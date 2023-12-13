@@ -139,7 +139,7 @@ namespace chanser{
 	      continue;
 	    if(StartsWith(inc,"#"))
 	      continue;
-	    cout<<"AnaDB::LoadTopFile  adding file "<<incFile<<endl;
+	    //   cout<<"AnaDB::LoadTopFile  adding file "<<incFile<<endl;
 	    LoadDBFile(incFile);
 	  }
 
@@ -194,7 +194,7 @@ namespace chanser{
 	    getline( infile, field);
 	    item=field;
 
-	    std::cout<<"AnaDB::LoadDBFile period "<<period<< " add item "<<item<<std::endl;
+	    // std::cout<<"AnaDB::LoadDBFile period "<<period<< " add item "<<item<<std::endl;
 
 	    tablevals_t vals;
 	    string dataline;
@@ -219,16 +219,7 @@ namespace chanser{
 	      break;
 	  }
 
-	  /*
-	  while (getline( ss, field,' '))
-	    {
-	     
-	      //stringstream fs( field );
-	      // double f = 0.0;  // (default value is 0.0)
-	      //fs >> f;
-	      
-	    }
-	  */
+	 
 	}
       }
     else{
@@ -247,7 +238,7 @@ namespace chanser{
       cout<<" AnaDB::AddPeriodEntry Warning entry " <<item<<" already exists in "<<period<<" will ignore this one "<<std::endl;
     else{
       periodTable[item]=vals;
-      //std::cout<<period<<" add item "<<item<<" "<<periodTable.size()<<std::endl;      
+      // std::cout<<" AnaDB::AddPeriodEntry "<<period<<" add item "<<item<<" "<<periodTable.size()<<std::endl;      
     }
 
     //any line tags

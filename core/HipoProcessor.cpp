@@ -62,9 +62,8 @@ namespace chanser{
     TDatabasePDG *pdgDB = TDatabasePDG::Instance();
    //name,title,mass,stable,width,charge,type.code
    pdgDB->AddParticle("deuteron","deuteron", 1.875612, kTRUE,0, 1, "Baryon", 45);  
-   std::cout<<"**********************HipoProcessor::SlaveBegin"<<std::endl;
+   //  std::cout<<"**********************HipoProcessor::SlaveBegin"<<std::endl;
     HipoSelector::SlaveBegin(0); //Do not remove this line!
-
     //give the hipor data reader to FinalStateManager
     //Data files are opened in Notify (see also HipoSelector)
     _fsm.LoadData(&_hipo);
@@ -72,7 +71,7 @@ namespace chanser{
  
     //now initiliase all final states
     auto listFinalStates=(dynamic_cast<TList*>(fInput->FindObject("LISTOFFINALSTATES")));
-    std::cout<<"**********************HipoProcessor::SlaveBegin finalstates"<<std::endl;
+    //std::cout<<"**********************HipoProcessor::SlaveBegin finalstates"<<std::endl;
  
     //Read all the finalstate analysis objects
     for(Int_t ifs=0;ifs<listFinalStates->GetEntries();++ifs){
@@ -81,7 +80,7 @@ namespace chanser{
       _fsm.LoadFinalState(listFinalStates->At(ifs)->GetName(),listFinalStates->At(ifs)->GetTitle(),workerName);
     }	
     
-    std::cout<<"**********************HipoProcessor::SlaveBegin output dir	"<<std::endl;
+    //std::cout<<"**********************HipoProcessor::SlaveBegin output dir	"<<std::endl;
  
     //Get the output directory
     auto bDir=(dynamic_cast<TNamed*>(fInput->FindObject("FSBASEDIR")));
@@ -95,7 +94,7 @@ namespace chanser{
   Bool_t HipoProcessor::Notify(){
     HipoSelector::Notify();
     
-    cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
+    // cout<<"HipoProcessor::Notify() "<<GetCurrentRecord()<<" "<<GetCurrentFileNum()<<" "<<GetCurrentFileRecords()<<endl;
     
     //This function is called whenever there is a new file
     _hipo.SetReader(_c12.get()); //use it to set the reader ptr
@@ -108,8 +107,7 @@ namespace chanser{
     // run and final states now initialised
     // update final states run dependent information
     //only notify if run changed
-    auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
-    _runNumber = runN; 
+     _runNumber = _c12->getRunNumber();
     if(_oldRun!=_runNumber){
       _fsm.Notify();//let FinalStateManager call change run
       _oldRun=_runNumber;
@@ -309,10 +307,6 @@ namespace chanser{
 	Info("ProcessAll","\n\tCurrent Real Rate : %lf recs/sec \t Cpu Rate : %lf recs/sec, Cpu Efficiency : %lf",realrate,cpurate, watch.CpuTime()/watch.RealTime());
 	watch.Start();
 
-	//	if((i/(nStatus)>5)&&(changedNStatus==false)){
-	//  nStatus = 10*nStatus;
-	//  changedNStatus=true;
-	//	}
       }
     }
       

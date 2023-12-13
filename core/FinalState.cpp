@@ -50,8 +50,7 @@ namespace chanser{
   //////////////////////////////////////////////////////////////////
   //reset particles to 0,0,0,0
   void FinalState::InvalidateParticles(){
-    // std::cout<<"FinalState::InvalidateParticles()"<<std::endl;
-     for(auto& cp: _pconfigs){
+    for(auto& cp: _pconfigs){
        cp.Particle()->P4p()->SetXYZT(0,0,0,0);
      }
   }
@@ -76,8 +75,7 @@ namespace chanser{
     _itersConfigured++;
   }
   /////FinalState variables for final hipo output
-  void FinalState::AddFinalOutput(hipo::ntuple_writer* nt){
-    
+  void FinalState::AddFinalOutput(hipo::ntuple_writer* nt){   
     nt->linkItemFunc("FSInfo","Topo/I",&_currTopoID);
     nt->linkItemFunc("FSInfo","NPerm/I",&_nPerm);
     if(HasTruth())nt->linkItemFunc("FSInfo","Truth/I",&_truthMatchedCombi);
@@ -90,16 +88,7 @@ namespace chanser{
   }
 
   void FinalState::SetEventParticles(EventParticles *eventp){
-    //if I want to apply a mask to the particle vectors
-    //I must set it with MaskParticles(MaskedEventParticles*)
-    /*
-    if(_maskedParticles.get()){
-      _maskedParticles->AssignVectors(eventp);
-      _maskedParticles->ReadyFile(_outputDir);
-      _eventParts=_maskedParticles.get();
-    }
-    else  _eventParts=eventp;
-    */
+
     //particle masks
 
     EventParticles *currEventP=eventp;
@@ -110,7 +99,7 @@ namespace chanser{
       mask->UseTopoInfo(_topoMan,_optPid,_optIncl);
       mask->AssignVectors(currEventP);	
       mask->ReadyFile(_outputDir);
-      currEventP=mask.get();
+      currEventP=mask.get();//set the new event particles
     }
 
     //finally set the local pointer to the
@@ -208,8 +197,9 @@ namespace chanser{
       //Let action manager link to this final state
        mask->ChangeRun(this);	
     }
- 
-    DerivedChangeRun(); //for users code
+
+
+     DerivedChangeRun(); //for users code
   }
   ///////////////////////////////////////////////////////////////
   void  FinalState::PrepareOutEvent(){

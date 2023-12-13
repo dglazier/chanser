@@ -31,17 +31,15 @@ namespace chanser{
 	exit(0);
       }
     }
-     auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
+    auto runN=clas12::clas12reader::readQuickRunConfig(_c12->getFilename());	
     _runNumber = runN;
     
     //current hack for finding if simulated data
-   //Only works if run number from gemc ==11  !!!!
-     if(runN==11||runN==10){
+    //Only works if run number from gemc ==11  !!!!
+    if(runN==11||runN==10){
       _dataType=static_cast<Short_t> (chanser::DataType::Sim);
     }
-    std::cout<<" HipoData::Init(), db "<<_c12->db()<<std::endl;
     //On PROOF databases will be set from HipoSelector to HipoChain db
-    //if((_c12->db())==nullptr)_c12->connectDataBases(&_c12db);
     if(_oldRun!=_runNumber){ //only needed if we change run
       //wihtout this things slow on ifarm when running on full DSTs
       //which consist of lots of small files with the same run#
@@ -52,13 +50,13 @@ namespace chanser{
     _runInfo.SetCLAS12( _c12 );
     
     if( _myWriter.get()&& (_c12!=nullptr) ) _myWriter->assignReader(*_c12);
-
+    
     return kTRUE;
   }
   //////////////////////////////////////////////////////////////
   ///Next file
   Bool_t HipoData::NextFile(){
-    std::cout<<"HipoData::NextFile() "<<_chainOfFiles.GetListOfFiles()->GetEntries()<<" "<<_nFile<<std::endl;
+    std::cout<<"HipoData::NextFile() out of "<<_chainOfFiles.GetListOfFiles()->GetEntries()<<" this is "<<_nFile<<std::endl;
     if(_chainOfFiles.GetListOfFiles()->GetEntries()<=_nFile)
       return kFALSE;
 
@@ -137,7 +135,6 @@ namespace chanser{
     _eventParticles.reserve(Nin);
 
      
-    //std::cout<<" HipoData::FillParticles() "<<Nin<<std::endl;
     auto c12particles= _c12->getDetParticles();
     UInt_t Nparts=0;
 
@@ -151,7 +148,7 @@ namespace chanser{
       Nparts++;
       CLAS12Particle* particle= (&_particlePool2.at(Nparts-1));
       particle->Clear();//clear pervious data
-      // std::cout<<"DEBUG  HipoData::FillParticles() "<<Nparts<<" "<<particle<<" "<<c12p<<std::endl;
+
       //attach this particle
       particle->SetCLAS12Particle(c12p);
 
@@ -198,6 +195,7 @@ namespace chanser{
    else std::cout<<" HipoData::FillRunInfo, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
 
     _runInfo._runPeriod=_runPeriod;
+    _runInfo._runNumber=_runNumber;
 
 
     if(IsSim()){
@@ -227,7 +225,7 @@ namespace chanser{
     auto period = _runInfo._runPeriod + "_" + _runInfo._dataType;
 
     _runInfo._BeamEnergy  =  _c12->mcevent()->getEbeam();
-    std::cout<<"HipoData::FillRunInfoSim() "<<_runInfo._BeamEnergy<<" "<<_c12->mcevent()->getEbeam()<<std::endl;
+
     //target position in simulation
     auto table = _runInfo.
       GetAnaDB().GetTable(period,
@@ -268,27 +266,22 @@ namespace chanser{
       //can't get this data from ccdb, so put it in an anadb
       //_runInfo._TargetCentre=ccdb->requestTableValueFor(0,"position","/geometry/target")/100;
       //_runInfo._TargetCentre=-0.03;
-       /////////////////////////////////////////////////
+      /////////////////////////////////////////////////
       //rf
-  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
-  int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
-  int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
-  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
-
-  // There are two rows in rf/config here we find the one with status=1
-  // if (rfStat1<=0 && rfStat2<=0)
-  // throw new RuntimeException("Couldn't find non-positive RF status in CCDB");
-  int rfId = rfStat2>rfStat1 ? 1 : 0;
-  _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
-  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
+      int rfStat1=ccdb->requestTableValueFor(0,"status","/calibration/eb/rf/config");
+      int rfStat2=ccdb->requestTableValueFor(1,"status","/calibration/eb/rf/config");
+      
+      // There are two rows in rf/config here we find the one with status=1
+      // if (rfStat1<=0 && rfStat2<=0)
+      // throw new RuntimeException("Couldn't find non-positive RF status in CCDB");
+      int rfId = rfStat2>rfStat1 ? 1 : 0;
+      _runInfo._rfBucketLength=ccdb->requestTableValueFor(rfId,"clock","/calibration/eb/rf/config");//EBCCDBEnum.RF_BUCKET_LENGTH
   
     }
-  std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
-   
+    
     auto table = _runInfo.GetAnaDB().GetTable(period,
 					      "TARGET_POSITION"
 					      ,{3}); //x,y,z pos
- std::cout<<" HipoData::FillRunInfoExp, run period is "<<_runPeriod<<" is data sim "<<IsSim()<<std::endl;
     if(table.IsValid()){
       std::vector<double> tarPos(3);
       table.Fill(tarPos);
@@ -309,17 +302,5 @@ namespace chanser{
     _eventInfo._BeamHel=_c12->event()->getHelicity();
     _eventInfo._NEvent=_c12->runconfig()->getEvent();
   }
-  ///////////////////////////////////////////////////////////////
-  // Double_t HipoData::SumChargeFromQA(){
-  //   Double_t sumCharge=0;
-  //   Init();
-  //     sumCharge+=_c12->sumChargeFromQA();
-  //   while(NextFile()==kTRUE)
-  //     sumCharge+=_c12->sumChargeFromQA();
-
-
-  //   _nFile=0; //in case want to use fthe files again
-  //   return sumCharge;
-  // }
-   
+ 
 }

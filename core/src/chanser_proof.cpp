@@ -28,43 +28,56 @@ int main(int argc, char **argv) {
   int iNworkers = TString(Nworkers).Atoi(); 
   cout<<"Try starting proof, workers = "<<iNworkers<<endl;
  
-  //create proof here or does not work on farm nodes!!
-  TProof* proof = TProof::Open("://lite",Form("workers=%d",iNworkers));
-
-  if(gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/liblz4.so",kTRUE)==0){}
-  // get the sandbox directroy
+ // get the sandbox directroy
   TString sandbox="~/.proof";
   if(TString(gEnv->GetValue("ProofLite.Sandbox",""))!=TString()){
     sandbox=gEnv->GetValue("ProofLite.Sandbox","");
   }
-  cout<<"chanser_proof : copy files to .proof/cache and load libraries on PROOF"<<endl;
+  cout<<"chanser_proof : copy files to .proof/cache and load libraries on PROOF "<<sandbox<<endl;
   //  copy pcm files to sandbox/cache
   gSystem->Exec(Form("cp $CLAS12ROOT/lib/libHipo4_rdict.pcm %s/cache/.",sandbox.Data()));
   gSystem->Exec(Form("cp $CLAS12ROOT/lib/libClas12Banks_rdict.pcm %s/cache/.",sandbox.Data()));
   gSystem->Exec(Form("cp $CLAS12ROOT/lib/libClas12Root_rdict.pcm %s/cache/.",sandbox.Data()));
+  TString CHANZER=gSystem->Getenv("CHANSER");
+  
+  gSystem->Exec(Form("cp %s/lib/libchanser_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/libchanseractions_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/libchanseractions_rga_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
+  gSystem->Exec(Form("cp %s/lib/libchansermva_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
 
-  gSystem->Exec(Form("ls -lh %s/cache/.",sandbox.Data()));
+  // gSystem->Exec(Form("ls -lh %s/cache/.",sandbox.Data()));
+ 
+  //create proof here or does not work on farm nodes!!
+  TProof* proof = TProof::Open("://lite",Form("workers=%d",iNworkers));
+  proof->SetParallel(iNworkers);
 
-  if(!ISMAC){
+  
+   if(!ISMAC){
+    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/liblz4.so",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libHipo4.so",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Banks.so",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Root.so",kTRUE);
-  }
-  else{
-    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libHipo4.dylib",kTRUE);
-    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Banks.dylib",kTRUE);
-    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Root.dylib",kTRUE);
-
-  }
-
-
   gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanser.so",kTRUE);
   gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchansermva.so",kTRUE);
   gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions.so",kTRUE);
   gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions_rga.so",kTRUE);
+  }
+  else{
+    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/liblz4.dylib",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libHipo4.dylib",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Banks.dylib",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Root.dylib",kTRUE);
 
-  gSystem->Exec(Form("cp %s/lib/*EG*.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));  
-  gProof->Load(Form("%s/lib/libEG.so",gSystem->Getenv("ROOTSYS")));
+  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanser.dylib",kTRUE);
+  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchansermva.dylib",kTRUE);
+  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions.dylib",kTRUE);
+  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions_rga.dylib",kTRUE);
+  }
+
+
+
+  //gSystem->Exec(Form("cp %s/lib/*EG*.pcm  %s/cache/.",gSystem->Getenv("ROOTSYS"),sandbox.Data()));  
+  //gProof->Load(Form("%s/lib/libEG.so",gSystem->Getenv("ROOTSYS")));
 
   cout<<"chanser_proof : start application "<<endl;
 
@@ -75,12 +88,6 @@ int main(int argc, char **argv) {
   app->ProcessLine(Form("gROOT->SetBatch();"));
   
   
-  TString CHANZER=gSystem->Getenv("CHANSER");
-  
-  gSystem->Exec(Form("cp %s/lib/libchanser_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
-  gSystem->Exec(Form("cp %s/lib/libchanseractions_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
-  gSystem->Exec(Form("cp %s/lib/libchanseractions_rga_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
-  gSystem->Exec(Form("cp %s/lib/libchansermva_rdict.pcm  %s/cache/.",CHANZER.Data(),sandbox.Data()));
   app->ProcessLine(".x $CHANSER/macros/Load.C");
   
   cout<<"chanser_proof : Loaded chanser and clas12root setup to application, now run..."<<endl;
