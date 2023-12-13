@@ -11,7 +11,7 @@ namespace username{
 
   public:
     TreeDataPi2(){SetName("Pi2");}
-    ~TreeDataPi2() final =default;
+    ~TreeDataPi2() override =default;
       
     //data member for tree branches below here
     Double_t MissMass=0;

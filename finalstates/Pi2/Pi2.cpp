@@ -54,8 +54,6 @@ namespace username{
       miss= _beam + _target -_electron.P4() -_pim.P4() -_proton.P4();
       TD->MissMassPPim=miss.M2();
 
-      //no trigger in simulation so best here
-      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
       ///////------------------------------------///////
     };
 
@@ -82,8 +80,6 @@ namespace username{
       TD->MissMassPPip=0; //does not exist
       TD->MissMassPPim=0; //does not exist
 
-      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
-      ///////------------------------------------///////
     };
     //Set Possible Topologies
     _doToTopo["Electron:Proton:Pip"]=[&](){
@@ -107,8 +103,6 @@ namespace username{
       TD->MissMassPPip=miss.M(); 
       TD->MissMassPPim=0; //does not exist
 
-      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
-      ///////------------------------------------///////
     };
   //Set Possible Topologies
     _doToTopo["Electron:Proton:Pim"]=[&](){
@@ -132,8 +126,6 @@ namespace username{
       TD->MissMassPPip=0; //does not exist
       TD->MissMassPPim=miss.M();
 
-      TD->MesonExTrig=GetEventInfo()->CLAS12()->checkTriggerBit(24);
-      ///////------------------------------------///////
     };
 
 
@@ -172,7 +164,7 @@ namespace username{
     _kinCalc.MesonDecayGJ();
     TD->MesonCosThGJ=_kinCalc.CosTheta();
     TD->MesonPhiGJ=_kinCalc.Phi();
- 
+    //  cout<<"TrigElect "<<GetEventInfo()->CLAS12()->checkTriggerBit()<<endl;
   }
     
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  

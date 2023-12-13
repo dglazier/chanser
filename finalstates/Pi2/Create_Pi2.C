@@ -19,9 +19,12 @@
 
   
   //Truth Matching, before ParticleData so can add to that tree
-  EventTruthAction etra("EventTruth");
-  FS->RegisterPostKinAction(etra); //PostKin
-  
+  //  EventTruthAction etra("EventTruth");
+  //  FS->RegisterPostKinAction(etra); //PostKin
+
+  MCMatchAction mcmatch("MCMatch");
+  FS->RegisterPostKinAction(mcmatch); //PostKin
+ 
   //  Make particle trees first in case want to add cut flags
   ParticleDataManager pdm{"particle",1};
   pdm.SetParticleOut(new CLAS12ParticleOutEvent0);
@@ -62,13 +65,17 @@
   StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
   FS->RegisterPreTopoAction(st);  //PRETOPO
 
+  //Trigger
+  TriggerAction ta("Trigger",{"TrigElect","TrigMeson","TrigFTFDCD","TrigFTAll","TrigMuon1","TrigMuon2","TrigMuon3","TrigMuon4","TrigMuon5","TrigMuon6"});
+  FS->RegisterPreTopoAction(ta);  //PRETOPO
+
 
   //e- energy correction
   ParticleCorrectionManager pcorrm{"FTelEnergyCorrection"};
   pcorrm.AddParticle("e-",new FTel_pol4_ECorrection());
   FS->RegisterPreTopoAction(pcorrm); //PRETOPO
   ParticleCorrectionManager pVz{"FTelVz"};//1=> for simulation too
-  pVz.AddParticle("e-",new FTel_VzCorrection(-0.05));//5cm shift
+  pVz.AddParticle("e-",new FTel_VzCorrection());
   FS->RegisterPreTopoAction(pVz); //PRETOPO
 
   RGA(FS.get());
