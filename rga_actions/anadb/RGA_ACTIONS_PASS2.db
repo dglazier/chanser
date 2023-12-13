@@ -1,6 +1,6 @@
-include $CHANSER/rga_actions/anadb/FIDUCIALCUT_DC_XY.db
-include $CHANSER/rga_actions/anadb/FIDUCIALCUT_DC_THETAPHI.db
-include $CHANSER/rga_actions/anadb/PASS2_FTEL_VZCORRECTION.db
+include $CHANSER/rga_actions/anadb/PASS2_FIDUCIALCUT_DC_XY.db
+include $CHANSER/rga_actions/anadb/PASS2_FIDUCIALCUT_DC_THETAPHI.db
+###include $CHANSER/rga_actions/anadb/PASS2_FTEL_VZCORRECTION.db
 include $CHANSER/rga_actions/anadb/PASS2_FTEL_POL4_ECORRECTION.db
-include $CHANSER/rga_actions/anadb/CUT_ZVERTEX.db
-include $CHANSER/rga_actions/anadb/CUT_ELECTRON_SFRAC.db
+include $CHANSER/rga_actions/anadb/PASS2_CUT_ZVERTEX.db
+include $CHANSER/rga_actions/anadb/PASS2_CUT_ELECTRON_SFRAC.db
