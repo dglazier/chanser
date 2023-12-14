@@ -19,7 +19,7 @@ namespace chanser{
   void ParticleDataManager::Configure( FinalState* fs){
  
     // std::cout<<"ParticleDataManager::Configure "<< fs->GetOutputDir()<<" out    "<< _outDir <<std::endl;
-  auto topos=fs->TopoManager().ObserveTopos(); //const, can't change them
+    auto topos=fs->TopoManager().ObserveTopos(); //const, can't change them
       
     _outDir.Prepend(fs->GetOutputDir());     
     MakeOutDir();//directory for saving files

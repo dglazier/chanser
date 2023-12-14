@@ -31,5 +31,6 @@
 #pragma link C++ class chanser::MVASignalIDAction+;
 #pragma link C++ class chanser::TriggerAction+;
 #pragma link C++ class chanser::MCMatchAction+;
+#pragma link C++ class chanser::WriteMomentumAction+;
 
 #endif
