@@ -143,7 +143,7 @@ namespace chanser{
     Double_t GammaFlux(){return(1./137/4/TMath::Pi()/TMath::Pi())/fElin.E()*fElsc.E()*((W()*W()-fTar.M2())/fTar.M())/Q2()/(1-GammaPol()); }
     
     
-    Double_t t(){return t(fGamma,fMes);}//default gamma-meson
+    Double_t t(){return t(fTar,fBar);}//default target-baryon
     Double_t t(const HSLorentzVector& p0,const HSLorentzVector& p1){
       // HSLorentzVector transfer=p0-p1;
       //return transfer.M2();
@@ -154,10 +154,10 @@ namespace chanser{
       //return transfer.M2();
       return (p0-p1).M2();
     }
-    Double_t t0(){return t0(fGamma,fMes);}//default gamma-meson
-    Double_t t0(const HSLorentzVector& p0,const HSLorentzVector& p1);
-    Double_t t0(TLorentzVector p0,TLorentzVector p1){return t0(HSLorentzVector(p0.X(),p0.Y(),p0.Z(),p0.T()),HSLorentzVector(p1.X(),p1.Y(),p1.Z(),p1.T()));};
-    
+      //Double_t t0(){return t0(fGamma,fMes);}//default gamma-meson
+    Double_t t0();
+      Double_t tprime();
+
     Double_t Cosx(){return fCosx;}  
     Double_t Cosy(){return fCosy;}  
     Double_t Cosz(){return fCosz;}
@@ -178,11 +178,24 @@ namespace chanser{
       void MesonDecayIsobarHelicity();
   };
   
-  inline Double_t Kinematics::t0(const HSLorentzVector& p0,const HSLorentzVector& p1){
-    Double_t t0 = 2 * fGamma.E() * (fMes.E()-fMes.P()) - fMes.M()*fMes.M();
-    return t(p0,p1) + t0;
+  // inline Double_t Kinematics::t0(const HSLorentzVector& p0,const HSLorentzVector& p1){
+  //   Double_t t0 = 2 * fGamma.E() * (fMes.E()-fMes.P()) - fMes.M()*fMes.M();
+  //   return t(p0,p1) + t0;
+  // }
+  inline Double_t Kinematics::t0(){
+    //min t defined in CM
+    //use baryons as -Q2 gives difficulties....
+    //Boost to CM
+    HSLorentzVector CMTar=boost(fTar,fCMBoost);
+    HSLorentzVector CMBar=boost(fBar,fCMBoost);
+    //return  M1*M1 + M3*M3  - 2 * ( E1*E3 -p1*p3*costh );
+    Double_t t0 = CMBar.M2() + CMTar.M2() - 2*(CMBar.E()*CMTar.E() - CMBar.P()*CMTar.P());
+    return t0;
   }
-  
+  inline Double_t Kinematics::tprime(){
+    return t()-t0();
+  }
+ 
   inline void Kinematics::ElectroCMDecay(){
     //CM frame defined by e-scattering
     HSLorentzVector CMBeam=boost(fElin,fCMBoost);
