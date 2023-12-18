@@ -17,7 +17,10 @@
   //FS->UseOutputHipoNtuple();
 
 
-  
+   ///StartTime
+  StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
+  FS->RegisterPreTopoAction(st);  //PRETOPO
+
   //Truth Matching, before ParticleData so can add to that tree
   //  EventTruthAction etra("EventTruth");
   //  FS->RegisterPostKinAction(etra); //PostKin
@@ -61,14 +64,14 @@
   FS->RegisterPostTopoAction(pcmEB);
   
  
-  ///StartTime
-  StartTimeAction st("StartTime",new C12StartTimeFromParticle("Electron"));
-  FS->RegisterPreTopoAction(st);  //PRETOPO
-
+ 
   //Trigger
   TriggerAction ta("Trigger",{"TrigElect","TrigMeson","TrigFTFDCD","TrigFTAll","TrigMuon1","TrigMuon2","TrigMuon3","TrigMuon4","TrigMuon5","TrigMuon6"});
-  FS->RegisterPreTopoAction(ta);  //PRETOPO
+  FS->RegisterPostTopoAction(ta);  //PRETOPO
 
+  //Write the particle momentum components
+  WriteMomentumAction mom("Momentum",{"Electron","Proton","Pip","Pim"});
+  FS->RegisterPostKinAction(mom);
 
   //e- energy correction
   ParticleCorrectionManager pcorrm{"FTelEnergyCorrection"};

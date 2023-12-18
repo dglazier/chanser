@@ -22,6 +22,8 @@ namespace username{
     Double_t W=0;
     Double_t Q2=0;
     Double_t Pol=0;
+    Double_t t=0;
+    Double_t tprime=0;
     Double_t Egamma=0;
     Double_t MissE=0;
     Double_t MissP=0;

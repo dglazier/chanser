@@ -11,7 +11,7 @@ namespace USERNAME{
 
   public:
     TreeDatatemplateFS(){SetName("templateFS");}
-    ~TreeDatatemplateFS() final =default;
+    ~TreeDatatemplateFS() override =default;
       
     //data member for tree branches below here
     Double_t MissMass=0;

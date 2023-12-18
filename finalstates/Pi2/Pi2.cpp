@@ -165,7 +165,10 @@ namespace username{
     TD->MesonCosThGJ=_kinCalc.CosTheta();
     TD->MesonPhiGJ=_kinCalc.Phi();
     //  cout<<"TrigElect "<<GetEventInfo()->CLAS12()->checkTriggerBit()<<endl;
-  }
+
+    TD->t = _kinCalc.t();
+    TD->tprime = _kinCalc.tprime();
+   }
     
   ///////////////////////$$$$$$$$$$$$$$$$$$$$$$$$$$//////////////////////  
   void Pi2::UserProcess(){
