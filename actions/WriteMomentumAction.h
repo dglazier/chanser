@@ -35,7 +35,8 @@ namespace chanser{
       	_pTheta[ib] = _particles[ib]->P4p()->Theta();
       	_pPhi[ib] = _particles[ib]->P4p()->Phi();
 	_pDeltaTime[ib] =  _particles[ib]->DeltaTimeVer();
-	_pRegion[ib] =  static_cast<CLAS12Particle*>(_particles[ib])->CLAS12()->getRegion();
+	auto c12 = static_cast<CLAS12Particle*>(_particles[ib])->CLAS12();
+	if(c12!=nullptr)_pRegion[ib] =  c12->getRegion();
       }
       return kTRUE;
     }
