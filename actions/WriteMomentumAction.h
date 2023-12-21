@@ -16,7 +16,7 @@ namespace chanser{
   public:
     WriteMomentumAction()=default;
     ///Must give an output directory for saving trees to
-    WriteMomentumAction(TString name,std::vector<string> pnames):ActionManager(name), _names{pnames} {
+    WriteMomentumAction(TString name,std::vector<std::string> pnames):ActionManager(name), _names{pnames} {
       _nParts = pnames.size();
       };
     
@@ -34,6 +34,8 @@ namespace chanser{
       	_pMag[ib] = _particles[ib]->P4p()->P();
       	_pTheta[ib] = _particles[ib]->P4p()->Theta();
       	_pPhi[ib] = _particles[ib]->P4p()->Phi();
+	_pDeltaTime[ib] =  _particles[ib]->DeltaTimeVer();
+	_pRegion[ib] =  static_cast<CLAS12Particle*>(_particles[ib])->CLAS12()->getRegion();
       }
       return kTRUE;
     }
@@ -46,9 +48,11 @@ namespace chanser{
     std::vector<Double_t> _pMag;//!
     std::vector<Double_t> _pTheta;//!
     std::vector<Double_t> _pPhi;//!
+    std::vector<Double_t> _pDeltaTime;//!
+    std::vector<Int_t> _pRegion;//!
     
    
-    std::vector<string> _names; //Names of triggers
+    std::vector<std::string> _names; //Names of triggers
     std::vector<BaseParticle*> _particles; //!pointers to particles
     UInt_t _nParts=0; //
 
