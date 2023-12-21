@@ -68,7 +68,7 @@ namespace chanser{
   void  MaskedEventParticles::AddPids(const Short_t pid,const particles_ptrs* vec){
     auto const addN=vec->size();
     auto const nextIndex=_pids.size();
-    if((pid==UndefinedPDG)||(pid==-UndefinedPDG))
+    if((pid==UndefinedPDG)||(pid==-UndefinedPDG)||(pid==0))
       return;//don't double count charge IDs!
     // cout<<"MaskedEventParticles::AddPids() "<< pid<<" "<<addN<<endl;
     _pidCounts.reserve(nextIndex+addN);
