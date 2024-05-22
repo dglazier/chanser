@@ -7,6 +7,7 @@ set (CHANSERBASE $ENV{CHANSER})
 include_directories(${CLAS12ROOT}/Clas12Banks)
 include_directories(${CLAS12ROOT}/Clas12Root)
 include_directories(${CLAS12ROOT}/hipo4)
+include_directories(${HIPO}/include)
 include_directories(actions)
 include_directories(tmva)
 
@@ -16,7 +17,10 @@ add_library(${CHANZER} SHARED Archive.cpp AnaDB.cpp Loader.cpp FiledTree.cpp Bas
 
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES})
 target_link_libraries(${CHANZER} -lClas12Banks)
+target_link_libraries(${CHANZER} -lClas12Root)
+target_link_libraries(${CHANZER} -lHipo4)
 target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
+target_link_libraries(${CHANZER} -L${HIPO}/lib/ -lhipo4)
 
 
 install(TARGETS ${CHANZER} 

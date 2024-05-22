@@ -8,6 +8,7 @@ set (CHANSERBASE $ENV{CHANSER})
 include_directories(${CLAS12ROOT}/Clas12Banks)
 include_directories(${CLAS12ROOT}/Clas12Root)
 include_directories(${CLAS12ROOT}/hipo4)
+include_directories(${HIPO}/include)
 include_directories(core)
 include_directories(tmva)
 
@@ -16,6 +17,10 @@ ROOT_GENERATE_DICTIONARY(G__${CHANZER}   ParticleCuts.h ParticleCutsManager.h CL
 add_library(${CHANZER} SHARED  ParticleCuts.cpp CLAS12ParticleCut.cpp TwoParticleVertexCut.cpp FDn_pathCorrection.cpp ParticleCutsManager.cpp ParticleCorrection.cpp ParticleCorrectionManager.cpp ParticleData.cpp ParticleDataManager.cpp MVASignalIDAction.cpp StartTimeAction.cpp  C12StartTimeFromParticle.cpp EventTruthAction.cpp  TriggerAction.cpp MCMatchAction.cpp WriteMomentumAction.cpp G__${CHANZER}.cxx)
 
 target_link_libraries(${CHANZER} -lClas12Banks)
+target_link_libraries(${CHANZER} -lClas12Root)
+target_link_libraries(${CHANZER} -lHipo4)
+target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
+
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chanser)
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chansermva)
 

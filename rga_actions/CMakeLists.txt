@@ -8,6 +8,7 @@ set (CHANSERBASE $ENV{CHANSER})
 include_directories(${CLAS12ROOT}/Clas12Root)
 include_directories(${CLAS12ROOT}/Clas12Banks)
 include_directories(${CLAS12ROOT}/hipo4)
+include_directories(${HIPO}/include)
 include_directories(core)
 include_directories(tmva)
 include_directories(actions)
@@ -18,6 +19,8 @@ add_library(${CHANZER} SHARED Cut_ZVertex.cpp FiducialCut_PCAL_uvw.cpp FiducialC
 
 target_link_libraries(${CHANZER} -lClas12Banks)
 target_link_libraries(${CHANZER} -lClas12Root)
+target_link_libraries(${CHANZER} -lHipo4)
+target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chanser)
 target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chansermva)
 
