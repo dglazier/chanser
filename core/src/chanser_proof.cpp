@@ -53,17 +53,19 @@ int main(int argc, char **argv) {
 
   
    if(!ISMAC){
-    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/liblz4.so",kTRUE);
+     //    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/liblz4.so",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("HIPO"))+"/lib/libhipo4.so",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libHipo4.so",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Banks.so",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Root.so",kTRUE);
-  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanser.so",kTRUE);
-  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchansermva.so",kTRUE);
-  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions.so",kTRUE);
-  gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions_rga.so",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanser.so",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchansermva.so",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions.so",kTRUE);
+    gProof->Load(TString(gSystem->Getenv("CHANSER"))+"/lib/libchanseractions_rga.so",kTRUE);
   }
   else{
-    gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/liblz4.dylib",kTRUE);
+    
+    gProof->Load(TString(gSystem->Getenv("HIPO"))+"/lib/libhipo4.dylib",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libHipo4.dylib",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Banks.dylib",kTRUE);
     gProof->Load(TString(gSystem->Getenv("CLAS12ROOT"))+"/lib/libClas12Root.dylib",kTRUE);
