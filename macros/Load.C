@@ -9,7 +9,7 @@ namespace chanser{};
 using namespace chanser;
 
 void Load(){
-  cout<<"Chaner Load "<<endl;
+  cout<<"Chanser Load "<<endl;
   gSystem->Load("libEG");
   gSystem->Load("$CLAS12ROOT/lib/libHipo4");
   gSystem->Load("$CLAS12ROOT/lib/libClas12Banks");
