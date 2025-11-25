@@ -24,7 +24,7 @@ if(DEFINED ROOT_GENERATE_DICTIONARY)
     Archive.h AnaDB.h Loader.h FiledTree.h BaseOutEvent.h BaseRunInfo.h RunInfo.h
     BaseEventInfo.h EventInfo.h BaseParticle.h CLAS12Particle.h DataManager.h
     HipoData.h HipoTruth.h ParticleConfig.h
-    LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/MvaLinkDef.h
+    LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/ChanserLinkDef.h
   )
   list(APPEND CORE_ROOT_SRCS "${CMAKE_CURRENT_BINARY_DIR}/G__${CHANZER}.cxx")
 endif()

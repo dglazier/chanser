@@ -62,6 +62,8 @@ if(TARGET ROOT::Proof)
     ROOT::Core 
     ROOT::Hist 
     ROOT::Tree
+    ROOT::EG      # Added
+    ROOT::Physics # Added
   )
 else()
   if(DEFINED ROOT_LIBRARIES)
