@@ -1,57 +1,128 @@
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-project(chanser)
+cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+project(chanser VERSION 0.1 LANGUAGES CXX)
 
-	
-set(CMAKE_INSTALL_BINDIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-set(CMAKE_INSTALL_LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(CMAKE_CXX_FLAGS "-fPIC -O3")
+# Modern CMake settings
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 
-list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS}) ############USEROOTSYS
+# ==============================================================================
+# 1. Install Path Configuration (Must be before GNUInstallDirs)
+# ==============================================================================
+# Set default install path to the Project Root (Source Directory)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}" CACHE PATH "Default install prefix" FORCE)
+endif()
 
-find_package(ROOT REQUIRED COMPONENTS Proof)  ###########USEROOTSYS
+include(GNUInstallDirs)
 
+# Force relative paths for lib/bin so they install into ${CMAKE_INSTALL_PREFIX}/lib
+set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "Install lib dir" FORCE)
+set(CMAKE_INSTALL_BINDIR "bin" CACHE PATH "Install bin dir" FORCE)
+set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE PATH "Install include dir" FORCE)
 
-#---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
-include(${ROOT_USE_FILE}) ##########USEROOTSYS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS}")
+# ==============================================================================
+# 2. Library Extension Detection
+# ==============================================================================
+if(DEFINED LIBRARY_EXT)
+  set(LIBRARY_EXT "${LIBRARY_EXT}")
+elseif(DEFINED ENV{LIB_EXT})
+  set(LIBRARY_EXT "$ENV{LIB_EXT}")
+elseif(DEFINED CMAKE_SHARED_LIBRARY_SUFFIX)
+  set(LIBRARY_EXT "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+else()
+  if(APPLE)
+    set(LIBRARY_EXT ".dylib")
+  else()
+    set(LIBRARY_EXT ".so")
+  endif()
+endif()
+message(STATUS "Using shared library extension: ${LIBRARY_EXT}")
 
-IF (DEFINED ENV{RCDB_HOME})
-  include_directories($ENV{RCDB_HOME}/cpp/include)
-    #find path to mysql include directory
-  FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
-    /usr/local/include/mysql
-    /usr/include/mysql
-    )
-  include_directories(${MYSQL_INCLUDE_DIR})
-ENDIF (DEFINED ENV{RCDB_HOME})
+# ==============================================================================
+# 3. Dependencies
+# ==============================================================================
 
-IF (DEFINED ENV{CCDB_HOME})
-  # CCDB related
-  include_directories($ENV{CCDB_HOME}/include)
-ENDIF (DEFINED ENV{CCDB_HOME})
-IF (DEFINED ENV{CLASQADB_HOME})
-ENDIF (DEFINED ENV{CLASQADB_HOME})
-IF (DEFINED ENV{CLASQADB_HOME})
-  include_directories($ENV{CLASQADB_HOME}/srcC/include)
-  #clasqaDB header contains function definitions which are not inlined
-  #including this header causes multiple definitions of these functions
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,--allow-multiple-definition")
-ENDIF (DEFINED ENV{CLASQADB_HOME})
+# --- ROOT ---
+if(DEFINED ENV{ROOTSYS})
+  list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
+endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/core)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/core)
+find_package(ROOT REQUIRED COMPONENTS Proof Rint Core Hist Tree)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/tmva)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/tmva)
+add_library(chanser_root_deps INTERFACE)
+if(TARGET ROOT::Proof)
+  target_link_libraries(chanser_root_deps INTERFACE 
+    ROOT::Proof 
+    ROOT::Rint 
+    ROOT::Core 
+    ROOT::Hist 
+    ROOT::Tree
+  )
+else()
+  if(DEFINED ROOT_LIBRARIES)
+    target_link_libraries(chanser_root_deps INTERFACE ${ROOT_LIBRARIES})
+  endif()
+  if(DEFINED ROOT_INCLUDE_DIRS)
+    target_include_directories(chanser_root_deps INTERFACE ${ROOT_INCLUDE_DIRS})
+  endif()
+endif()
+add_library(chanser::root_deps ALIAS chanser_root_deps)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/actions)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/actions)
+# --- HIPO4 (Moved up so subdirectories can find it) ---
+message(STATUS "Checking for HIPO4 library...")
+if(DEFINED ENV{HIPO})
+  set(HIPO_INSTALL_DIR $ENV{HIPO})
+  message(STATUS "Found HIPO4 at: ${HIPO_INSTALL_DIR}")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/rga_actions)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/rga_actions)
+  add_library(hipo::hipo INTERFACE IMPORTED)
+  target_include_directories(hipo::hipo INTERFACE ${HIPO_INSTALL_DIR}/include)
+   
+  set(HIPO_LIB "${HIPO_INSTALL_DIR}/lib/libhipo4${LIBRARY_EXT}")
+  if(NOT EXISTS "${HIPO_LIB}")
+      message(FATAL_ERROR "Could not find hipo4 library at ${HIPO_INSTALL_DIR}/lib")
+  endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/skeleton)
+  target_link_libraries(hipo::hipo INTERFACE ${HIPO_LIB})
+else()
+  message(FATAL_ERROR "HIPO environment variable not set.")
+endif()
 
+# --- Optional Deps (RCDB, CCDB, etc) ---
+if(DEFINED ENV{RCDB_HOME})
+  add_library(chanser_rcdb_deps INTERFACE)
+  target_include_directories(chanser_rcdb_deps INTERFACE $ENV{RCDB_HOME}/cpp/include)
+  find_path(MYSQL_INCLUDE_DIR mysql.h /usr/local/include/mysql /usr/include/mysql)
+  if(MYSQL_INCLUDE_DIR)
+    target_include_directories(chanser_rcdb_deps INTERFACE ${MYSQL_INCLUDE_DIR})
+  endif()
+  add_library(chanser::rcdb_deps ALIAS chanser_rcdb_deps)
+endif()
+
+if(DEFINED ENV{CCDB_HOME})
+  add_library(chanser_ccdb_deps INTERFACE)
+  target_include_directories(chanser_ccdb_deps INTERFACE $ENV{CCDB_HOME}/include)
+  add_library(chanser::ccdb_deps ALIAS chanser_ccdb_deps)
+endif()
+
+if(DEFINED ENV{CLASQADB_HOME})
+  add_library(chanser_clasqadb_deps INTERFACE)
+  target_include_directories(chanser_clasqadb_deps INTERFACE $ENV{CLASQADB_HOME}/srcC/include)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--allow-multiple-definition")
+  add_library(chanser::clasqadb_deps ALIAS chanser_clasqadb_deps)
+endif()
+
+# ==============================================================================
+# 4. Add Subdirectories
+# ==============================================================================
+# These contain their own CMakeLists.txt. 
+# core/src/CMakeLists.txt handles the executables.
+add_subdirectory(core)
+add_subdirectory(tmva)
+add_subdirectory(actions)
+add_subdirectory(rga_actions)
+add_subdirectory(skeleton)

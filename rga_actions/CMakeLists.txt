@@ -1,36 +1,39 @@
-set(CHANZER chanseractions_rga)
-set (CLAS12ROOT $ENV{CLAS12ROOT})
-set (HIPO $ENV{HIPO})
-set(DIRNAME rga_actions)
-set (CHANSERBASE $ENV{CHANSER})
+# rga_actions/CMakeLists.txt - create a library and link deps
 
+file(GLOB_RECURSE RGA_SRCS CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+)
 
-include_directories(${CLAS12ROOT}/Clas12Root)
-include_directories(${CLAS12ROOT}/Clas12Banks)
-include_directories(${CLAS12ROOT}/hipo4)
-include_directories(${HIPO}/include)
-include_directories(core)
-include_directories(tmva)
-include_directories(actions)
+add_library(chanser_rga_actions SHARED ${RGA_SRCS})
 
-ROOT_GENERATE_DICTIONARY(G__${CHANZER} Cut_ZVertex.h FiducialCut_PCAL_uvw.h FiducialCut_DC_ThetaPhi.h FiducialCut_DC_XY.h Cut_PionChi2Pid.h Cut_RefinePhotonID.h Cut_RefineElectronID.h LINKDEF RgaLinkDef.h)
+# 1. Link to the core library (gives access to symbols)
+target_link_libraries(chanser_rga_actions PRIVATE chanser_core chanser_actions)
 
-add_library(${CHANZER} SHARED Cut_ZVertex.cpp FiducialCut_PCAL_uvw.cpp FiducialCut_DC_ThetaPhi.cpp FiducialCut_DC_XY.cpp Cut_PionChi2Pid.cpp Cut_RefinePhotonID.cpp Cut_RefineElectronID.cpp G__${CHANZER}.cxx)
+# 2. Add the path to the core headers
+target_include_directories(chanser_rga_actions
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_SOURCE_DIR}/core  # This allows finding "FiledTree.h"
+    ${CMAKE_SOURCE_DIR}/actions  # This allows finding "BaseCut.h"
+)
 
-target_link_libraries(${CHANZER} -lClas12Banks)
-target_link_libraries(${CHANZER} -lClas12Root)
-target_link_libraries(${CHANZER} -lHipo4)
-target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
-target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chanser)
-target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chansermva)
+target_include_directories(chanser_rga_actions
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(chanser_rga_actions PRIVATE chanser::root_deps)
+if(TARGET chanser::rcdb_deps)
+  target_link_libraries(chanser_rga_actions PRIVATE chanser::rcdb_deps)
+endif()
 
-
-install(TARGETS ${CHANZER} 
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
-FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
-
-install (FILES  ${ROOT_CHANZER_PCM}    
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
-
+install(TARGETS chanser_rga_actions
+  EXPORT chanserTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+#install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

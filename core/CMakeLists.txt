@@ -1,35 +1,86 @@
+# core/CMakeLists.txt - modernized with unique target names
+
 set(CHANZER chanser)
-set (CLAS12ROOT $ENV{CLAS12ROOT})
-set (HIPO $ENV{HIPO})
 set(DIRNAME core)
-set (CHANSERBASE $ENV{CHANSER})
 
-include_directories(${CLAS12ROOT}/Clas12Banks)
-include_directories(${CLAS12ROOT}/Clas12Root)
-include_directories(${CLAS12ROOT}/hipo4)
-include_directories(${HIPO}/include)
-include_directories(actions)
-include_directories(tmva)
+set(CLAS12ROOT $ENV{CLAS12ROOT})
+set(HIPO $ENV{HIPO})
+set(CHANSERBASE $ENV{CHANSER})
 
-ROOT_GENERATE_DICTIONARY(G__${CHANZER}  Archive.h AnaDB.h Loader.h FiledTree.h BaseOutEvent.h BaseRunInfo.h RunInfo.h BaseEventInfo.h EventInfo.h BaseParticle.h CLAS12Particle.h DataManager.h HipoData.h HipoTruth.h LundData.h ParticleConfig.h  Selection.h ParticleIter.h  Topology.h TopologyManager.h EventParticles.h MaskedEventParticles.h   MaskCalorSplitOffs.h   MaskCalorNeutronSplitOffs.h MaskRadPhotons.h MaskSecondaryNeutrons.h OutEventManager.h ActionManager.h BaseCut.h  BaseCorrection.h  FinalState.h CLAS12FinalState.h CLAS12Particle.h CLAS12Neutron.h   FinalStateManager.h  HipoProcessor.h  LINKDEF ChanserLinkDef.h)
+if(DEFINED ROOT_USE_FILE)
+  include(${ROOT_USE_FILE})
+endif()
 
-add_library(${CHANZER} SHARED Archive.cpp AnaDB.cpp Loader.cpp FiledTree.cpp BaseOutEvent.cpp RunInfo.cpp EventInfo.cpp BaseParticle.cpp  DataManager.cpp HipoData.cpp HipoTruth.cpp LundData.cpp ParticleConfig.cpp Selection.cpp ParticleIter.cpp  Topology.cpp TopologyManager.cpp EventParticles.cpp  MaskedEventParticles.cpp  MaskCalorSplitOffs.cpp  MaskCalorNeutronSplitOffs.cpp MaskRadPhotons.cpp MaskSecondaryNeutrons.cpp OutEventManager.cpp ActionManager.cpp BaseCut.cpp BaseCorrection.cpp FinalState.cpp FinalStateManager.cpp HipoProcessor.cpp G__${CHANZER}.cxx)
+# Gather core root-level sources (exclude src/ subdir)
+file(GLOB CORE_ROOT_SRCS
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.C"
+)
 
-target_link_libraries(${CHANZER} ${ROOT_LIBRARIES})
-target_link_libraries(${CHANZER} -lClas12Banks)
-target_link_libraries(${CHANZER} -lClas12Root)
-target_link_libraries(${CHANZER} -lHipo4)
-target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
-target_link_libraries(${CHANZER} -L${HIPO}/lib/ -lhipo4)
+# Generate ROOT dictionary (adjust header list / LINKDEF as needed)
+if(DEFINED ROOT_GENERATE_DICTIONARY)
+  ROOT_GENERATE_DICTIONARY(G__${CHANZER}
+    Archive.h AnaDB.h Loader.h FiledTree.h BaseOutEvent.h BaseRunInfo.h RunInfo.h
+    BaseEventInfo.h EventInfo.h BaseParticle.h CLAS12Particle.h DataManager.h
+    HipoData.h HipoTruth.h ParticleConfig.h
+    LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/MvaLinkDef.h
+  )
+  list(APPEND CORE_ROOT_SRCS "${CMAKE_CURRENT_BINARY_DIR}/G__${CHANZER}.cxx")
+endif()
 
+if(NOT CORE_ROOT_SRCS)
+  message(WARNING "core: no root-level source files found; skipping chanser_core target")
+else()
+  # Use a unique CMake target name (chanser_core) to avoid colliding with executables named 'chanser'.
+  add_library(chanser_core SHARED ${CORE_ROOT_SRCS})
 
-install(TARGETS ${CHANZER} 
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  # Make the produced library file keep the old base name 'chanser' (libchanser.so)
+  set_target_properties(chanser_core PROPERTIES OUTPUT_NAME ${CHANZER})
 
-FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
+  if(TARGET hipo::hipo)
+    target_link_libraries(chanser_core PUBLIC hipo::hipo)
+  endif()
 
-install (FILES  ${ROOT_CHANZER_PCM}    
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  if(CLAS12ROOT)
+	# We use PUBLIC because CLAS12Particle.h (likely a public header) includes region_particle.h
+  	target_include_directories(chanser_core PUBLIC ${CLAS12ROOT}/Clas12Banks ${CLAS12ROOT}/Clas12Root ${CLAS12ROOT}/hipo4 )
+  endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(chanser_core
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/actions
+      ${CMAKE_CURRENT_SOURCE_DIR}/tmva
+  )
+
+  if(TARGET chanser::root_deps)
+    target_link_libraries(chanser_core PRIVATE chanser::root_deps)
+  else()
+    if(DEFINED ROOT_LIBRARIES)
+      target_link_libraries(chanser_core PRIVATE ${ROOT_LIBRARIES})
+    endif()
+  endif()
+
+  if(CLAS12ROOT)
+    target_link_libraries(chanser_core PRIVATE -L${CLAS12ROOT}/lib -lClas12Banks)
+  else()
+    target_link_libraries(chanser_core PRIVATE -lClas12Banks)
+  endif()
+
+  install(TARGETS chanser_core
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+  )
+
+  FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
+  if(ROOT_CHANZER_PCM)
+    install(FILES ${ROOT_CHANZER_PCM} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  endif()
+endif()
+
+# Build binaries in core/src which link to chanser_core
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)

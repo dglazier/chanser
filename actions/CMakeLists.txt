@@ -1,35 +1,38 @@
-set(CHANZER chanseractions)
-set (CLAS12ROOT $ENV{CLAS12ROOT})
-set (HIPO $ENV{HIPO})
-set(DIRNAME actions)
-set (CHANSERBASE $ENV{CHANSER})
+# actions/CMakeLists.txt - library/executable layout
 
+file(GLOB_RECURSE ACTIONS_SRCS CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+)
 
-include_directories(${CLAS12ROOT}/Clas12Banks)
-include_directories(${CLAS12ROOT}/Clas12Root)
-include_directories(${CLAS12ROOT}/hipo4)
-include_directories(${HIPO}/include)
-include_directories(core)
-include_directories(tmva)
+add_library(chanser_actions SHARED ${ACTIONS_SRCS})
 
-ROOT_GENERATE_DICTIONARY(G__${CHANZER}   ParticleCuts.h ParticleCutsManager.h CLAS12ParticleCut.h CLAS12NeutronParticleCut.h TwoParticleVertexCut.h CLAS12Base.h FTel_pol4_ECorrection.h FDn_pathCorrection.h FTel_VzCorrection.h ParticleCorrection.h ParticleCorrectionManager.h ParticleData.h  ParticleOutEvent.h CLAS12ParticleOutEvent.h CLAS12ParticleOutEvent0.h CLAS12SimPartOutEvent.h ParticleDataManager.h MVASignalIDAction.h StartTimeAction.h C12StartTimeFromParticle.h EventTruthAction.h TriggerAction.h MCMatchAction.h WriteMomentumAction.h LINKDEF ActionsLinkDef.h)
+# 1. Link to the core library (gives access to symbols)
+target_link_libraries(chanser_actions PRIVATE chanser_core chanser_tmva)
 
-add_library(${CHANZER} SHARED  ParticleCuts.cpp CLAS12ParticleCut.cpp TwoParticleVertexCut.cpp FDn_pathCorrection.cpp ParticleCutsManager.cpp ParticleCorrection.cpp ParticleCorrectionManager.cpp ParticleData.cpp ParticleDataManager.cpp MVASignalIDAction.cpp StartTimeAction.cpp  C12StartTimeFromParticle.cpp EventTruthAction.cpp  TriggerAction.cpp MCMatchAction.cpp WriteMomentumAction.cpp G__${CHANZER}.cxx)
+# 2. Add the path to the core headers
+target_include_directories(chanser_actions
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_SOURCE_DIR}/core  # This allows finding "FiledTree.h"
+    ${CMAKE_SOURCE_DIR}/tmva  # This allows finding "ResultInterface.h"
+)
 
-target_link_libraries(${CHANZER} -lClas12Banks)
-target_link_libraries(${CHANZER} -lClas12Root)
-target_link_libraries(${CHANZER} -lHipo4)
-target_link_libraries(${CHANZER} -L${CLAS12ROOT}/lib)
+target_include_directories(chanser_actions
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(chanser_actions PRIVATE chanser::root_deps)
+if(TARGET chanser::clasqadb_deps)
+  target_link_libraries(chanser_actions PRIVATE chanser::clasqadb_deps)
+endif()
 
-target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chanser)
-target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} chansermva)
-
-
-install(TARGETS ${CHANZER} 
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
-FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
-
-install (FILES  ${ROOT_CHANZER_PCM}    
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
+install(TARGETS chanser_actions
+  EXPORT chanserTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

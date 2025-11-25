@@ -1,20 +1,39 @@
-set(CHANZER chansermva)
-set(DIRNAME tmva)
+# tmva/CMakeLists.txt - adjust to create a target and link dependencies
 
-include_directories(core)
+file(GLOB_RECURSE TMVA_SRCS CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+)
 
-ROOT_GENERATE_DICTIONARY(G__${CHANZER}   TrainingInterface.h  ResultInterface.h  TrainSignalID.h LINKDEF MvaLinkDef.h)
+add_library(chanser_tmva SHARED ${TMVA_SRCS})
 
-add_library(${CHANZER} SHARED  TrainingInterface.cpp ResultInterface.cpp  TrainSignalID.cpp G__${CHANZER}.cxx)
+# 1. Link to the core library (gives access to symbols)
+target_link_libraries(chanser_tmva PRIVATE chanser_core)
 
-target_link_libraries(${CHANZER} ${ROOT_LIBRARIES} )
+# 2. Add the path to the core headers
+target_include_directories(chanser_tmva
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_SOURCE_DIR}/core  # This allows finding "FiledTree.h"
+)
 
+target_include_directories(chanser_tmva
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(chanser_tmva PRIVATE chanser::root_deps)
+if(TARGET chanser::rcdb_deps)
+  target_link_libraries(chanser_tmva PRIVATE chanser::rcdb_deps)
+endif()
 
-install(TARGETS ${CHANZER} 
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
-FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
-
-install (FILES  ${ROOT_CHANZER_PCM}    
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
+install(TARGETS chanser_tmva
+  EXPORT chanserTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+#install(FILES ${TMVA_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
