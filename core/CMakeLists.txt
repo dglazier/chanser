@@ -5,10 +5,10 @@ set(DIRNAME core)
 set(CLAS12ROOT $ENV{CLAS12ROOT})
 
 # ==============================================================================
-# 1. Find Dependencies (The Fix for Linker Errors)
+# 1. Find Dependencies
 # ==============================================================================
 
-# Find Clas12Banks (Existing)
+# Find Clas12Banks
 find_library(CLAS12_BANKS_LIB NAMES Clas12Banks
   HINTS ${CLAS12ROOT}
   PATH_SUFFIXES lib lib64 lib32
@@ -17,7 +17,7 @@ if(NOT CLAS12_BANKS_LIB)
   message(FATAL_ERROR "Could not find Clas12Banks library in ${CLAS12ROOT}")
 endif()
 
-# Find Clas12Root (NEW: Required for HipoChain/HipoSelector errors)
+# Find Clas12Root
 find_library(CLAS12_ROOT_LIB NAMES Clas12Root
   HINTS ${CLAS12ROOT}
   PATH_SUFFIXES lib lib64 lib32
@@ -27,7 +27,7 @@ if(NOT CLAS12_ROOT_LIB)
 endif()
 
 # ==============================================================================
-# 2. Source Gathering
+# 2. Source & Header Gathering
 # ==============================================================================
 file(GLOB CORE_ROOT_SRCS
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -35,11 +35,24 @@ file(GLOB CORE_ROOT_SRCS
   "${CMAKE_CURRENT_SOURCE_DIR}/*.C"
 )
 
+# FIX: Glob all headers...
+file(GLOB DICTIONARY_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+
+# ... THEN identifying the LinkDef file ...
+set(LINKDEF_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ChanserLinkDef.h")
+
+# ... AND REMOVING IT from the header list so it doesn't get passed twice.
+if(EXISTS ${LINKDEF_FILE})
+  list(REMOVE_ITEM DICTIONARY_HEADERS ${LINKDEF_FILE})
+else()
+  message(FATAL_ERROR "LinkDef file not found at: ${LINKDEF_FILE}")
+endif()
+
 # ==============================================================================
-# 3. ROOT Dictionary (The Fix for Streamer/Class errors)
+# 3. ROOT Dictionary Generation
 # ==============================================================================
 
-# FORCE load ROOT macros if the environment didn't do it
+# Force load ROOT macros
 if(NOT COMMAND ROOT_GENERATE_DICTIONARY)
   if(EXISTS "$ENV{ROOTSYS}/cmake/modules/RootNewMacros.cmake")
     include("$ENV{ROOTSYS}/cmake/modules/RootNewMacros.cmake")
@@ -48,23 +61,9 @@ if(NOT COMMAND ROOT_GENERATE_DICTIONARY)
   endif()
 endif()
 
-# Define headers for dictionary generation
-set(DICTIONARY_HEADERS
-    Archive.h AnaDB.h Loader.h FiledTree.h BaseOutEvent.h BaseRunInfo.h RunInfo.h
-    BaseEventInfo.h EventInfo.h BaseParticle.h CLAS12Particle.h DataManager.h
-    HipoData.h HipoTruth.h ParticleConfig.h
-)
-
 if(COMMAND ROOT_GENERATE_DICTIONARY)
-  # IMPORTANT: Ensure this file exists! I am assuming it is named LinkDef.h
-  # If you named it ChanserLinkDef.h, change the line below.
-  set(LINKDEF_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ChanserLinkDef.h")
-
-  if(NOT EXISTS ${LINKDEF_FILE})
-     message(FATAL_ERROR "LinkDef file missing at: ${LINKDEF_FILE}")
-  endif()
-
   message(STATUS "Generating ROOT dictionary for ${CHANZER}...")
+  
   ROOT_GENERATE_DICTIONARY(G__${CHANZER}
     ${DICTIONARY_HEADERS}
     LINKDEF ${LINKDEF_FILE}
@@ -86,7 +85,9 @@ else()
   # --- Includes ---
   target_include_directories(chanser_core
     PUBLIC
+      # Include current dir so generated dictionary finds headers
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
       $<INSTALL_INTERFACE:include>
     PRIVATE
       ${CMAKE_CURRENT_SOURCE_DIR}/actions
@@ -94,7 +95,6 @@ else()
   )
 
   if(CLAS12ROOT)
-     # Added Clas12Root and hipo4 to includes
      target_include_directories(chanser_core PUBLIC 
         ${CLAS12ROOT}/Clas12Banks 
         ${CLAS12ROOT}/Clas12Root 
@@ -103,20 +103,15 @@ else()
   endif()
 
   # --- Linking ---
-  
-  # Link HIPO (Public because headers might expose HIPO types)
   if(TARGET hipo::hipo)
     target_link_libraries(chanser_core PUBLIC hipo::hipo)
   endif()
 
-  # Link ROOT
   if(TARGET chanser::root_deps)
     target_link_libraries(chanser_core PRIVATE chanser::root_deps)
   endif()
 
-  # Link CLAS12 (Both Banks AND Root)
   target_link_libraries(chanser_core PUBLIC ${CLAS12_BANKS_LIB} ${CLAS12_ROOT_LIB})
-
 
   # --- Installation ---
   install(TARGETS chanser_core
@@ -131,5 +126,4 @@ else()
   endif()
 endif()
 
-# Build binaries in core/src
 add_subdirectory(src)

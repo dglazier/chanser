@@ -3,13 +3,14 @@
 #include "ParticleIter.h"
 #include "BaseParticle.h"
 #include "Selection.h"
+#include "ParticleConfig.h"
 
 namespace chanser{
 
   //////////////////////////////////////////////////
   ///Interface to ParticleIter
   ///Add selected iterator
-  ParticleIter* AddSelectX(Int_t nSelected,vector<BaseParticle*> *parts){
+  inline ParticleIter* AddSelectX(Int_t nSelected,vector<BaseParticle*> *parts){
     return new ParticleIter(nSelected,*parts);
      
   }
@@ -17,7 +18,7 @@ namespace chanser{
   ///Interface to ParticleIter
   ///Add selected iterator to previously selected particles
   ///nGroups of nSelected from parts
-  ParticleIter* AddSelectToSelected(ParticleIter* diter,Int_t nSelected,vector<BaseParticle*> *parts,const vector<TString>& names){
+  inline ParticleIter* AddSelectToSelected(ParticleIter* diter,Int_t nSelected,vector<BaseParticle*> *parts,const vector<TString>& names){
     if(nSelected>diter->GetNSel()) cout<<"WARNING AutoIterUtils::AddSelectToSelected : trying to select more particles than exist in original iterator "<<" of "<<nSelected<<" "<< diter->GetNSel()<<endl;
     //  cout<<" AddSelectToSelected groups "<<" selected "<<nSelected<<" particles "<<parts->size()<<endl;
     //std::cout<<"Selecting particles : ";
@@ -39,7 +40,7 @@ namespace chanser{
   //////////////////////////////////////////////////
   ///Interface to ParticleIter
   ///Add selected iterator to remaining particles
-  ParticleIter* AddSelectToRemainder(ParticleIter* diter,Int_t nSelected){
+  inline ParticleIter* AddSelectToRemainder(ParticleIter* diter,Int_t nSelected){
     // cout<<" AddSelectToRemainder groups "<<" selected "<<nSelected<< " diter sel "<<diter->GetSelIter()<<endl;
     // cout<<"AddSelectToRemainder "<<diter->GetName()<<endl;
     ParticleIter *new_iter=new ParticleIter(nSelected);
@@ -52,33 +53,33 @@ namespace chanser{
   //filter vectors via a lambda function
   //see for example clas12reader::getByID()
   template <typename Cont, typename Pred>
-    Cont container_filter(const Cont &container, Pred predicate){
+    inline Cont container_filter(const Cont &container, Pred predicate){
     Cont result;
     std::copy_if(container.begin(),container.end(),std::back_inserter(result), predicate);
     return std::move(result);
   }
   ///////////////////////////////////////////////////////////
-  std::vector<ParticleConfig> filterDetParticleConfigsByPid(const std::vector<ParticleConfig>& configs, Short_t id){
+  inline std::vector<ParticleConfig> filterDetParticleConfigsByPid(const std::vector<ParticleConfig>& configs, Short_t id){
     return container_filter(configs, [id](ParticleConfig conf)
 			    {return conf.PID()==id&&(conf.GetNChild()==0);});
   }
   ////////////////////////////////////////////////////////////
-  std::vector<ParticleConfig> filterDetParticleConfigsByPdg(const std::vector<ParticleConfig>& configs, Short_t pdg){
+  inline std::vector<ParticleConfig> filterDetParticleConfigsByPdg(const std::vector<ParticleConfig>& configs, Short_t pdg){
     return container_filter(configs, [pdg](ParticleConfig conf)
 			    {return conf.PDG()==pdg&&(conf.GetNChild()==0);});
   }
    ////////////////////////////////////////////////////////////
-  std::vector<ParticleConfig> filterDetParticleConfigsByParent(const std::vector<ParticleConfig>& configs, const TString& name){
+  inline std::vector<ParticleConfig> filterDetParticleConfigsByParent(const std::vector<ParticleConfig>& configs, const TString& name){
     return container_filter(configs, [name](ParticleConfig conf)
 			    {return conf.Parent()!=nullptr ? conf.Parent()->GetName()==name&&(conf.GetNChild()==0) : 0;});
   }
   ////////////////////////////////////////////////////////////
-  std::vector<ParticleConfig> filterDetParticleConfigsByParent(const std::vector<ParticleConfig>& configs){
+  inline std::vector<ParticleConfig> filterDetParticleConfigsByParent(const std::vector<ParticleConfig>& configs){
     return container_filter(configs, [](ParticleConfig conf)
 			    {return conf.Parent()!=nullptr&&(conf.GetNChild()==0);});
   }
   ///////////////////////////////////////////////////////////
-  std::vector<Short_t> whichParticleConfigPDGs(const std::vector<ParticleConfig>& configs){
+  inline std::vector<Short_t> whichParticleConfigPDGs(const std::vector<ParticleConfig>& configs){
     std::vector<Short_t> pdgs;
     for(const auto &conf :configs)
       if( std::count(pdgs.begin(),pdgs.end(),conf.PDG())==0 )
@@ -87,7 +88,7 @@ namespace chanser{
     return std::move(pdgs);
   }
   /////////////////////////////////////////////////////////////
-  std::vector<Short_t> whichParticleConfigPIDs(const std::vector<ParticleConfig>& configs){
+  inline std::vector<Short_t> whichParticleConfigPIDs(const std::vector<ParticleConfig>& configs){
     std::vector<Short_t> pdgs;
     for(const auto &conf :configs)
       if( std::count(pdgs.begin(),pdgs.end(),conf.PID())==0 )
@@ -96,7 +97,7 @@ namespace chanser{
     return std::move(pdgs);
   }
   /////////////////////////////////////////////////////////////
-  std::vector<TString> whichParticleConfigParents(const std::vector<ParticleConfig>& configs){
+  inline std::vector<TString> whichParticleConfigParents(const std::vector<ParticleConfig>& configs){
     std::vector<TString> names;
     for(const auto &conf :configs){
       if(conf.Parent()==nullptr) continue;
@@ -107,11 +108,11 @@ namespace chanser{
   }
   
   template <typename T>
-  void removeFromVector(T* p,vector<T* >& vec){
+  inline void removeFromVector(T* p,vector<T* >& vec){
     vec.erase(find(vec.begin(), vec.end(), p));
   }
   template <typename T>
-  void removeFromVector(T p,vector<T >& vec){
+  inline void removeFromVector(T p,vector<T >& vec){
     vec.erase(find(vec.begin(), vec.end(), p));
   }
 }
