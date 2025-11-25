@@ -1,96 +1,128 @@
-# core/CMakeLists.txt - modernized with unique target names
-
+# core/CMakeLists.txt
 set(CHANZER chanser)
 set(DIRNAME core)
 
 set(CLAS12ROOT $ENV{CLAS12ROOT})
-set(HIPO $ENV{HIPO})
-set(CHANSERBASE $ENV{CHANSER})
 
-if(DEFINED ROOT_USE_FILE)
-  include(${ROOT_USE_FILE})
+# ==============================================================================
+# 1. Find Dependencies (The Fix for Linker Errors)
+# ==============================================================================
+
+# Find Clas12Banks (Existing)
+find_library(CLAS12_BANKS_LIB NAMES Clas12Banks
+  HINTS ${CLAS12ROOT}
+  PATH_SUFFIXES lib lib64 lib32
+)
+if(NOT CLAS12_BANKS_LIB)
+  message(FATAL_ERROR "Could not find Clas12Banks library in ${CLAS12ROOT}")
 endif()
 
-# Gather core root-level sources (exclude src/ subdir)
+# Find Clas12Root (NEW: Required for HipoChain/HipoSelector errors)
+find_library(CLAS12_ROOT_LIB NAMES Clas12Root
+  HINTS ${CLAS12ROOT}
+  PATH_SUFFIXES lib lib64 lib32
+)
+if(NOT CLAS12_ROOT_LIB)
+  message(FATAL_ERROR "Could not find Clas12Root library in ${CLAS12ROOT}. Check your CLAS12ROOT path.")
+endif()
+
+# ==============================================================================
+# 2. Source Gathering
+# ==============================================================================
 file(GLOB CORE_ROOT_SRCS
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.C"
 )
 
-# Generate ROOT dictionary (adjust header list / LINKDEF as needed)
-if(DEFINED ROOT_GENERATE_DICTIONARY)
-  ROOT_GENERATE_DICTIONARY(G__${CHANZER}
+# ==============================================================================
+# 3. ROOT Dictionary (The Fix for Streamer/Class errors)
+# ==============================================================================
+
+# FORCE load ROOT macros if the environment didn't do it
+if(NOT COMMAND ROOT_GENERATE_DICTIONARY)
+  if(EXISTS "$ENV{ROOTSYS}/cmake/modules/RootNewMacros.cmake")
+    include("$ENV{ROOTSYS}/cmake/modules/RootNewMacros.cmake")
+  elseif(EXISTS "${ROOTSYS}/cmake/modules/RootNewMacros.cmake")
+    include("${ROOTSYS}/cmake/modules/RootNewMacros.cmake")
+  endif()
+endif()
+
+# Define headers for dictionary generation
+set(DICTIONARY_HEADERS
     Archive.h AnaDB.h Loader.h FiledTree.h BaseOutEvent.h BaseRunInfo.h RunInfo.h
     BaseEventInfo.h EventInfo.h BaseParticle.h CLAS12Particle.h DataManager.h
     HipoData.h HipoTruth.h ParticleConfig.h
-    LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/ChanserLinkDef.h
+)
+
+if(COMMAND ROOT_GENERATE_DICTIONARY)
+  # IMPORTANT: Ensure this file exists! I am assuming it is named LinkDef.h
+  # If you named it ChanserLinkDef.h, change the line below.
+  set(LINKDEF_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ChanserLinkDef.h")
+
+  if(NOT EXISTS ${LINKDEF_FILE})
+     message(FATAL_ERROR "LinkDef file missing at: ${LINKDEF_FILE}")
+  endif()
+
+  message(STATUS "Generating ROOT dictionary for ${CHANZER}...")
+  ROOT_GENERATE_DICTIONARY(G__${CHANZER}
+    ${DICTIONARY_HEADERS}
+    LINKDEF ${LINKDEF_FILE}
   )
   list(APPEND CORE_ROOT_SRCS "${CMAKE_CURRENT_BINARY_DIR}/G__${CHANZER}.cxx")
+else()
+  message(FATAL_ERROR "ROOT macros not found. Cannot generate dictionary.")
 endif()
 
+# ==============================================================================
+# 4. Target Definition
+# ==============================================================================
 if(NOT CORE_ROOT_SRCS)
   message(WARNING "core: no root-level source files found; skipping chanser_core target")
 else()
-  # Use a unique CMake target name (chanser_core) to avoid colliding with executables named 'chanser'.
   add_library(chanser_core SHARED ${CORE_ROOT_SRCS})
-
-  # Make the produced library file keep the old base name 'chanser' (libchanser.so)
   set_target_properties(chanser_core PROPERTIES OUTPUT_NAME ${CHANZER})
 
-  if(TARGET hipo::hipo)
-    target_link_libraries(chanser_core PUBLIC hipo::hipo)
-  endif()
-
-  if(CLAS12ROOT)
-	# We use PUBLIC because CLAS12Particle.h (likely a public header) includes region_particle.h
-  	target_include_directories(chanser_core PUBLIC ${CLAS12ROOT}/Clas12Banks ${CLAS12ROOT}/Clas12Root ${CLAS12ROOT}/hipo4 )
-  endif()
-
-target_include_directories(chanser_core
+  # --- Includes ---
+  target_include_directories(chanser_core
     PUBLIC
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
       $<INSTALL_INTERFACE:include>
     PRIVATE
       ${CMAKE_CURRENT_SOURCE_DIR}/actions
       ${CMAKE_CURRENT_SOURCE_DIR}/tmva
   )
 
-  if(TARGET chanser::root_deps)
-    target_link_libraries(chanser_core PRIVATE chanser::root_deps)
-  else()
-    if(DEFINED ROOT_LIBRARIES)
-      target_link_libraries(chanser_core PRIVATE ${ROOT_LIBRARIES})
-    endif()
+  if(CLAS12ROOT)
+     # Added Clas12Root and hipo4 to includes
+     target_include_directories(chanser_core PUBLIC 
+        ${CLAS12ROOT}/Clas12Banks 
+        ${CLAS12ROOT}/Clas12Root 
+        ${CLAS12ROOT}/hipo4 
+     )
   endif()
 
-  # 1. Find the library dynamically
-  #    PATH_SUFFIXES tells CMake to look in lib, lib64, and lib32 inside CLAS12ROOT
-  find_library(CLAS12_LIB NAMES Clas12Banks
-   			  HINTS ${CLAS12ROOT}
-   			  PATH_SUFFIXES lib lib64 lib32
-   			  )
+  # --- Linking ---
+  
+  # Link HIPO (Public because headers might expose HIPO types)
+  if(TARGET hipo::hipo)
+    target_link_libraries(chanser_core PUBLIC hipo::hipo)
+  endif()
 
-   if(CLAS12_LIB)
-	message(STATUS "Found Clas12Banks: ${CLAS12_LIB}")
-   else()
-	message(FATAL_ERROR "Could not find Clas12Banks library in ${CLAS12ROOT} (checked lib, lib64, lib32).")
-   endif()
+  # Link ROOT
+  if(TARGET chanser::root_deps)
+    target_link_libraries(chanser_core PRIVATE chanser::root_deps)
+  endif()
 
-   # ... setup target ...
+  # Link CLAS12 (Both Banks AND Root)
+  target_link_libraries(chanser_core PUBLIC ${CLAS12_BANKS_LIB} ${CLAS12_ROOT_LIB})
 
-   # 2. Link using the found variable
-   if(CLAS12ROOT)
-	target_link_libraries(chanser_core PRIVATE ${CLAS12_LIB})
-   else()
-   # Fallback for system install
-     target_link_libraries(chanser_core PRIVATE -lClas12Banks)
-   endif()
 
+  # --- Installation ---
   install(TARGETS chanser_core
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 
   FILE(GLOB ROOT_CHANZER_PCM ${CMAKE_BINARY_DIR}/*pcm ${CMAKE_BINARY_DIR}/${DIRNAME}/*pcm)
@@ -99,5 +131,5 @@ target_include_directories(chanser_core
   endif()
 endif()
 
-# Build binaries in core/src which link to chanser_core
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
+# Build binaries in core/src
+add_subdirectory(src)
