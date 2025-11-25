@@ -120,7 +120,7 @@ else()
     target_link_libraries(chanser_core PRIVATE chanser::root_deps)
   endif()
 
-  target_link_libraries(chanser_core PUBLIC ${CLAS12_BANKS_LIB} ${CLAS12_ROOT_LIB})
+  target_link_libraries(chanser_core PUBLIC ${CLAS12_BANKS_LIB} ${CLAS12_ROOT_LIB} ${HIPO4_ROOT_LIB})
 
   # --- Installation ---
   install(TARGETS chanser_core
