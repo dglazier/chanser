@@ -64,11 +64,28 @@ target_include_directories(chanser_core
     endif()
   endif()
 
-  if(CLAS12ROOT)
-    target_link_libraries(chanser_core PRIVATE -L${CLAS12ROOT}/lib -lClas12Banks)
-  else()
-    target_link_libraries(chanser_core PRIVATE -lClas12Banks)
-  endif()
+  # 1. Find the library dynamically
+  #    PATH_SUFFIXES tells CMake to look in lib, lib64, and lib32 inside CLAS12ROOT
+  find_library(CLAS12_LIB NAMES Clas12Banks
+   			  HINTS ${CLAS12ROOT}
+   			  PATH_SUFFIXES lib lib64 lib32
+   			  )
+
+   if(CLAS12_LIB)
+	message(STATUS "Found Clas12Banks: ${CLAS12_LIB}")
+   else()
+	message(FATAL_ERROR "Could not find Clas12Banks library in ${CLAS12ROOT} (checked lib, lib64, lib32).")
+   endif()
+
+   # ... setup target ...
+
+   # 2. Link using the found variable
+   if(CLAS12ROOT)
+	target_link_libraries(chanser_core PRIVATE ${CLAS12_LIB})
+   else()
+   # Fallback for system install
+     target_link_libraries(chanser_core PRIVATE -lClas12Banks)
+   endif()
 
   install(TARGETS chanser_core
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"

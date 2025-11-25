@@ -21,9 +21,9 @@ endif()
 include(GNUInstallDirs)
 
 # Force relative paths for lib/bin so they install into ${CMAKE_INSTALL_PREFIX}/lib
-set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "Install lib dir" FORCE)
-set(CMAKE_INSTALL_BINDIR "bin" CACHE PATH "Install bin dir" FORCE)
-set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE PATH "Install include dir" FORCE)
+#set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "Install lib dir" FORCE)
+#set(CMAKE_INSTALL_BINDIR "bin" CACHE PATH "Install bin dir" FORCE)
+#set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE PATH "Install include dir" FORCE)
 
 # ==============================================================================
 # 2. Library Extension Detection
