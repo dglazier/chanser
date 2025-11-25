@@ -79,17 +79,36 @@ add_library(chanser::root_deps ALIAS chanser_root_deps)
 message(STATUS "Checking for HIPO4 library...")
 if(DEFINED ENV{HIPO})
   set(HIPO_INSTALL_DIR $ENV{HIPO})
-  message(STATUS "Found HIPO4 at: ${HIPO_INSTALL_DIR}")
+  message(STATUS "Found HIPO4 env: ${HIPO_INSTALL_DIR}")
 
-  add_library(hipo::hipo INTERFACE IMPORTED)
-  target_include_directories(hipo::hipo INTERFACE ${HIPO_INSTALL_DIR}/include)
-   
-  set(HIPO_LIB "${HIPO_INSTALL_DIR}/lib/libhipo4${LIBRARY_EXT}")
-  if(NOT EXISTS "${HIPO_LIB}")
-      message(FATAL_ERROR "Could not find hipo4 library at ${HIPO_INSTALL_DIR}/lib")
+  # 1. Use find_library to handle lib vs lib64 automatically
+  find_library(HIPO_LIBRARY NAMES hipo4
+    HINTS ${HIPO_INSTALL_DIR}
+    PATH_SUFFIXES lib lib64
+    NO_DEFAULT_PATH
+  )
+
+  # 2. HIPO often requires LZ4. Find it too to prevent linker errors.
+  find_library(LZ4_LIBRARY NAMES lz4)
+
+  if(HIPO_LIBRARY)
+    message(STATUS "Found libhipo4: ${HIPO_LIBRARY}")
+    
+    add_library(hipo::hipo INTERFACE IMPORTED)
+    target_include_directories(hipo::hipo INTERFACE ${HIPO_INSTALL_DIR}/include)
+    
+    # Link HIPO and LZ4 (if found)
+    if(LZ4_LIBRARY)
+        message(STATUS "Found LZ4: ${LZ4_LIBRARY} (Attaching to hipo::hipo)")
+        target_link_libraries(hipo::hipo INTERFACE ${HIPO_LIBRARY} ${LZ4_LIBRARY})
+    else()
+        target_link_libraries(hipo::hipo INTERFACE ${HIPO_LIBRARY})
+    endif()
+
+  else()
+     message(FATAL_ERROR "Could not find libhipo4.so in ${HIPO_INSTALL_DIR} (checked lib and lib64).")
   endif()
 
-  target_link_libraries(hipo::hipo INTERFACE ${HIPO_LIB})
 else()
   message(FATAL_ERROR "HIPO environment variable not set.")
 endif()
