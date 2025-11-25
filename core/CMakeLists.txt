@@ -26,6 +26,15 @@ if(NOT CLAS12_ROOT_LIB)
   message(FATAL_ERROR "Could not find Clas12Root library in ${CLAS12ROOT}. Check your CLAS12ROOT path.")
 endif()
 
+# Find Clas12Root-Hipo4
+find_library(HIPO4_ROOT_LIB NAMES Hipo4
+  HINTS ${CLAS12ROOT}
+  PATH_SUFFIXES lib lib64 lib32
+)
+if(NOT HIPO4_ROOT_LIB)
+  message(FATAL_ERROR "Could not find Clas12Root/Hipo4 library in ${CLAS12ROOT}. Check your CLAS12ROOT path. You may need to configure Clas12Root cmake build with cmake -DWITH_HIPO4_WRAPPER=ON ")
+endif()
+
 # ==============================================================================
 # 2. Source & Header Gathering
 # ==============================================================================
