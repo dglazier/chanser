@@ -1,3 +1,8 @@
+#include <TH1.h>
+#include <TPad.h>
+#include <TKey.h>
+#include <TColor.h>
+
 namespace chanser{
 
   namespace mva{
