@@ -2,7 +2,7 @@
 
 # 1. Define the list of programs (names must match .cpp files exactly)
 set(EXEC_PROGRAMS
-  chanser
+  chanser_root
   chanser_proof
   chanser_farm
   chanser_mva
@@ -21,11 +21,11 @@ foreach(prog IN LISTS EXEC_PROGRAMS)
   add_executable(${prog} ${prog}.cpp)
 
   # Link to the core library
-  if(TARGET chanser_core)
-    target_link_libraries(${prog} PRIVATE chanser_core)
+  if(TARGET chanser)
+    target_link_libraries(${prog} PRIVATE chanser)
   else()
     # Fallback if library failed to configure (shouldn't happen)
-    message(WARNING "Target chanser_core not found for ${prog}")
+    message(WARNING "Target chanser not found for ${prog}")
     target_include_directories(${prog} PRIVATE ${CMAKE_SOURCE_DIR}/core)
   endif()
 

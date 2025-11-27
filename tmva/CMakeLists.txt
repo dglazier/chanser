@@ -40,7 +40,7 @@ add_library(${MODULE_NAME} SHARED ${TMVA_SRCS})
 
 # 5. Link Dependencies
 # Link to the core library (gives access to symbols)
-target_link_libraries(${MODULE_NAME} PRIVATE chanser_core)
+target_link_libraries(${MODULE_NAME} PRIVATE chanser)
 
 # 6. Include Directories
 target_include_directories(${MODULE_NAME}

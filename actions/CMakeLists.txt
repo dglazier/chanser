@@ -30,13 +30,13 @@ if(COMMAND ROOT_GENERATE_DICTIONARY)
 endif()
 # --- DICTIONARY SETUP END ---
 
-add_library(chanser_actions SHARED ${ACTIONS_SRCS})
+add_library(${MODULE_NAME} SHARED ${ACTIONS_SRCS})
 
 # 1. Link to the core library (gives access to symbols)
-target_link_libraries(chanser_actions PRIVATE chanser_core chansermva)
+target_link_libraries(${MODULE_NAME} PRIVATE chanser chansermva)
 
 # 2. Add the path to the core headers
-target_include_directories(chanser_actions
+target_include_directories(${MODULE_NAME}
   PUBLIC
     # FIX: Add current dir so dictionary compiles correctly
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -47,17 +47,17 @@ target_include_directories(chanser_actions
     ${CMAKE_SOURCE_DIR}/tmva  # This allows finding "ResultInterface.h"
 )
 
-target_include_directories(chanser_actions
+target_include_directories(${MODULE_NAME}
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(chanser_actions PRIVATE chanser::root_deps)
+target_link_libraries(${MODULE_NAME} PRIVATE chanser::root_deps)
 if(TARGET chanser::clasqadb_deps)
-  target_link_libraries(chanser_actions PRIVATE chanser::clasqadb_deps)
+  target_link_libraries(${MODULE_NAME} PRIVATE chanser::clasqadb_deps)
 endif()
 
-install(TARGETS chanser_actions
+install(TARGETS ${MODULE_NAME}
   EXPORT chanserTargets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

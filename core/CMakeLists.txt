@@ -88,11 +88,11 @@ endif()
 if(NOT CORE_ROOT_SRCS)
   message(WARNING "core: no root-level source files found; skipping chanser_core target")
 else()
-  add_library(chanser_core SHARED ${CORE_ROOT_SRCS})
-  set_target_properties(chanser_core PROPERTIES OUTPUT_NAME ${CHANZER})
+  add_library(chanser SHARED ${CORE_ROOT_SRCS})
+  set_target_properties(chanser PROPERTIES OUTPUT_NAME ${CHANZER})
 
   # --- Includes ---
-  target_include_directories(chanser_core
+  target_include_directories(chanser
     PUBLIC
       # Include current dir so generated dictionary finds headers
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -104,7 +104,7 @@ else()
   )
 
   if(CLAS12ROOT)
-     target_include_directories(chanser_core PUBLIC 
+     target_include_directories(chanser PUBLIC 
         ${CLAS12ROOT}/Clas12Banks 
         ${CLAS12ROOT}/Clas12Root 
         ${CLAS12ROOT}/hipo4 
@@ -113,17 +113,17 @@ else()
 
   # --- Linking ---
   if(TARGET hipo::hipo)
-    target_link_libraries(chanser_core PUBLIC hipo::hipo)
+    target_link_libraries(chanser PUBLIC hipo::hipo)
   endif()
 
   if(TARGET chanser::root_deps)
-    target_link_libraries(chanser_core PRIVATE chanser::root_deps)
+    target_link_libraries(chanser PRIVATE chanser::root_deps)
   endif()
 
-  target_link_libraries(chanser_core PUBLIC ${CLAS12_BANKS_LIB} ${CLAS12_ROOT_LIB} ${HIPO4_ROOT_LIB})
+  target_link_libraries(chanser PUBLIC ${CLAS12_BANKS_LIB} ${CLAS12_ROOT_LIB} ${HIPO4_ROOT_LIB})
 
   # --- Installation ---
-  install(TARGETS chanser_core
+  install(TARGETS chanser
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

@@ -35,7 +35,7 @@ else()
   add_library(chanser_skeleton_lib SHARED ${SKEL_SRCS})
   
   # 1. Link to the core library (gives access to symbols)
-  target_link_libraries(chanser_skeleton_lib PRIVATE chanser_core)
+  target_link_libraries(chanser_skeleton_lib PRIVATE chanser)
 
   # 2. Add the path to the core headers
   target_include_directories(chanser_skeleton_lib
