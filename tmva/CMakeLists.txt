@@ -1,6 +1,6 @@
 # tmva/CMakeLists.txt - adjust to create a target and link dependencies
 
-set(MODULE_NAME chanser_tmva)
+set(MODULE_NAME chansermva)
 
 # 1. Gather Sources
 file(GLOB_RECURSE TMVA_SRCS CONFIGURE_DEPENDS
@@ -71,7 +71,7 @@ install(TARGETS ${MODULE_NAME}
 #install(FILES ${TMVA_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install PCM (Required for ROOT 6 dictionaries)
-file(GLOB MODULE_PCM ${CMAKE_BINARY_DIR}/*${MODULE_NAME}*pcm)
+file(GLOB MODULE_PCM "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*pcm" "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*rootmap")
 if(MODULE_PCM)
   install(FILES ${MODULE_PCM} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 endif()

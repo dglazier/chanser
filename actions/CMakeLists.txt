@@ -1,5 +1,5 @@
 # actions/CMakeLists.txt - library/executable layout
-set(MODULE_NAME chanser_actions)
+set(MODULE_NAME chanseractions)
 
 file(GLOB_RECURSE ACTIONS_SRCS CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -33,7 +33,7 @@ endif()
 add_library(chanser_actions SHARED ${ACTIONS_SRCS})
 
 # 1. Link to the core library (gives access to symbols)
-target_link_libraries(chanser_actions PRIVATE chanser_core chanser_tmva)
+target_link_libraries(chanser_actions PRIVATE chanser_core chansermva)
 
 # 2. Add the path to the core headers
 target_include_directories(chanser_actions
@@ -66,7 +66,7 @@ install(TARGETS chanser_actions
 # --- INSTALLATION ADDITIONS ---
 ##install(FILES ${MODULE_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-file(GLOB MODULE_PCM ${CMAKE_BINARY_DIR}/*${MODULE_NAME}*pcm)
+file(GLOB MODULE_PCM "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*pcm" "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*rootmap")
 if(MODULE_PCM)
   install(FILES ${MODULE_PCM} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 endif()

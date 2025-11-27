@@ -1,5 +1,5 @@
 # rga_actions/CMakeLists.txt - create a library and link deps
-set(MODULE_NAME chanser_rga_actions)
+set(MODULE_NAME chanseractions_rga)
 
 file(GLOB_RECURSE RGA_SRCS CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -68,7 +68,7 @@ install(TARGETS chanser_rga_actions
 # --- INSTALLATION ADDITIONS ---
 # We do NOT install headers (as requested), but we MUST install the PCM
 # for the dictionary to function at runtime.
-file(GLOB MODULE_PCM ${CMAKE_BINARY_DIR}/*${MODULE_NAME}*pcm)
+file(GLOB MODULE_PCM "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*pcm" "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*rootmap")
 if(MODULE_PCM)
   install(FILES ${MODULE_PCM} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 endif()

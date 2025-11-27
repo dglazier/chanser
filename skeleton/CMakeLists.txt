@@ -49,10 +49,11 @@ else()
   )
 
   # Optional: keep the on-disk library base name as before
-  set_target_properties(chanser_skeleton_lib PROPERTIES OUTPUT_NAME "chanser_skeleton")
+  set_target_properties(chanser_skeleton_lib PROPERTIES OUTPUT_NAME "skeleton")
 
   target_include_directories(chanser_skeleton_lib
     PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
       $<INSTALL_INTERFACE:include>
   )
@@ -67,7 +68,7 @@ else()
 
   # --- INSTALLATION ADDITIONS ---
   # Install the PCM file (Matches the OUTPUT_NAME "chanser_skeleton")
-  file(GLOB MODULE_PCM ${CMAKE_BINARY_DIR}/*chanser_skeleton*pcm)
+  file(GLOB MODULE_PCM "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*pcm" "${CMAKE_CURRENT_BINARY_DIR}/*${MODULE_NAME}*rootmap")
   if(MODULE_PCM)
     install(FILES ${MODULE_PCM} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
   endif()
