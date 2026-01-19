@@ -11,9 +11,9 @@ using namespace chanser;
 void Load(){
   cout<<"Chaner Load "<<endl;
   gSystem->Load("libEG");
-  gSystem->Load("$CLAS12ROOT/lib/libHipo4");
-  gSystem->Load("$CLAS12ROOT/lib/libClas12Banks");
-  gSystem->Load("$CLAS12ROOT/lib/libClas12Root");
+  gSystem->Load("$CLAS12ROOT/lib64/libHipo4");
+  gSystem->Load("$CLAS12ROOT/lib64/libClas12Banks");
+  gSystem->Load("$CLAS12ROOT/lib64/libClas12Root");
   
   TString CHANSER=gSystem->Getenv("CHANSER");
   TString classes=gSystem->Getenv("CHANSER_CLASSES");
@@ -30,18 +30,18 @@ void Load(){
     
     gInterpreter->AddIncludePath(core);
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(core).Data()));
-    gSystem->Load("$CHANSER/lib/libchanser.so");
+    gSystem->Load("$CHANSER/lib64/libchanser.so");
     
     gInterpreter->AddIncludePath(mva);
-    gSystem->Load("$CHANSER/lib/libchansermva.so");
+    gSystem->Load("$CHANSER/lib64/libchansermva.so");
 
     gInterpreter->AddIncludePath(actions);
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(actions).Data()));
-    gSystem->Load("$CHANSER/lib/libchanseractions.so");
+    gSystem->Load("$CHANSER/lib64/libchanseractions.so");
 
     gInterpreter->AddIncludePath(rga_actions);
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(rga_actions).Data()));
-    gSystem->Load("$CHANSER/lib/libchanseractions_rga.so");
+    gSystem->Load("$CHANSER/lib64/libchanseractions_rga.so");
 
     gROOT->SetMacroPath(Form("%s:%s",gROOT->GetMacroPath(),(skeleton).Data()));
 
